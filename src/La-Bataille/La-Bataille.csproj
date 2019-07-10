@@ -5,4 +5,9 @@
     <RootNamespace>La_Bataille</RootNamespace>
   </PropertyGroup>
 
+  <ItemGroup>
+    <None Remove="La Bataille.pdf" />
+    <None Remove="La-Bataille.v3.ncrunchproject" />
+  </ItemGroup>
+
 </Project>

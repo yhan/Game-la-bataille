@@ -4,24 +4,30 @@ namespace La_Bataille
 {
     public struct Carte: IEquatable<Carte>, IComparable<Carte>
     {
+        /// <summary>
+        /// 2, 3, ..., 10, 11(valet,), 12(dame), 13(roi), 14(as)
+        /// </summary>
         public uint Value { get; }
         
         /// <summary>
-        /// clubs (♣), diamonds (♦), hearts (♥) and spades (♠)
+        /// clubs/trefles (♣), diamonds/carreaux (♦), hearts/coeurs (♥) and spades/pique (♠)
         /// </summary>
-        public string Color { get; }
+        public string Figure { get; }
 
-        public Carte(uint value, string color)
+        public Carte(uint value, string figure)
         {
-            // 2, 3, ..., 10, 11(j), 12(q), 13(k), 14(A)
-
             if(value < 2 || value > 14)
             {
                 throw new ArgumentException($"Invalid carte value {value}");
             }
 
             Value = value;
-            Color = color;
+            Figure = figure;
+        }
+
+        public override string ToString()
+        {
+            return $"{Value}-{Figure}";
         }
 
         public override bool Equals(object obj)
