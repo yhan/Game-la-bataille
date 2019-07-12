@@ -7,7 +7,7 @@ namespace La_Bataille
     /// 
     /// Implementation should have numberOfJoueurs as input
     /// </summary>
-    public interface IShuffle
+    public interface IDistributeCartes
     {
         List<Joueur> DistributeCartes();
 

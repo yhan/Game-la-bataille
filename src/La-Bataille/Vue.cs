@@ -1,18 +1,27 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace La_Bataille
 {
-    public class Vue : IEnumerable<Carte>
+    public static class VueExtensions
     {
-        private readonly IEnumerable<Carte> _cartes;
+        public static IEnumerable<Carte> AsPureCartes(this Vue vue)
+        {
+            return vue.Select(x => x.Carte);
+        }
+    }
 
-        public Vue(IEnumerable<Carte> cartes)
+    public class Vue : IEnumerable<TwoFaceCarte>
+    {
+        private readonly IEnumerable<TwoFaceCarte> _cartes;
+
+        public Vue(IEnumerable<TwoFaceCarte> cartes)
         {
             _cartes = cartes;
         }
 
-        public IEnumerator<Carte> GetEnumerator()
+        public IEnumerator<TwoFaceCarte> GetEnumerator()
         {
             return _cartes.GetEnumerator();
         }
@@ -26,5 +35,28 @@ namespace La_Bataille
         {
             return GetEnumerator();
         }
+    }
+
+    public class TwoFaceCarte
+    {
+        public Carte Carte { get; }
+        public Visibilite Visibilite { get; }
+
+        public TwoFaceCarte(Carte carte, Visibilite visibilite)
+        {
+            Carte = carte;
+            Visibilite = visibilite;
+        }
+
+        public override string ToString()
+        {
+            return $"{Carte}({Visibilite})";
+        }
+    }
+
+    public enum Visibilite
+    {
+        Devoilee,
+        Cachee
     }
 }

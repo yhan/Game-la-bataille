@@ -42,8 +42,6 @@ namespace La_Bataille
             }
             return new Carte(value, Figure.Pique);
         }
-
-
     }
 
 
@@ -135,7 +133,14 @@ namespace La_Bataille
 
         public int CompareTo(Carte other)
         {
-            return Value.CompareTo(other.Value);
+            var valueCompare = Value.CompareTo(other.Value);
+            if (valueCompare != 0)
+            {
+                return valueCompare;
+            }
+
+            return this.Figure.CompareTo(other.Figure);
+
         }
     }
 }

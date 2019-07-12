@@ -13,7 +13,7 @@ namespace La_Bataille
             _inner = cartes.ToList();
         }
 
-        public Carte Pop()
+        public Carte Tirer()
         {
             var last = _inner.Count - 1;
             var popped = _inner[last];
@@ -22,7 +22,7 @@ namespace La_Bataille
             return popped;
         }
 
-        public void PutOnTheHead(Carte carte)
+        public void MettreSousLePaquet(Carte carte)
         {
             _inner.Insert(0, carte);
         }

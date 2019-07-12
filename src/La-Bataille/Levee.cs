@@ -6,11 +6,13 @@ namespace La_Bataille
     {
         public Joueur Joueur { get; }
         public Carte Carte { get; }
+        public Visibilite Visibilite { get; set; }
 
-        public Levee(Joueur joueur, Carte carte)
+        public Levee(Joueur joueur, Carte carte, Visibilite visibilite)
         {
             Joueur = joueur;
             Carte = carte;
+            Visibilite = visibilite;
         }
 
 

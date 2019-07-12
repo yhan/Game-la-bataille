@@ -14,17 +14,17 @@ namespace La_Bataille
 
         public Paquet Paquet { get; set; }
 
-        public Levee Lever()
+        public Levee Lever(Visibilite visibilite)
         {
-            var popped = Paquet.Pop();
-            return new Levee(this, popped);
+            var popped = Paquet.Tirer();
+            return new Levee(this, popped, visibilite);
         }
 
         public void Gagner(IEnumerable<Carte> cartes)
         {
             foreach (var carte in cartes)
             {
-                Paquet.PutOnTheHead(carte);
+                Paquet.MettreSousLePaquet(carte);
             }
         }
 
