@@ -7,10 +7,10 @@ namespace La_Bataille
     /// 
     /// Implementation should have numberOfJoueurs as input
     /// </summary>
-    public interface IDistributeCartes
+    public interface IDistributeCards
     {
-        List<Joueur> DistributeCartes();
+        List<Player> Distribute();
 
-        int TotalNumberOfCartes { get; set; }
+        int TotalNumberOfCards { get; set; }
     }
 }

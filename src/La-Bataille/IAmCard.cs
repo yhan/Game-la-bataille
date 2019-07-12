@@ -1,6 +1,6 @@
 ﻿namespace La_Bataille
 {
-    public interface IAmCarte
+    public interface IAmCard
     {
         /// <summary>
         /// 2, 3, ..., 10, 11(valet,), 12(dame), 13(roi), 14(as)
@@ -14,10 +14,10 @@
     }
 
     
-    public class NullCarte : IAmCarte
+    public class NullCard : IAmCard
     {
         public int Value { get; } = 0;
         public Figure Figure { get; } = Figure.Null;
-        public static NullCarte Instance = new NullCarte();
+        public static NullCard Instance = new NullCard();
     }
 }

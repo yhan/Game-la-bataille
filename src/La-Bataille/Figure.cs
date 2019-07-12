@@ -3,9 +3,9 @@
     public enum Figure
     {
         Null = 0,
-        Carreaux,
-        Coeur,
-        Pique,
-        Trefle
+        Diamond,
+        Heart,
+        Spade,
+        Club
     }
 }

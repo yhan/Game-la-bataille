@@ -2,7 +2,7 @@
 
 namespace La_Bataille
 {
-    public struct Carte : IEquatable<Carte>, IComparable<Carte>, IAmCarte
+    public struct Card : IEquatable<Card>, IComparable<Card>, IAmCard
     {
         /// <summary>
         /// 2, 3, ..., 10, 11(valet,), 12(dame), 13(roi), 14(as)
@@ -14,11 +14,11 @@ namespace La_Bataille
         /// </summary>
         public Figure Figure { get; }
 
-        public Carte(int value, Figure figure)
+        public Card(int value, Figure figure)
         {
             if (value < 2 || value > 14)
             {
-                throw new ArgumentException($"Invalid carte value {value}");
+                throw new ArgumentException($"Invalid card value {value}");
             }
 
             Value = value;
@@ -32,7 +32,7 @@ namespace La_Bataille
 
         public override bool Equals(object obj)
         {
-            if (obj is Carte card)
+            if (obj is Card card)
             {
                 return Value.Equals(card.Value);
             }
@@ -40,22 +40,22 @@ namespace La_Bataille
             return false;
         }
 
-        public static bool operator ==(Carte c1, Carte c2)
+        public static bool operator ==(Card c1, Card c2)
         {
             return c1.Value == c2.Value;
         }
 
-        public static bool operator !=(Carte c1, Carte c2)
+        public static bool operator !=(Card c1, Card c2)
         {
             return !(c1 == c2);
         }
 
-        public static bool operator >(Carte c1, Carte c2)
+        public static bool operator >(Card c1, Card c2)
         {
             return c1.Value > c2.Value;
         }
 
-        public static bool operator <(Carte c1, Carte c2)
+        public static bool operator <(Card c1, Card c2)
         {
             return c1.Value < c2.Value;
         }
@@ -65,22 +65,22 @@ namespace La_Bataille
             return Value.GetHashCode();
         }
 
-        bool IEquatable<Carte>.Equals(Carte other)
+        bool IEquatable<Card>.Equals(Card other)
         {
             return Equals(other);
         }
 
-        int IComparable<Carte>.CompareTo(Carte other)
+        int IComparable<Card>.CompareTo(Card other)
         {
             return CompareTo(other);
         }
 
-        public bool Equals(Carte other)
+        public bool Equals(Card other)
         {
             return Value == other.Value;
         }
 
-        public int CompareTo(Carte other)
+        public int CompareTo(Card other)
         {
             var valueCompare = Value.CompareTo(other.Value);
             if (valueCompare != 0)

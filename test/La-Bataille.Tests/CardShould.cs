@@ -11,10 +11,10 @@ namespace Tests
         [Test]
         public void Can_compare_cards_When_equality()
         {
-            var trefles10 = 10.AsTrefles();
-            var pique10 = 10.AsPique();
-            var coeur10 = 10.AsCoeur();
-            var carreaux10 = 10.AsCarreaux();
+            var trefles10 = 10.AsClub();
+            var pique10 = 10.AsSpade();
+            var coeur10 = 10.AsHeart();
+            var carreaux10 = 10.AsDiamond();
 
             Check.That(trefles10).IsEqualTo(pique10);
             Check.That(pique10).IsEqualTo(coeur10);
@@ -28,8 +28,8 @@ namespace Tests
         [Test]
         public void Can_compare_cards_When_not_equals()
         {
-            var trefles10 = 10.AsTrefles();
-            var pique11 = 11.AsPique();
+            var trefles10 = 10.AsClub();
+            var pique11 = 11.AsSpade();
 
             Check.That(pique11 > trefles10).IsTrue();
         }
