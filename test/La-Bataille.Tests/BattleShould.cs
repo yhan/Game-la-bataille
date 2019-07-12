@@ -57,9 +57,9 @@ namespace Tests
             Check.That(battle.Players[1].CardStack).Contains(c10, s11);
 
 
-            bool gameOver = battle.IsGameOver(out var vainqueur);
-            Check.That(gameOver).IsTrue();
-            Check.That(vainqueur).IsEqualTo(battle.Players[1]);
+            var gameOver = battle.End();
+            Check.That(gameOver).IsInstanceOf<HasWinner>();
+            Check.That(((HasWinner)gameOver).Winner).IsEqualTo(battle.Players[1]);
         }
 
         [Test]
@@ -80,14 +80,13 @@ namespace Tests
             Check.That(battle.TableViewsHistory[3]).Contains(c5.FaceUp(), d3.FaceUp());
             Check.That(battle.TableViewsHistory[4]).Contains(d2.FaceUp(), c4.FaceUp());
 
+            var gameOver = battle.End();
+            Check.That(gameOver).IsInstanceOf<HasWinner>();
+            Check.That(((HasWinner)gameOver).Winner).IsEqualTo(battle.Players[1]);
 
             Check.That(battle.Players[0].CardStack).HasSize(0);
             Check.That(battle.Players[1].CardStack).HasSize(6);
             Check.That(battle.Players[1].CardStack).Contains(c5, c4, s2, d3, d2, s3);
-            
-            bool gameOver = battle.IsGameOver(out var vainqueur);
-            Check.That(gameOver).IsTrue();
-            Check.That(vainqueur).IsEqualTo(battle.Players[1]);
         }
         
         [Test]
@@ -107,9 +106,9 @@ namespace Tests
             Check.That(battle.TableViewsHistory[2]).Contains(s3.FaceDown(), d4.FaceDown());
             Check.That(battle.TableViewsHistory[3]).Contains(d8.FaceUp(), c7.FaceUp());
             
-            bool gameOver = battle.IsGameOver(out var vainqueur);
-            Check.That(gameOver).IsTrue();
-            Check.That(vainqueur).IsEqualTo(battle.Players[0]);
+            var gameOver = battle.End();
+            Check.That(gameOver).IsInstanceOf<HasWinner>();
+            Check.That(((HasWinner)gameOver).Winner).IsEqualTo(battle.Players[0]);
 
             Check.That(battle.Players[1].CardStack).HasSize(0);
             Check.That(battle.Players[0].CardStack).HasSize(8);
@@ -136,9 +135,9 @@ namespace Tests
             Check.That(battle.TableViewsHistory[4]).Contains(d8.FaceDown(), c9.FaceDown());
             Check.That(battle.TableViewsHistory[5]).Contains(s14.FaceUp(), s11.FaceUp());
             
-            bool gameOver = battle.IsGameOver(out var vainqueur);
-            Check.That(gameOver).IsTrue();
-            Check.That(vainqueur).IsEqualTo(battle.Players[0]);
+            var gameOver = battle.End();
+            Check.That(gameOver).IsInstanceOf<HasWinner>();
+            Check.That(((HasWinner)gameOver).Winner).IsEqualTo(battle.Players[0]);
 
             Check.That(battle.Players[1].CardStack).HasSize(0);
             Check.That(battle.Players[0].CardStack).HasSize(12);
@@ -169,14 +168,15 @@ namespace Tests
             Check.That(battle.TableViewsHistory[6]).Contains(d4.FaceDown(), s13.FaceDown());
             Check.That(battle.TableViewsHistory[7]).Contains(s3.FaceUp(), d3.FaceUp());
 
+            var gameOver = battle.End();
+            Check.That(gameOver).IsInstanceOf<HasWinner>();
+            Check.That(((HasWinner)gameOver).Winner).IsEqualTo(battle.Players[2]);
+
+            
             Check.That(battle.Players[0].CardStack).HasSize(0);
             Check.That(battle.Players[1].CardStack).HasSize(0);
             Check.That(battle.Players[2].CardStack).HasSize(9);
             Check.That(battle.Players[2].CardStack).Contains(s2, d3, d4, s3, d2, c5, s13, s14, c2);
-
-            bool gameOver = battle.IsGameOver(out var winner);
-            Check.That(gameOver).IsTrue();
-            Check.That(winner).IsEqualTo(battle.Players[2]);
         }
 
 

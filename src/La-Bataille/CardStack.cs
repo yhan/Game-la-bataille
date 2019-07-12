@@ -6,9 +6,17 @@ namespace La_Bataille
 {
     /// <summary>
     /// Represent the card stack in front of each <see cref="Player"/>
+    ///
+    /// Take from the top of stack;
+    /// Put back to the bottom of stack.
+    /// 
     /// </summary>
     public class CardStack : IEnumerable<Card>
     {
+
+        /// <summary>
+        /// Top is at the end of list; bottom is at the beginning of list.
+        /// </summary>
         private readonly List<Card> _inner;
 
         public CardStack(IEnumerable<Card> cartes)
@@ -17,7 +25,7 @@ namespace La_Bataille
         }
 
         /// <summary>
-        /// Take on card
+        /// Take on card from the top.
         /// </summary>
         /// <returns></returns>
         public IAmCard Pull()
@@ -35,7 +43,7 @@ namespace La_Bataille
         }
 
         /// <summary>
-        /// Put a card back to the bottom of the <see cref="CardStack"/>
+        /// Put a card back to the bottom.
         /// </summary>
         /// <param name="card"></param>
         public void Carpet(Card card)

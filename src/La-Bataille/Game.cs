@@ -17,19 +17,19 @@ namespace La_Bataille
 
         public List<View> TableViewsHistory { get; } = new List<View>();
 
-        public bool IsGameOver(out Player winner)
+        public IAmTheGameOver End()
         {
             foreach (var player in Players)
             {
                 if (player.CardStack.Size == _distributor.TotalNumberOfCards)
                 {
-                    winner = player;
-                    return true;
+                    var winner = player;
+                    return new HasWinner(winner);
                 }
             }
 
-            winner = null;
-            return false;
+            
+            return Draw.Instance;
         }
 
 
@@ -97,5 +97,24 @@ namespace La_Bataille
         }
 
       
+    }
+
+    public class HasWinner : IAmTheGameOver
+    {
+        public Player Winner { get; }
+
+        public HasWinner(Player winner)
+        {
+            Winner = winner;
+        }
+    }
+
+    public class Draw : IAmTheGameOver
+    {
+        public static IAmTheGameOver Instance = new Draw();
+    }
+
+    public interface IAmTheGameOver
+    {
     }
 }
