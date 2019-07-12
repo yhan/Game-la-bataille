@@ -34,20 +34,23 @@ namespace La_Bataille
                 {
                     var faceDownTakes = competitors.TakeOneCardEach(Visibility.FaceDown);
                     TableViewsHistory.Add(faceDownTakes.BuildView());
+                    takes.AddRange(faceDownTakes);
 
                     var faceUpTakes = competitors.TakeOneCardEach(Visibility.FaceUp);
+                    if (!faceUpTakes.Any())
+                    {
+                        return Draw.Instance;
+                    }
+                    
                     TableViewsHistory.Add(faceUpTakes.BuildView());
-
-                    playerOfHighestTake = faceUpTakes.Max().Player;
-
-                    takes.AddRange(faceDownTakes);
                     takes.AddRange(faceUpTakes);
 
+                    playerOfHighestTake = faceUpTakes.Max().Player;
+                    
                     if (competitors.OnlyOneStillHasCards(out var winner))
                     {
-                        playerOfHighestTake.Gather(takes.Select(x => x.Card)
-                            .OrderByDescending(x => x) /*Put the smaller one on the bottom of CardStack, 
-                                                                          to introduce some determinism for the following levee*/);
+                        playerOfHighestTake.Gather(takes);
+
                         return new HasWinner(winner);
                     }
 
@@ -57,9 +60,7 @@ namespace La_Bataille
                     }
                 }
 
-                playerOfHighestTake.Gather(takes.Select(x => x.Card)
-                                             .OrderByDescending(x => x) /*Put the smaller one on the bottom of CardStack, 
-                                                                          to introduce some determinism for the following levee*/);
+                playerOfHighestTake.Gather(takes);
 
                 if (playerOfHighestTake.CardStack.Size == _distributor.TotalNumberOfCards)
                 {

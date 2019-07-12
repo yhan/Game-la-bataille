@@ -37,9 +37,21 @@ namespace La_Bataille
             }
         }
 
+        public void Gather(IEnumerable<Take> takes)
+        {
+            this.Gather(takes.Select(x => x.Card)
+                .OrderByDescending(x => x) /*Put the smaller one on the bottom of CardStack, 
+                                                                          to introduce some determinism for the following levee*/);
+        }
+
         protected override IEnumerable<object> GetAllAttributesToBeUsedForEquality()
         {
             return new object[] { Id };
+        }
+
+        public override string ToString()
+        {
+            return $"{Id}: {CardStack}";
         }
     }
 

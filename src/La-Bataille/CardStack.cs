@@ -65,5 +65,10 @@ namespace La_Bataille
         {
             return GetEnumerator();
         }
+
+        public override string ToString()
+        {
+            return string.Join(", ", _inner);
+        }
     }
 }
