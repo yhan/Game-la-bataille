@@ -43,7 +43,7 @@ namespace La_Bataille
         }
     }
 
-    public static class JoueurExtensions
+    public static class PlayerExtensions
     {
         public static List<Take> TakeOneCardEach(this IEnumerable<Player> players,  Visibility visibility)
         {
@@ -54,21 +54,33 @@ namespace La_Bataille
             return takesWhenPossible;
         }
 
-        public static bool OnlyOnePlayerStillHasCards(this IEnumerable<Player> players, out Player winner)
+        public static bool OnlyOneStillHasCards(this IEnumerable<Player> players, out Player winner)
         {
             var survivors = players.Where(x => x.CardStack.Size > 0);
             
-            var survivorsArray
-                = survivors as Player[] ?? survivors.ToArray();
+            var survivorsArray = survivors as Player[] ?? survivors.ToArray();
+
             if (survivorsArray.Length == 1)
             {
                 winner = survivorsArray.Single();
                 return true;
             }
 
+            if (survivorsArray.Length == 0)
+            {
+                winner = null;
+                return false;
+            }
+            
+
             winner = null;
             return false;
 
+        }
+
+        public static bool NobodyHasCards(this IEnumerable<Player> players)
+        {
+            return players.All(p => p.CardStack.Size == 0);
         }
 
     }

@@ -19,6 +19,12 @@ namespace La_Bataille
 
         public IAmTheGameOver End()
         {
+            if (Players.All(p => p.CardStack.Size == 0))
+            {
+                return Draw.Instance;
+            }
+
+
             foreach (var player in Players)
             {
                 if (player.CardStack.Size == _distributor.TotalNumberOfCards)
@@ -58,12 +64,24 @@ namespace La_Bataille
                     takes.AddRange(faceDownTakes);
                     takes.AddRange(faceUpTakes);
 
-                    if (competitors.OnlyOnePlayerStillHasCards(out var winner))
+                    if (competitors.OnlyOneStillHasCards(out var winner))
                     {
                         playerOfHighestTake = winner;
                         break;
                     }
+
+                    if (competitors.NobodyHasCards())
+                    {
+                        playerOfHighestTake = null;
+                        break;
+                    }
                 }
+
+                if (playerOfHighestTake == null)
+                {
+                    break;  
+                }
+
 
                 playerOfHighestTake.Gather(takes.Select(x => x.Card)
                                              .OrderByDescending(x => x) /*Put the smaller one on the bottom of CardStack, 
