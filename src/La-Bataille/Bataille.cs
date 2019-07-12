@@ -21,7 +21,7 @@ namespace La_Bataille
         {
             foreach (var joueur in Joueurs)
             {
-                if (joueur.Cartes.Count == _shuffle.TotalNumberOfCartes)
+                if (joueur.Paquet.Size == _shuffle.TotalNumberOfCartes)
                 {
                     vainqueur = joueur;
                     return true;
@@ -35,12 +35,15 @@ namespace La_Bataille
 
         public void Start()
         {
-            var levees = Joueurs.Select(j => j.Lever()).ToArray();
-            VuesPlateau.Add(new Vue(levees.Select(x => x.Carte)));
+            while (Joueurs.All(j => j.Paquet.Size != 0))
+            {
+                var levees = Joueurs.Select(j => j.Lever()).ToArray();
+                VuesPlateau.Add(new Vue(levees.Select(x => x.Carte)));
 
-            var maxLevee = levees.Max();
+                var maxLevee = levees.Max();
 
-            maxLevee.Joueur.Gagner(levees.Select(x => x.Carte));
+                maxLevee.Joueur.Gagner(levees.Select(x => x.Carte).OrderByDescending(x => x)/*Put the smaller one on the bottom of Paquet, to introduce some determinism for the following levee*/);     
+            }
         }
     }
 }

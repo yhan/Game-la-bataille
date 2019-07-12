@@ -11,7 +11,7 @@ namespace La_Bataille
             {
                 throw new ArgumentException("Carte value should be inclusively between 2 and 14");
             }
-            return new Carte(value, "Trefles");
+            return new Carte(value, Figure.Trefle);
         }
 
         public static Carte AsCarreaux(this int value)
@@ -20,7 +20,7 @@ namespace La_Bataille
             {
                 throw new ArgumentException("Carte value should be inclusively between 2 and 14");
             }
-            return new Carte(value, "Carreaux");
+            return new Carte(value, Figure.Carreaux);
         }
 
 
@@ -30,7 +30,7 @@ namespace La_Bataille
             {
                 throw new ArgumentException("Carte value should be inclusively between 2 and 14");
             }
-            return new Carte(value, "Coeur");
+            return new Carte(value, Figure.Coeur);
         }
 
 
@@ -40,10 +40,19 @@ namespace La_Bataille
             {
                 throw new ArgumentException("Carte value should be inclusively between 2 and 14");
             }
-            return new Carte(value, "Prique");
+            return new Carte(value, Figure.Pique);
         }
 
 
+    }
+
+
+    public enum Figure
+    {
+        Carreaux = 0,
+        Coeur,
+        Pique,
+        Trefle
     }
 
     public struct Carte: IEquatable<Carte>, IComparable<Carte>
@@ -56,9 +65,9 @@ namespace La_Bataille
         /// <summary>
         /// clubs/trefles (♣), diamonds/carreaux (♦), hearts/coeurs (♥) and spades/pique (♠)
         /// </summary>
-        public string Figure { get; }
+        public Figure Figure { get; }
 
-        public Carte(int value, string figure)
+        public Carte(int value, Figure figure)
         {
             if(value < 2 || value > 14)
             {

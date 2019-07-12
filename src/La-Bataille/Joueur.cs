@@ -1,6 +1,4 @@
-using System;
 using System.Collections.Generic;
-using System.Linq;
 using Value;
 
 namespace La_Bataille
@@ -14,13 +12,11 @@ namespace La_Bataille
             Id = id;
         }
 
-        public IList<Carte> Cartes { get; set; }
+        public Paquet Paquet { get; set; }
 
         public Levee Lever()
         {
-            var last = Cartes.Count - 1;
-            var popped = Cartes[last];
-            Cartes.RemoveAt(last);
+            var popped = Paquet.Pop();
             return new Levee(this, popped);
         }
 
@@ -28,33 +24,13 @@ namespace La_Bataille
         {
             foreach (var carte in cartes)
             {
-                Cartes.Insert(0, carte);    
+                Paquet.PutOnTheHead(carte);
             }
         }
 
         protected override IEnumerable<object> GetAllAttributesToBeUsedForEquality()
         {
-            return new object[]{this.Id};
-        }
-    }
-
-    public class Levee : IComparable<Levee>
-    {
-        public Joueur Joueur { get; }
-        public Carte Carte { get; }
-
-        public Levee(Joueur joueur, Carte carte)
-        {
-            Joueur = joueur;
-            Carte = carte;
-        }
-
-
-        public int CompareTo(Levee other)
-        {
-            if (ReferenceEquals(this, other)) return 0;
-            if (ReferenceEquals(null, other)) return 1;
-            return ((IComparable<Carte>) Carte).CompareTo(other.Carte);
+            return new object[] { Id };
         }
     }
 }

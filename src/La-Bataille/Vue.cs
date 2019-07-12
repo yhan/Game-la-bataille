@@ -1,19 +1,30 @@
+using System.Collections;
 using System.Collections.Generic;
 
 namespace La_Bataille
 {
-    public class Vue
+    public class Vue : IEnumerable<Carte>
     {
-        public IEnumerable<Carte> Cartes { get; set; }
+        private readonly IEnumerable<Carte> _cartes;
 
         public Vue(IEnumerable<Carte> cartes)
         {
-            Cartes = cartes;
+            _cartes = cartes;
+        }
+
+        public IEnumerator<Carte> GetEnumerator()
+        {
+            return _cartes.GetEnumerator();
         }
 
         public override string ToString()
         {
-            return string.Join(", ", Cartes);
+            return string.Join(", ", _cartes);
+        }
+
+        IEnumerator IEnumerable.GetEnumerator()
+        {
+            return GetEnumerator();
         }
     }
 }
