@@ -6,23 +6,35 @@ namespace La_Bataille
     public class Bataille
     {
         private readonly IShuffle _shuffle;
-        public List<Joueur> Joueurs { get; private set; } = new List<Joueur>();
 
-        public Bataille(int numberOfJoueurs, IShuffle shuffle)
+        public Bataille(IShuffle shuffle)
         {
             _shuffle = shuffle;
-            for (int i = 0; i < numberOfJoueurs; i++)
-            {
-                Joueurs.Add(new Joueur(i));
-            }
+            Joueurs = _shuffle.DistributeCartes();
         }
 
-        public List<Vue> VuesPlateau { get; private set; } = new List<Vue>();
+        public List<Joueur> Joueurs { get; }
+
+        public List<Vue> VuesPlateau { get; } = new List<Vue>();
+
+        public bool JeuEnded(out Joueur vainqueur)
+        {
+            foreach (var joueur in Joueurs)
+            {
+                if (joueur.Cartes.Count == _shuffle.TotalNumberOfCartes)
+                {
+                    vainqueur = joueur;
+                    return true;
+                }
+            }
+
+            vainqueur = null;
+            return false;
+        }
+
 
         public void Start()
         {
-            Joueurs = _shuffle.DistributeCartes(Joueurs);
-
             var levees = Joueurs.Select(j => j.Lever()).ToArray();
             VuesPlateau.Add(new Vue(levees.Select(x => x.Carte)));
 

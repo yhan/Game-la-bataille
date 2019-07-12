@@ -10,4 +10,8 @@
     <None Remove="La-Bataille.v3.ncrunchproject" />
   </ItemGroup>
 
+  <ItemGroup>
+    <PackageReference Include="Value" Version="1.1.0.1" />
+  </ItemGroup>
+
 </Project>

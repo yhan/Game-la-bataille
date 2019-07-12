@@ -2,19 +2,63 @@
 
 namespace La_Bataille
 {
+
+    public static class CarteExtensions
+    {
+        public static Carte AsTrefles(this int value)
+        {
+            if (value < 2 || value > 14)
+            {
+                throw new ArgumentException("Carte value should be inclusively between 2 and 14");
+            }
+            return new Carte(value, "Trefles");
+        }
+
+        public static Carte AsCarreaux(this int value)
+        {
+            if (value < 2 || value > 14)
+            {
+                throw new ArgumentException("Carte value should be inclusively between 2 and 14");
+            }
+            return new Carte(value, "Carreaux");
+        }
+
+
+        public static Carte AsCoeur(this int value)
+        {
+            if (value < 2 || value > 14)
+            {
+                throw new ArgumentException("Carte value should be inclusively between 2 and 14");
+            }
+            return new Carte(value, "Coeur");
+        }
+
+
+        public static Carte AsPique(this int value)
+        {
+            if (value < 2 || value > 14)
+            {
+                throw new ArgumentException("Carte value should be inclusively between 2 and 14");
+            }
+            return new Carte(value, "Prique");
+        }
+
+
+    }
+
     public struct Carte: IEquatable<Carte>, IComparable<Carte>
     {
         /// <summary>
         /// 2, 3, ..., 10, 11(valet,), 12(dame), 13(roi), 14(as)
         /// </summary>
-        public uint Value { get; }
+        public int Value { get; }
         
         /// <summary>
         /// clubs/trefles (♣), diamonds/carreaux (♦), hearts/coeurs (♥) and spades/pique (♠)
         /// </summary>
         public string Figure { get; }
 
-        public Carte(uint value, string figure)
+        public Carte(int value, string figure)
         {
             if(value < 2 || value > 14)
             {

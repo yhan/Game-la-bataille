@@ -11,27 +11,27 @@ namespace Tests
         [Test]
         public void Can_compare_cards_When_equality()
         {
-            var clubs10 = new Carte(10, "trefle");
-            var diamonds10 = new Carte(10, "pique");
-            var hearts10 = new Carte(10, "coeur");
-            var spades10 = new Carte(10, "carreau");
+            var trefles10 = 10.AsTrefles();
+            var pique10 = 10.AsPique();
+            var coeur10 = 10.AsCoeur();
+            var carreaux10 = 10.AsCarreaux();
 
-            Check.That(clubs10).IsEqualTo(diamonds10);
-            Check.That(diamonds10).IsEqualTo(hearts10);
-            Check.That(hearts10).IsEqualTo(spades10);
+            Check.That(trefles10).IsEqualTo(pique10);
+            Check.That(pique10).IsEqualTo(coeur10);
+            Check.That(coeur10).IsEqualTo(carreaux10);
 
-            Check.That(clubs10 == diamonds10).IsEqualTo(true);
-            Check.That(diamonds10 == hearts10).IsEqualTo(true);
-            Check.That(hearts10 == spades10).IsEqualTo(true);
+            Check.That(trefles10 == pique10).IsEqualTo(true);
+            Check.That(pique10 == coeur10).IsEqualTo(true);
+            Check.That(coeur10 == carreaux10).IsEqualTo(true);
         }
 
         [Test]
         public void Can_compare_cards_When_not_equals()
         {
-            var clubs10 = new Carte(10, "trefle");
-            var spadesJack = new Carte(11, "pique");
+            var trefles10 = 10.AsTrefles();
+            var pique11 = 11.AsPique();
 
-            Check.That(spadesJack > clubs10).IsTrue();
+            Check.That(pique11 > trefles10).IsTrue();
         }
     }
 }

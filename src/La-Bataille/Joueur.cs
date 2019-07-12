@@ -1,10 +1,11 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Value;
 
 namespace La_Bataille
 {
-    public class Joueur
+    public class Joueur : ValueType<Joueur>
     {
         public int Id { get; }
 
@@ -29,6 +30,11 @@ namespace La_Bataille
             {
                 Cartes.Insert(0, carte);    
             }
+        }
+
+        protected override IEnumerable<object> GetAllAttributesToBeUsedForEquality()
+        {
+            return new object[]{this.Id};
         }
     }
 
