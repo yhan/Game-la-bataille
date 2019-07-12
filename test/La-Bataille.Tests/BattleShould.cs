@@ -146,8 +146,7 @@ namespace Tests
         }
         
         [Test]
-        [Ignore("")]
-        public void Can_find_gagnant_When_battle_happened()
+        public void Can_find_winner_When_battle_happened_recursively_and_in_the_end_all_players_but_the_winner_have_no_more_cards()
         {
             var battle = BuildGame(numberOfJoueurs: 3, distribution: new List<List<Card>>
             {
@@ -161,23 +160,23 @@ namespace Tests
             battle.Start(shuffle);
 
             Check.That(battle.TableViewsHistory).HasSize(8);
-            Check.That(battle.TableViewsHistory[0]).Contains(d4, c5, c2);
-            Check.That(battle.TableViewsHistory[1]).Contains(d2, d3, s14);
-            Check.That(battle.TableViewsHistory[2]).Contains(s3, s2, s13);
-            Check.That(battle.TableViewsHistory[3]).Contains(c5, s14);
-            Check.That(battle.TableViewsHistory[4]).Contains(d4, d3);
-            Check.That(battle.TableViewsHistory[5]).Contains(c2, d2);
-            Check.That(battle.TableViewsHistory[6]).Contains(d4, s13, d3, s3);
-            Check.That(battle.TableViewsHistory[7]).Contains(d4, s3, d3, s13);
+            Check.That(battle.TableViewsHistory[0]).Contains(d4.FaceUp(), c5.FaceUp(), c2.FaceUp());
+            Check.That(battle.TableViewsHistory[1]).Contains(d2.FaceUp(), d3.FaceUp(), s14.FaceUp());
+            Check.That(battle.TableViewsHistory[2]).Contains(s3.FaceUp(), s2.FaceUp(), s13.FaceUp());
+            Check.That(battle.TableViewsHistory[3]).Contains(c5.FaceUp(), s14.FaceUp());
+            Check.That(battle.TableViewsHistory[4]).Contains(d4.FaceUp(), d3.FaceUp());
+            Check.That(battle.TableViewsHistory[5]).Contains(c2.FaceUp(), d2.FaceUp());
+            Check.That(battle.TableViewsHistory[6]).Contains(d4.FaceDown(), s13.FaceDown());
+            Check.That(battle.TableViewsHistory[7]).Contains(s3.FaceUp(), d3.FaceUp());
 
             Check.That(battle.Players[0].CardStack).HasSize(0);
             Check.That(battle.Players[1].CardStack).HasSize(0);
             Check.That(battle.Players[2].CardStack).HasSize(9);
             Check.That(battle.Players[2].CardStack).Contains(s2, d3, d4, s3, d2, c5, s13, s14, c2);
 
-            bool gameOver = battle.IsGameOver(out var vainqueur);
+            bool gameOver = battle.IsGameOver(out var winner);
             Check.That(gameOver).IsTrue();
-            Check.That(vainqueur).IsEqualTo(battle.Players[2]);
+            Check.That(winner).IsEqualTo(battle.Players[2]);
         }
 
 
@@ -189,7 +188,7 @@ namespace Tests
         /// By Player, we have a list of CardStack. Hence a list of cartes list
         /// </param>
         /// <returns></returns>
-        private static Battle BuildGame(int numberOfJoueurs, IList<List<Card>> distribution)
+        private static Game BuildGame(int numberOfJoueurs, IList<List<Card>> distribution)
         {
             var joueurs = Enumerable.Range(0, count: numberOfJoueurs).Select(x => new Player(x)).ToList();
             
@@ -202,7 +201,7 @@ namespace Tests
             distributeCards.TotalNumberOfCards.Returns(distribution.SelectMany(x => x).Count());
             distributeCards.Distribute().Returns(joueurs);
 
-            var game = new Battle(distributeCards);
+            var game = new Game(distributeCards);
             
             return game;
         }

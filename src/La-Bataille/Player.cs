@@ -53,5 +53,23 @@ namespace La_Bataille
 
             return takesWhenPossible;
         }
+
+        public static bool OnlyOnePlayerStillHasCards(this IEnumerable<Player> players, out Player winner)
+        {
+            var survivors = players.Where(x => x.CardStack.Size > 0);
+            
+            var survivorsArray
+                = survivors as Player[] ?? survivors.ToArray();
+            if (survivorsArray.Length == 1)
+            {
+                winner = survivorsArray.Single();
+                return true;
+            }
+
+            winner = null;
+            return false;
+
+        }
+
     }
 }

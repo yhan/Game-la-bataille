@@ -1,4 +1,6 @@
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using Microsoft.VisualBasic.CompilerServices;
 
 namespace La_Bataille
@@ -30,6 +32,20 @@ namespace La_Bataille
         public override string ToString()
         {
             return $"{Player.Id}: {Card}";
+        }
+    }
+
+
+    public static class TakeExtensions
+    {
+        public static View BuildView(this IEnumerable<Take> takes)
+        {
+            return new View(takes.Select(l => new TwoFaceCard(l.Card, l.Visibility)));
+        }
+
+        public static List<Take> KeepTheLast(this IEnumerable<Take> takes, int numberOfPlayersInTheGame)
+        {
+            return takes.Reverse().Take(numberOfPlayersInTheGame).ToList();
         }
     }
 }

@@ -3,11 +3,11 @@ using System.Linq;
 
 namespace La_Bataille
 {
-    public class Battle
+    public class Game
     {
         private readonly IDistributeCards _distributor;
 
-        public Battle(IDistributeCards distributor)
+        public Game(IDistributeCards distributor)
         {
             _distributor = distributor;
             Players = _distributor.Distribute();
@@ -17,18 +17,18 @@ namespace La_Bataille
 
         public List<View> TableViewsHistory { get; } = new List<View>();
 
-        public bool IsGameOver(out Player vainqueur)
+        public bool IsGameOver(out Player winner)
         {
             foreach (var player in Players)
             {
                 if (player.CardStack.Size == _distributor.TotalNumberOfCards)
                 {
-                    vainqueur = player;
+                    winner = player;
                     return true;
                 }
             }
 
-            vainqueur = null;
+            winner = null;
             return false;
         }
 
@@ -41,33 +41,34 @@ namespace La_Bataille
 
                 var numberOfPlaysStillInTheGame = takes.Count;
 
-                TableViewsHistory.Add(BuildView(takes));
+                TableViewsHistory.Add(takes.BuildView());
 
-                Take highestTake = takes.Max();
+                Player playerOfHighestTake = takes.Max().Player;
 
-                while (NeedBattle(TakeLast(takes, numberOfPlaysStillInTheGame), out var competitors))
+                while (NeedBattle(takes.KeepTheLast(numberOfPlaysStillInTheGame), out var competitors))
                 {
                     var faceDownTakes = competitors.TakeOneCardEach(Visibility.FaceDown);
-                    TableViewsHistory.Add(BuildView(faceDownTakes));
+                    TableViewsHistory.Add(faceDownTakes.BuildView());
 
                     var faceUpTakes = competitors.TakeOneCardEach(Visibility.FaceUp);
-                    TableViewsHistory.Add(BuildView(faceUpTakes));
+                    TableViewsHistory.Add(faceUpTakes.BuildView());
 
-                    highestTake = faceUpTakes.Max();
+                    playerOfHighestTake = faceUpTakes.Max().Player;
 
                     takes.AddRange(faceDownTakes);
                     takes.AddRange(faceUpTakes);
+
+                    if (competitors.OnlyOnePlayerStillHasCards(out var winner))
+                    {
+                        playerOfHighestTake = winner;
+                        break;
+                    }
                 }
 
-                highestTake.Player.Gather(takes.Select(x => x.Card)
+                playerOfHighestTake.Gather(takes.Select(x => x.Card)
                                              .OrderByDescending(x => x) /*Put the smaller one on the bottom of CardStack, 
                                                                           to introduce some determinism for the following levee*/);
             }
-        }
-
-        private List<Take> TakeLast(IEnumerable<Take> levees, int numberOfJoueursInTheGame)
-        {
-            return levees.Reverse().Take(numberOfJoueursInTheGame).ToList();
         }
 
 
@@ -95,9 +96,6 @@ namespace La_Bataille
             return batailleCompetitors.Count > 1;
         }
 
-        private static View BuildView(IEnumerable<Take> levees)
-        {
-            return new View(levees.Select(l => new TwoFaceCard(l.Card, l.Visibility)));
-        }
+      
     }
 }
