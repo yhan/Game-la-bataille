@@ -17,33 +17,12 @@ namespace La_Bataille
 
         public List<View> TableViewsHistory { get; } = new List<View>();
 
-        public IAmTheGameOver End()
-        {
-            if (Players.All(p => p.CardStack.Size == 0))
-            {
-                return Draw.Instance;
-            }
 
-
-            foreach (var player in Players)
-            {
-                if (player.CardStack.Size == _distributor.TotalNumberOfCards)
-                {
-                    var winner = player;
-                    return new HasWinner(winner);
-                }
-            }
-
-            
-            return Draw.Instance;
-        }
-
-
-        public void Start(IShuffle shuffle)
+        public IAmTheGameOver Play(IShuffle shuffle)
         {
             while (Players.All(j => j.CardStack.Size != _distributor.TotalNumberOfCards))
             {
-                var takes = Players.TakeOneCardEach(Visibility.FaceUp);
+                List<Take> takes = Players.TakeOneCardEach(Visibility.FaceUp);
 
                 var numberOfPlaysStillInTheGame = takes.Count;
 
@@ -66,27 +45,29 @@ namespace La_Bataille
 
                     if (competitors.OnlyOneStillHasCards(out var winner))
                     {
-                        playerOfHighestTake = winner;
-                        break;
+                        playerOfHighestTake.Gather(takes.Select(x => x.Card)
+                            .OrderByDescending(x => x) /*Put the smaller one on the bottom of CardStack, 
+                                                                          to introduce some determinism for the following levee*/);
+                        return new HasWinner(winner);
                     }
 
                     if (competitors.NobodyHasCards())
                     {
-                        playerOfHighestTake = null;
-                        break;
+                        return Draw.Instance;
                     }
                 }
-
-                if (playerOfHighestTake == null)
-                {
-                    break;  
-                }
-
 
                 playerOfHighestTake.Gather(takes.Select(x => x.Card)
                                              .OrderByDescending(x => x) /*Put the smaller one on the bottom of CardStack, 
                                                                           to introduce some determinism for the following levee*/);
+
+                if (playerOfHighestTake.CardStack.Size == _distributor.TotalNumberOfCards)
+                {
+                    return new HasWinner(playerOfHighestTake); 
+                }
             }
+
+            return Draw.Instance;
         }
 
 
