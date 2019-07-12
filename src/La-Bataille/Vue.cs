@@ -1,17 +1,8 @@
 using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
 
 namespace La_Bataille
 {
-    public static class VueExtensions
-    {
-        public static IEnumerable<Carte> AsPureCartes(this Vue vue)
-        {
-            return vue.Select(x => x.Carte);
-        }
-    }
-
     public class Vue : IEnumerable<TwoFaceCarte>
     {
         private readonly IEnumerable<TwoFaceCarte> _cartes;
@@ -37,7 +28,7 @@ namespace La_Bataille
         }
     }
 
-    public class TwoFaceCarte
+    public struct TwoFaceCarte
     {
         public Carte Carte { get; }
         public Visibilite Visibilite { get; }

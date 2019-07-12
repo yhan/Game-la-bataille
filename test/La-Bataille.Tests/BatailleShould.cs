@@ -10,16 +10,35 @@ namespace Tests
     [TestFixture]
     public class BatailleShould
     {
-        private readonly Carte t5 = 5.AsTrefles();
-        private readonly Carte t4 = 4.AsTrefles();
-        private readonly Carte p2 = 2.AsPique();
-        private readonly Carte c3 = 3.AsCarreaux();
-        private readonly Carte c2 = 2.AsCarreaux();
-        private readonly Carte p3 = 3.AsPique();
-        private readonly Carte c4 = 4.AsCarreaux();
-        private readonly Carte p13 = 13.AsPique();
-        private readonly Carte p14 = 14.AsPique();
         private readonly Carte t2 = 2.AsTrefles();
+        private readonly Carte p2 = 2.AsPique();
+        private readonly Carte c2 = 2.AsCarreaux();
+
+        private readonly Carte c3 = 3.AsCarreaux();
+        private readonly Carte p3 = 3.AsPique();
+
+        private readonly Carte c4 = 4.AsCarreaux();
+        private readonly Carte t4 = 4.AsTrefles();
+
+        private readonly Carte t5 = 5.AsTrefles();
+        private readonly Carte c5 = 5.AsCoeur();
+        private readonly Carte p5 = 5.AsPique();
+
+        private readonly Carte t6 = 6.AsTrefles();
+
+        private readonly Carte t7 = 7.AsTrefles();
+        
+        private readonly Carte c8 = 8.AsCarreaux();
+        private readonly Carte p8 = 8.AsPique();
+        private readonly Carte t8 = 8.AsTrefles();
+
+        private readonly Carte t9 = 9.AsTrefles();
+        
+        private readonly Carte p11 = 11.AsPique();
+
+        private readonly Carte p13 = 13.AsPique();
+        
+        private readonly Carte p14 = 14.AsPique();
 
         [Test]
         public void Can_play_la_premiere_levee()
@@ -51,7 +70,7 @@ namespace Tests
         [Test]
         public void Can_play_n_levees_to_the_end_of_game()
         {
-            var bataille = BuildGame(2, new List<List<Carte>>
+            var bataille = BuildGame(numberOfJoueurs: 2, distribution: new List<List<Carte>>
             {
                 new List<Carte> {p2, c3, t4},
                 new List<Carte> {p3, c2, t5}
@@ -75,10 +94,65 @@ namespace Tests
             Check.That(gameOver).IsTrue();
             Check.That(vainqueur).IsEqualTo(bataille.Joueurs[1]);
         }
-
-
-
+        
         [Test]
+        public void Can_find_gagnant_with_only_one_bataille()
+        {
+            var bataille = BuildGame(2, new List<List<Carte>>
+            {
+                new List<Carte> {c8, p3, c2, t6},
+                new List<Carte> {t7, c4, p2, t5}
+            });
+
+            bataille.Start(NullShuffle.Instance);
+
+            Check.That(bataille.VuesPlateau).HasSize(4);
+            Check.That(bataille.VuesPlateau[0]).Contains(t6.AsDevoilee(), t5.AsDevoilee());
+            Check.That(bataille.VuesPlateau[1]).Contains(c2.AsDevoilee(), p2.AsDevoilee());
+            Check.That(bataille.VuesPlateau[2]).Contains(p3.AsCachee(), c4.AsCachee());
+            Check.That(bataille.VuesPlateau[3]).Contains(c8.AsDevoilee(), t7.AsDevoilee());
+            
+            bool gameOver = bataille.JeuEnded(out var vainqueur);
+            Check.That(gameOver).IsTrue();
+            Check.That(vainqueur).IsEqualTo(bataille.Joueurs[0]);
+
+            Check.That(bataille.Joueurs[1].Paquet).HasSize(0);
+            Check.That(bataille.Joueurs[0].Paquet).HasSize(8);
+            Check.That(bataille.Joueurs[0].Paquet).Contains(c8, p3, c2, t6, t7, c4, p2, t5);
+        }
+
+
+        
+        [Test]
+        public void Can_find_gagnant_with_two_iterations_batailles()
+        {
+            var bataille = BuildGame(2, new List<List<Carte>>
+            {
+                new List<Carte> {p14, c8, p5, p3, c2, t6},
+                new List<Carte> {p11, t9, c5, c4, p2, t5}
+            });
+
+            bataille.Start(NullShuffle.Instance);
+
+            Check.That(bataille.VuesPlateau).HasSize(6);
+            Check.That(bataille.VuesPlateau[0]).Contains(t6.AsDevoilee(), t5.AsDevoilee());
+            Check.That(bataille.VuesPlateau[1]).Contains(c2.AsDevoilee(), p2.AsDevoilee());
+            Check.That(bataille.VuesPlateau[2]).Contains(p3.AsCachee(), c4.AsCachee());
+            Check.That(bataille.VuesPlateau[3]).Contains(p5.AsDevoilee(), c5.AsDevoilee());
+            Check.That(bataille.VuesPlateau[4]).Contains(c8.AsCachee(), t9.AsCachee());
+            Check.That(bataille.VuesPlateau[5]).Contains(p14.AsDevoilee(), p11.AsDevoilee());
+            
+            bool gameOver = bataille.JeuEnded(out var vainqueur);
+            Check.That(gameOver).IsTrue();
+            Check.That(vainqueur).IsEqualTo(bataille.Joueurs[0]);
+
+            Check.That(bataille.Joueurs[1].Paquet).HasSize(0);
+            Check.That(bataille.Joueurs[0].Paquet).HasSize(12);
+            Check.That(bataille.Joueurs[0].Paquet).Contains(p14, c8, p5, p3, c2, t6, p11, t9, c5, c4, p2, t5);
+        }
+        
+        [Test]
+        [Ignore("")]
         public void Can_find_gagnant_When_bataille_happened()
         {
             var bataille = BuildGame(numberOfJoueurs: 3, distribution: new List<List<Carte>>
@@ -109,7 +183,7 @@ namespace Tests
 
             bool gameOver = bataille.JeuEnded(out var vainqueur);
             Check.That(gameOver).IsTrue();
-            Check.That(vainqueur).IsEqualTo(bataille.Joueurs[1]);
+            Check.That(vainqueur).IsEqualTo(bataille.Joueurs[2]);
         }
 
 
@@ -123,7 +197,7 @@ namespace Tests
         /// <returns></returns>
         private static Bataille BuildGame(int numberOfJoueurs, IList<List<Carte>> distribution)
         {
-            var joueurs = Enumerable.Range(0, count: 2).Select(x => new Joueur(x)).ToList();
+            var joueurs = Enumerable.Range(0, count: numberOfJoueurs).Select(x => new Joueur(x)).ToList();
             
             for (int i = 0; i < numberOfJoueurs; i++)
             {

@@ -7,6 +7,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="La-Bataille.Console.v3.ncrunchproject" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\La-Bataille\La-Bataille.csproj" />
   </ItemGroup>
 

@@ -6,7 +6,7 @@ namespace La_Bataille
     {
         public Joueur Joueur { get; }
         public Carte Carte { get; }
-        public Visibilite Visibilite { get; set; }
+        public Visibilite Visibilite { get; }
 
         public Levee(Joueur joueur, Carte carte, Visibilite visibilite)
         {
@@ -21,6 +21,11 @@ namespace La_Bataille
             if (ReferenceEquals(this, other)) return 0;
             if (ReferenceEquals(null, other)) return 1;
             return ((IComparable<Carte>)Carte).CompareTo(other.Carte);
+        }
+
+        public override string ToString()
+        {
+            return $"{Joueur.Id}: {Carte}";
         }
     }
 }

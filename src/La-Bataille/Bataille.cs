@@ -5,12 +5,12 @@ namespace La_Bataille
 {
     public class Bataille
     {
-        private readonly IDistributeCartes _distributeCartes;
+        private readonly IDistributeCartes _distributor;
 
-        public Bataille(IDistributeCartes distributeCartes)
+        public Bataille(IDistributeCartes distributor)
         {
-            _distributeCartes = distributeCartes;
-            Joueurs = _distributeCartes.DistributeCartes();
+            _distributor = distributor;
+            Joueurs = _distributor.DistributeCartes();
         }
 
         public List<Joueur> Joueurs { get; }
@@ -21,7 +21,7 @@ namespace La_Bataille
         {
             foreach (var joueur in Joueurs)
             {
-                if (joueur.Paquet.Size == _distributeCartes.TotalNumberOfCartes)
+                if (joueur.Paquet.Size == _distributor.TotalNumberOfCartes)
                 {
                     vainqueur = joueur;
                     return true;
@@ -35,25 +35,45 @@ namespace La_Bataille
 
         public void Start(IShuffle shuffle)
         {
-            while (Joueurs.All(j => j.Paquet.Size != 0))
+            while (Joueurs.All(j => j.Paquet.Size != _distributor.TotalNumberOfCartes))
             {
-                var levees = Joueurs.Select(j => j.Lever(Visibilite.Devoilee)).ToArray();
-                VuesPlateau.Add(new Vue(levees.Select( l => new TwoFaceCarte(l.Carte, l.Visibilite))));
+                var levees = Joueurs.LeverOneCarte(Visibilite.Devoilee);
 
-                var maxLevee = levees.Max();
+                VuesPlateau.Add(BuildVue(levees));
 
-                maxLevee.Joueur.Gagner(levees.Select(x => x.Carte).OrderByDescending(x => x)/*Put the smaller one on the bottom of Paquet, to introduce some determinism for the following levee*/);     
+                Levee maxLevee = levees.Max();
+
+                while (NeedBataille(levees, out var competitors))
+                {
+                    var leveesCachees = competitors.LeverOneCarte(Visibilite.Cachee);
+                    VuesPlateau.Add(BuildVue(leveesCachees));
+
+                    var leveesDevoilee = competitors.LeverOneCarte(Visibilite.Devoilee);
+                    VuesPlateau.Add(BuildVue(leveesDevoilee));
+
+                    maxLevee = leveesDevoilee.Max();
+
+                    levees.AddRange(leveesCachees);
+                    levees.AddRange(leveesDevoilee);
+                }
+
+                maxLevee.Joueur.Gagner(levees.Select(x => x.Carte)
+                                             .OrderByDescending(x => x) /*Put the smaller one on the bottom of Paquet, 
+                                                                          to introduce some determinism for the following levee*/);
             }
         }
-    }
 
+        private static bool NeedBataille(IReadOnlyCollection<Levee> levees, out List<Joueur> batailleCompetitors)
+        {
+            var maxLevee =  levees.Max();
+            batailleCompetitors =  levees.Where(x => x.Carte == maxLevee.Carte).Select(l => l.Joueur).ToList();
 
-    public interface IShuffle
-    {
-    }
+            return batailleCompetitors.Count > 1;
+        }
 
-    public class NullShuffle : IShuffle
-    {
-        public static IShuffle Instance = new NullShuffle();
+        private static Vue BuildVue(IEnumerable<Levee> levees)
+        {
+            return new Vue(levees.Select(l => new TwoFaceCarte(l.Carte, l.Visibilite)));
+        }
     }
 }

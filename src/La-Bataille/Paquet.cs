@@ -13,8 +13,13 @@ namespace La_Bataille
             _inner = cartes.ToList();
         }
 
-        public Carte Tirer()
+        public IAmCarte Tirer()
         {
+            if (_inner.Count == 0)
+            {
+                return NullCarte.Instance;
+            }
+
             var last = _inner.Count - 1;
             var popped = _inner[last];
             _inner.RemoveAt(last);
