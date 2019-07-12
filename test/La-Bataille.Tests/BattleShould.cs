@@ -48,9 +48,9 @@ namespace Tests
 
 
         [Test]
-        public void Can_play_la_premiere_levee()
+        public void Can_play_the_very_first_take()
         {
-            var game = BuildGame(2, new List<List<Card>>
+            var game = BuildGame(new List<List<Card>>
             {
                 new List<Card> {c10},
                 new List<Card> {s11}
@@ -72,9 +72,9 @@ namespace Tests
         }
 
         [Test]
-        public void Can_play_n_levees_to_the_end_of_game()
+        public void Can_play_n_takes_to_the_end_of_game()
         {
-            var game = BuildGame(numberOfJoueurs: 2, distribution: new List<List<Card>>
+            var game = BuildGame(distribution: new List<List<Card>>
             {
                 new List<Card> {s2, d3, c4},
                 new List<Card> {s3, d2, c5}
@@ -98,9 +98,9 @@ namespace Tests
         }
 
         [Test]
-        public void Can_find_gagnant_with_only_one_battle()
+        public void Can_find_a_winner_with_only_one_battle()
         {
-            var game = BuildGame(2, new List<List<Card>>
+            var game = BuildGame(new List<List<Card>>
             {
                 new List<Card> {d8, s3, d2, c6},
                 new List<Card> {c7, d4, s2, c5}
@@ -124,9 +124,9 @@ namespace Tests
 
 
         [Test]
-        public void Can_find_gagnant_with_two_iterations_battles()
+        public void Can_find_a_winner_with_two_iterations_battles()
         {
-            var game = BuildGame(2, new List<List<Card>>
+            var game = BuildGame(new List<List<Card>>
             {
                 new List<Card> {s14, d8, s5, s3, d2, c6},
                 new List<Card> {s11, c9, h5, d4, s2, c5}
@@ -151,9 +151,9 @@ namespace Tests
         }
 
         [Test]
-        public void Can_find_winner_When_battle_happened_recursively_and_in_the_end_all_players_but_the_winner_have_no_more_cards()
+        public void Can_find_winner_When_battle_happened_recursively_and_in_the_end_all_players_have_no_more_cards_except_for_the_winner()
         {
-            var game = BuildGame(numberOfJoueurs: 3, distribution: new List<List<Card>>
+            var game = BuildGame(distribution: new List<List<Card>>
             {
                 new List<Card> {s2, d3, d4},
                 new List<Card> {s3, d2, c5},
@@ -186,7 +186,7 @@ namespace Tests
         [Test]
         public void End_the_game_by_a_Draw_When_the_last_survivors_have_no_more_cards_at_the_same_time()
         {
-            var game = BuildGame(4, distribution: new List<List<Card>>
+            var game = BuildGame(distribution: new List<List<Card>>
             {
                 new List<Card>{d14, d8, d7},
                 new List<Card>{s14, s8, s7},
@@ -206,9 +206,9 @@ namespace Tests
 
 
         [Test]
-        public void End_the_game_by_a_Draw_When_the_last_survivors_have_no_more_enough_cards_to_do_battle()
+        public void End_the_game_by_a_Draw_When_the_last_survivors_have_no_more_enough_cards_to_battle()
         {
-            var game = BuildGame(4, distribution: new List<List<Card>>
+            var game = BuildGame(distribution: new List<List<Card>>
             {
                 new List<Card>{d11, d14, d8, d7},
                 new List<Card>{s11, s14, s8, s7},
@@ -230,25 +230,26 @@ namespace Tests
         /// <summary>
         /// Build a battle's initial state.
         /// </summary>
-        /// <param name="numberOfJoueurs"></param>
         /// <param name="distribution">Represent a stubbed distribution of cartes.
-        /// By Player, we have a list of CardStack. Hence a list of cartes list
+        ///     By Player, we have a list of CardStack. Hence a list of cartes list
         /// </param>
         /// <returns></returns>
-        private static Game BuildGame(int numberOfJoueurs, IList<List<Card>> distribution)
+        private static Game BuildGame(IList<List<Card>> distribution)
         {
-            var joueurs = Enumerable.Range(0, count: numberOfJoueurs).Select(x => new Player(x)).ToList();
+            var numberOfJoueurs = distribution.Count;
+
+            var players = Enumerable.Range(0, count: numberOfJoueurs).Select(x => new Player(x)).ToList();
 
             for (int i = 0; i < numberOfJoueurs; i++)
             {
-                joueurs[i].CardStack = new CardStack(distribution[i]);
+                players[i].CardStack = new CardStack(distribution[i]);
             }
 
-            IDistributeCards distributeCards = Substitute.For<IDistributeCards>();
-            distributeCards.TotalNumberOfCards.Returns(distribution.SelectMany(x => x).Count());
-            distributeCards.Distribute().Returns(joueurs);
+            IDistributeCards cardsDistributor = Substitute.For<IDistributeCards>();
+            cardsDistributor.TotalNumberOfCards.Returns(distribution.SelectMany(x => x).Count());
+            cardsDistributor.Distribute().Returns(players);
 
-            var game = new Game(distributeCards);
+            var game = new Game(cardsDistributor);
 
             return game;
         }

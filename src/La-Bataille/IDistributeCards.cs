@@ -5,7 +5,7 @@ namespace La_Bataille
     /// <summary>
     ///  Routine which randomizes a collection of cartes
     /// 
-    /// Implementation should have numberOfJoueurs as input
+    /// Implementation should have numberOfJoueurs (and maybe all the cards to play with) as input
     /// </summary>
     public interface IDistributeCards
     {

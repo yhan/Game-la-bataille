@@ -17,7 +17,6 @@ namespace La_Bataille
 
         public List<View> TableViewsHistory { get; } = new List<View>();
 
-
         public IAmTheGameOver Play(IShuffle shuffle)
         {
             while (Players.All(j => j.CardStack.Size != _distributor.TotalNumberOfCards))
@@ -71,7 +70,6 @@ namespace La_Bataille
             return Draw.Instance;
         }
 
-
         private static bool NeedBattle(IReadOnlyList<Take> levees, out List<Player> batailleCompetitors)
         {
             Take max = levees[0];
@@ -95,26 +93,5 @@ namespace La_Bataille
 
             return batailleCompetitors.Count > 1;
         }
-
-      
-    }
-
-    public class HasWinner : IAmTheGameOver
-    {
-        public Player Winner { get; }
-
-        public HasWinner(Player winner)
-        {
-            Winner = winner;
-        }
-    }
-
-    public class Draw : IAmTheGameOver
-    {
-        public static IAmTheGameOver Instance = new Draw();
-    }
-
-    public interface IAmTheGameOver
-    {
     }
 }
