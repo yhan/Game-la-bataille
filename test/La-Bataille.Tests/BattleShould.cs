@@ -80,14 +80,18 @@ namespace Tests
                 new List<Card> {s3, d2, c5}
             });
 
+            var players = game.Players;
+            var player1 = players[0];
+            var player2 = players[1];
+
             var gameOver = game.Play(NullShuffle.Instance);
 
             Check.That(game.TableViewsHistory).HasSize(5);
-            Check.That(game.TableViewsHistory[0]).IsEquivalentTo(c5.FaceUp(), c4.FaceUp());
-            Check.That(game.TableViewsHistory[1]).IsEquivalentTo(d2.FaceUp(), d3.FaceUp());
-            Check.That(game.TableViewsHistory[2]).IsEquivalentTo(s3.FaceUp(), s2.FaceUp());
-            Check.That(game.TableViewsHistory[3]).IsEquivalentTo(c5.FaceUp(), d3.FaceUp());
-            Check.That(game.TableViewsHistory[4]).IsEquivalentTo(d2.FaceUp(), c4.FaceUp());
+            Check.That(game.TableViewsHistory[0]).IsEquivalentTo(c4.FaceUp(player1), c5.FaceUp(player2));
+            Check.That(game.TableViewsHistory[1]).IsEquivalentTo(d3.FaceUp(player1), d2.FaceUp(player2));
+            Check.That(game.TableViewsHistory[2]).IsEquivalentTo(s2.FaceUp(player1), s3.FaceUp(player2));
+            Check.That(game.TableViewsHistory[3]).IsEquivalentTo(d3.FaceUp(player1), c5.FaceUp(player2));
+            Check.That(game.TableViewsHistory[4]).IsEquivalentTo(d2.FaceUp(player1), c4.FaceUp(player2));
 
             Check.That(gameOver).IsInstanceOf<HasWinner>();
             Check.That(((HasWinner)gameOver).Winner).IsEqualTo(game.Players[1]);
@@ -106,13 +110,17 @@ namespace Tests
                 new List<Card> {c7, d4, s2, c5}
             });
 
+            var players = game.Players;
+            var player1 = players[0];
+            var player2 = players[1];
+
             var gameOver = game.Play(NullShuffle.Instance);
 
             Check.That(game.TableViewsHistory).HasSize(4);
-            Check.That(game.TableViewsHistory[0]).IsEquivalentTo(c6.FaceUp(), c5.FaceUp());
-            Check.That(game.TableViewsHistory[1]).IsEquivalentTo(d2.FaceUp(), s2.FaceUp());
-            Check.That(game.TableViewsHistory[2]).IsEquivalentTo(s3.FaceDown(), d4.FaceDown());
-            Check.That(game.TableViewsHistory[3]).IsEquivalentTo(d8.FaceUp(), c7.FaceUp());
+            Check.That(game.TableViewsHistory[0]).IsEquivalentTo(c6.FaceUp(player1), c5.FaceUp(player2));
+            Check.That(game.TableViewsHistory[1]).IsEquivalentTo(d2.FaceUp(player1), s2.FaceUp(player2));
+            Check.That(game.TableViewsHistory[2]).IsEquivalentTo(s3.FaceDown(player1), d4.FaceDown(player2));
+            Check.That(game.TableViewsHistory[3]).IsEquivalentTo(d8.FaceUp(player1), c7.FaceUp(player2));
 
             Check.That(gameOver).IsInstanceOf<HasWinner>();
             Check.That(((HasWinner)gameOver).Winner).IsEqualTo(game.Players[0]);
@@ -130,16 +138,19 @@ namespace Tests
                 new List<Card> {s14, d8, s5, s3, d2, c6},
                 new List<Card> {s11, c9, h5, d4, s2, c5}
             });
+            var players = game.Players;
+            var player1 = players[0];
+            var player2 = players[1];
 
             var gameOver= game.Play(NullShuffle.Instance);
 
             Check.That(game.TableViewsHistory).HasSize(6);
-            Check.That(game.TableViewsHistory[0]).IsEquivalentTo(c6.FaceUp(), c5.FaceUp());
-            Check.That(game.TableViewsHistory[1]).IsEquivalentTo(d2.FaceUp(), s2.FaceUp());
-            Check.That(game.TableViewsHistory[2]).IsEquivalentTo(s3.FaceDown(), d4.FaceDown());
-            Check.That(game.TableViewsHistory[3]).IsEquivalentTo(s5.FaceUp(), h5.FaceUp());
-            Check.That(game.TableViewsHistory[4]).IsEquivalentTo(d8.FaceDown(), c9.FaceDown());
-            Check.That(game.TableViewsHistory[5]).IsEquivalentTo(s14.FaceUp(), s11.FaceUp());
+            Check.That(game.TableViewsHistory[0]).IsEquivalentTo(c6.FaceUp(player1), c5.FaceUp(player2));
+            Check.That(game.TableViewsHistory[1]).IsEquivalentTo(d2.FaceUp(player1), s2.FaceUp(player2));
+            Check.That(game.TableViewsHistory[2]).IsEquivalentTo(s3.FaceDown(player1), d4.FaceDown(player2));
+            Check.That(game.TableViewsHistory[3]).IsEquivalentTo(s5.FaceUp(player1), h5.FaceUp(player2));
+            Check.That(game.TableViewsHistory[4]).IsEquivalentTo(d8.FaceDown(player1), c9.FaceDown(player2));
+            Check.That(game.TableViewsHistory[5]).IsEquivalentTo(s14.FaceUp(player1), s11.FaceUp(player2));
 
             Check.That(gameOver).IsInstanceOf<HasWinner>();
             Check.That(((HasWinner)gameOver).Winner).IsEqualTo(game.Players[0]);
@@ -159,17 +170,22 @@ namespace Tests
                 new List<Card> {s13, s14, c2}
             });
 
+            var players = game.Players;
+            var player1 = players[0];
+            var player2 = players[1];
+            var player3 = players[2];
+
             var gameOver= game.Play(NullShuffle.Instance);
 
             Check.That(game.TableViewsHistory).HasSize(8);
-            Check.That(game.TableViewsHistory[0]).IsEquivalentTo(d4.FaceUp(), c5.FaceUp(), c2.FaceUp());
-            Check.That(game.TableViewsHistory[1]).IsEquivalentTo(d2.FaceUp(), d3.FaceUp(), s14.FaceUp());
-            Check.That(game.TableViewsHistory[2]).IsEquivalentTo(s3.FaceUp(), s2.FaceUp(), s13.FaceUp());
-            Check.That(game.TableViewsHistory[3]).IsEquivalentTo(c5.FaceUp(), s14.FaceUp());
-            Check.That(game.TableViewsHistory[4]).IsEquivalentTo(d4.FaceUp(), d3.FaceUp());
-            Check.That(game.TableViewsHistory[5]).IsEquivalentTo(c2.FaceUp(), d2.FaceUp());
-            Check.That(game.TableViewsHistory[6]).IsEquivalentTo(d4.FaceDown(), s13.FaceDown());
-            Check.That(game.TableViewsHistory[7]).IsEquivalentTo(s3.FaceUp(), d3.FaceUp());
+            Check.That(game.TableViewsHistory[0]).IsEquivalentTo(d4.FaceUp(player1), c5.FaceUp(player2), c2.FaceUp(player3));
+            Check.That(game.TableViewsHistory[1]).IsEquivalentTo(d3.FaceUp(player1), d2.FaceUp(player2), s14.FaceUp(player3));
+            Check.That(game.TableViewsHistory[2]).IsEquivalentTo(s2.FaceUp(player1), s3.FaceUp(player2),  s13.FaceUp(player3));
+            Check.That(game.TableViewsHistory[3]).IsEquivalentTo(c5.FaceUp(player2), s14.FaceUp(player3));
+            Check.That(game.TableViewsHistory[4]).IsEquivalentTo(d4.FaceUp(player2), d3.FaceUp(player3));
+            Check.That(game.TableViewsHistory[5]).IsEquivalentTo(c2.FaceUp(player2), d2.FaceUp(player3));
+            Check.That(game.TableViewsHistory[6]).IsEquivalentTo(d4.FaceDown(player2), s13.FaceDown(player3));
+            Check.That(game.TableViewsHistory[7]).IsEquivalentTo(s3.FaceUp(player2), d3.FaceUp(player3));
 
             Check.That(gameOver).IsInstanceOf<HasWinner>();
             Check.That(((HasWinner)gameOver).Winner).IsEqualTo(game.Players[2]);
@@ -193,11 +209,18 @@ namespace Tests
                 new List<Card>{h14, h8, h7}
             });
 
+            var players = game.Players;
+            var player1 = players[0];
+            var player2 = players[1];
+            var player3 = players[2];
+            var player4 = players[3];
+
+
             var gameOver = game.Play(NullShuffle.Instance);
             Check.That(game.TableViewsHistory).HasSize(3);
-            Check.That(game.TableViewsHistory[0]).IsEquivalentTo(d7.FaceUp(), s7.FaceUp(), c7.FaceUp(), h7.FaceUp());
-            Check.That(game.TableViewsHistory[1]).IsEquivalentTo(d8.FaceDown(), s8.FaceDown(), c8.FaceDown(), h8.FaceDown());
-            Check.That(game.TableViewsHistory[2]).IsEquivalentTo(d14.FaceUp(), s14.FaceUp(), c14.FaceUp(), h14.FaceUp());
+            Check.That(game.TableViewsHistory[0]).IsEquivalentTo(d7.FaceUp(player1), s7.FaceUp(player2), c7.FaceUp(player3), h7.FaceUp(player4));
+            Check.That(game.TableViewsHistory[1]).IsEquivalentTo(d8.FaceDown(player1), s8.FaceDown(player2), c8.FaceDown(player3), h8.FaceDown(player4));
+            Check.That(game.TableViewsHistory[2]).IsEquivalentTo(d14.FaceUp(player1), s14.FaceUp(player2), c14.FaceUp(player3), h14.FaceUp(player4));
 
 
             Check.That(gameOver).IsInstanceOf<Draw>();
@@ -215,15 +238,37 @@ namespace Tests
                 new List<Card>{h11, h14, h8, h7}
             });
 
+            var players = game.Players;
+            var player1 = players[0];
+            var player2 = players[1];
+            var player3 = players[2];
+            var player4 = players[3];
+
+
             var gameOver = game.Play(NullShuffle.Instance);
             Check.That(game.TableViewsHistory).HasSize(4);
-            Check.That(game.TableViewsHistory[0]).IsEquivalentTo(d7.FaceUp(), s7.FaceUp(), c7.FaceUp(), h7.FaceUp());
-            Check.That(game.TableViewsHistory[1]).IsEquivalentTo(d8.FaceDown(), s8.FaceDown(), c8.FaceDown(), h8.FaceDown());
-            Check.That(game.TableViewsHistory[2]).IsEquivalentTo(d14.FaceUp(), s14.FaceUp(), c14.FaceUp(), h14.FaceUp());
-            Check.That(game.TableViewsHistory[3]).IsEquivalentTo(d11.FaceDown(), s11.FaceDown(), c11.FaceDown(), h11.FaceDown());
+            Check.That(game.TableViewsHistory[0]).IsEquivalentTo(d7.FaceUp(player1), s7.FaceUp(player2), c7.FaceUp(player3), h7.FaceUp(player4));
+            Check.That(game.TableViewsHistory[1]).IsEquivalentTo(d8.FaceDown(player1), s8.FaceDown(player2), c8.FaceDown(player3), h8.FaceDown(player4));
+            Check.That(game.TableViewsHistory[2]).IsEquivalentTo(d14.FaceUp(player1), s14.FaceUp(player2), c14.FaceUp(player3), h14.FaceUp(player4));
+            Check.That(game.TableViewsHistory[3]).IsEquivalentTo(d11.FaceDown(player1), s11.FaceDown(player2), c11.FaceDown(player3), h11.FaceDown(player4));
 
 
             Check.That(gameOver).IsInstanceOf<Draw>();
+        }
+
+
+        [Test]
+        public void Should_continue_When_a_player_has_no_more_card_after_a_battle_but_not_all_players()
+        {
+            var game = BuildGame(new List<List<Card>>
+            {
+                new List<Card> {2.AsHeart(), 5.AsHeart(), 7.AsHeart(), 3.AsSpade()},
+                new List<Card> {3.AsHeart(), 10.AsClub(), 7.AsSpade(), 4.AsHeart()},
+                new List<Card> {14.AsDiamond(), 11.AsDiamond(), 2.AsSpade(), 5.AsClub()}
+            });
+            var gameOver = game.Play(NullShuffle.Instance);
+
+            Check.That(((HasWinner) gameOver).Winner).IsEqualTo(game.Players[2]);
         }
 
         /// <summary>

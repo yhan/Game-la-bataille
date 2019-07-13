@@ -32,16 +32,19 @@ namespace La_Bataille
     {
         public Card Card { get; }
         public Visibility Visibility { get; }
+        public int PlayerId { get; }
 
-        public TwoFaceCard(/*Player takePlayer,*/ Card card, Visibility visibility)
+
+        public TwoFaceCard(Player player, Card card, Visibility visibility)
         {
             Card = card;
             Visibility = visibility;
+            PlayerId = player.Id;
         }
 
         public override string ToString()
         {
-            return $"{Card}({Visibility})";
+            return $"{PlayerId}: {Card}({Visibility})";
         }
     }
 

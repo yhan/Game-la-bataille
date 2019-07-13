@@ -44,9 +44,7 @@
                     Console.WriteLine($"GAME OVER. THE WINNER IS {hasWinner.Winner}");
                     break;
             }
-
             
-
 
             Console.ReadLine();
         }

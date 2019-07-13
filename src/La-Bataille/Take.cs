@@ -40,7 +40,7 @@ namespace La_Bataille
     {
         public static View BuildView(this IEnumerable<Take> takes)
         {
-            return new View(takes.Select(take => new TwoFaceCard(/*take.Player,*/ take.Card, take.Visibility)).ToArray());
+            return new View(takes.Select(take => new TwoFaceCard(take.Player, take.Card, take.Visibility)).ToArray());
         }
 
         public static List<Take> KeepTheLast(this IEnumerable<Take> takes, int numberOfPlayersInTheGame)

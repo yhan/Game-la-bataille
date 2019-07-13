@@ -46,14 +46,14 @@ namespace La_Bataille
 
                     playerOfHighestTake = faceUpTakes.Max().Player;
                     
-                    if (competitors.OnlyOneStillHasCards(out var winner))
+                    if (this.Players.OnlyOneStillHasCards(out var winner))
                     {
                         playerOfHighestTake.Gather(takes);
 
                         return new HasWinner(winner);
                     }
 
-                    if (competitors.NobodyHasCards())
+                    if (this.Players.NobodyHasCards())
                     {
                         return Draw.Instance;
                     }
