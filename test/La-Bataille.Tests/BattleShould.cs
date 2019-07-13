@@ -122,7 +122,6 @@ namespace Tests
             Check.That(game.Players[0].CardStack).IsEquivalentTo(d8, s3, d2, c6, c7, d4, s2, c5);
         }
 
-
         [Test]
         public void Can_find_a_winner_with_two_iterations_battles()
         {

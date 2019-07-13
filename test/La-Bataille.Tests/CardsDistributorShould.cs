@@ -82,7 +82,18 @@ namespace Tests
                 Console.WriteLine(player);
                 Console.WriteLine("#########################################################");
             }
+        }
 
+
+        [Test]
+        
+        public void Have_at_least_3_cards_each_for_all_players([Range(18, 52/*Here should be int.Max, but this hangs my computer*/)]int numberOfPlayers)
+        {
+            Check.ThatCode(() =>
+            {
+                var distributor = new CardsDistributor(new CardsProvider(), numberOfPlayers);
+            }).Throws<ArgumentException>()
+                .WithMessage("Each player should have at least 3 cards. Number of players can not exceed 17. ");
         }
     }
 }

@@ -33,7 +33,7 @@ namespace La_Bataille
         public Card Card { get; }
         public Visibility Visibility { get; }
 
-        public TwoFaceCard(Card card, Visibility visibility)
+        public TwoFaceCard(/*Player takePlayer,*/ Card card, Visibility visibility)
         {
             Card = card;
             Visibility = visibility;

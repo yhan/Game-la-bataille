@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -22,8 +23,13 @@ namespace La_Bataille
         private readonly Player[] _players;
         private readonly int _stackSize;
 
-        public CardsDistributor(IProvideCards cardsProvider, int numberOfPlayers)
+        public CardsDistributor(CardsProvider cardsProvider, int numberOfPlayers)
         {
+            if (numberOfPlayers > 17)
+            {
+                throw new ArgumentException("Each player should have at least 3 cards. Number of players can not exceed 17. ");
+            }
+
             _numberOfPlayers = numberOfPlayers;
             _cards = cardsProvider.Provide();
             _players = Enumerable.Range(0, numberOfPlayers).Select(id => new Player(id)).ToArray();
