@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace La_Bataille
 {
@@ -14,6 +16,8 @@ namespace La_Bataille
         /// </summary>
         public Figure Figure { get; }
 
+        public static IEnumerable<int> ValidValuesRange = Enumerable.Range(start: 2, count: 13);
+
         public Card(int value, Figure figure)
         {
             if (value < 2 || value > 14)
@@ -24,6 +28,8 @@ namespace La_Bataille
             Value = value;
             Figure = figure;
         }
+
+        
 
         public override string ToString()
         {

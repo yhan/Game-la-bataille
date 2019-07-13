@@ -246,7 +246,7 @@ namespace Tests
             }
 
             IDistributeCards cardsDistributor = Substitute.For<IDistributeCards>();
-            cardsDistributor.TotalNumberOfCards.Returns(distribution.SelectMany(x => x).Count());
+            cardsDistributor.DistributedCardsSize.Returns(distribution.SelectMany(x => x).Count());
             cardsDistributor.Distribute().Returns(players);
 
             var game = new Game(cardsDistributor);

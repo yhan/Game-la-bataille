@@ -19,7 +19,7 @@ namespace La_Bataille
 
         public IAmTheGameOver Play(IShuffle shuffle)
         {
-            while (Players.All(j => j.CardStack.Size != _distributor.TotalNumberOfCards))
+            while (Players.All(j => j.CardStack.Size != _distributor.DistributedCardsSize))
             {
                 List<Take> takes = Players.TakeOneCardEach(Visibility.FaceUp);
 
@@ -61,7 +61,7 @@ namespace La_Bataille
 
                 playerOfHighestTake.Gather(takes);
 
-                if (playerOfHighestTake.CardStack.Size == _distributor.TotalNumberOfCards)
+                if (playerOfHighestTake.CardStack.Size == _distributor.DistributedCardsSize)
                 {
                     return new HasWinner(playerOfHighestTake); 
                 }

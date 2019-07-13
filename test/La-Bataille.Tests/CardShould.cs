@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using La_Bataille;
 using NFluent;
@@ -32,6 +33,14 @@ namespace Tests
             var pique11 = 11.AsSpade();
 
             Check.That(pique11 > trefles10).IsTrue();
+        }
+
+
+        [Test]
+        public void Have_correct_values_range()
+        {
+            IEnumerable<int> expectedValue = Enumerable.Range(2, 13);
+            Check.That(Card.ValidValuesRange).IsEqualTo(expectedValue);
         }
     }
 }
