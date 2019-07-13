@@ -17,9 +17,28 @@ namespace La_Bataille
 
         public List<View> TableViewsHistory { get; } = new List<View>();
 
+        public List<Card> DroppedCards { get; set; } = new List<Card>();
+
+
+        private bool FoundWinner(ref Player player)
+        {
+            foreach (var player1 in Players)
+            {
+                if (player1.CardStack.Size + DroppedCards.Count == _distributor.DistributedCardsSize)
+                {
+                    player = player1;
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
         public IAmTheGameOver Play(IShuffle shuffle)
         {
-            while (Players.All(j => j.CardStack.Size != _distributor.DistributedCardsSize))
+            Player winner = null;
+            
+            while (!FoundWinner(ref winner))
             {
                 List<Take> takes = Players.TakeOneCardEach(Visibility.FaceUp);
 
@@ -38,36 +57,39 @@ namespace La_Bataille
                     var faceUpTakes = competitors.TakeOneCardEach(Visibility.FaceUp);
                     if (!faceUpTakes.Any())
                     {
-                        return Draw.Instance;
+                        playerOfHighestTake = null;
+                        DroppedCards.AddRange(takes.Select(x => x.Card));
+                        if (this.Players.NobodyHasCards())
+                        {
+                            return Draw.Instance;
+                        }
+
+                        break;
                     }
                     
                     TableViewsHistory.Add(faceUpTakes.BuildView());
                     takes.AddRange(faceUpTakes);
 
                     playerOfHighestTake = faceUpTakes.Max().Player;
-                    
-                    if (this.Players.OnlyOneStillHasCards(out var winner))
+
+                    if (this.Players.OnlyOneStillHasCards(out var iAmTheOnlySurvivor))
                     {
                         playerOfHighestTake.Gather(takes);
 
-                        return new HasWinner(winner);
+                        return new HasWinner(iAmTheOnlySurvivor);
                     }
 
                     if (this.Players.NobodyHasCards())
                     {
+                        DroppedCards.AddRange(takes.Select(x => x.Card));
                         return Draw.Instance;
                     }
                 }
 
-                playerOfHighestTake.Gather(takes);
-
-                if (playerOfHighestTake.CardStack.Size == _distributor.DistributedCardsSize)
-                {
-                    return new HasWinner(playerOfHighestTake); 
-                }
+                playerOfHighestTake?.Gather(takes);
             }
 
-            return Draw.Instance;
+            return new HasWinner(winner);
         }
 
         private static bool NeedBattle(IReadOnlyList<Take> levees, out List<Player> batailleCompetitors)

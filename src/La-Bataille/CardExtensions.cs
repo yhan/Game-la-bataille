@@ -42,13 +42,13 @@ namespace La_Bataille
             return new Card(value, Figure.Spade);
         }
 
-        public static TwoFaceCard FaceUp(this Card card, Player player = null)
+        public static TwoFaceCard FaceUp(this Card card, Player player)
         {
             return new TwoFaceCard(player, card, Visibility.FaceUp);
         }
 
         
-        public static TwoFaceCard FaceDown(this Card card, Player player = null)
+        public static TwoFaceCard FaceDown(this Card card, Player player)
         {
             return new TwoFaceCard(player, card, Visibility.FaceDown);
         }

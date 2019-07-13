@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -40,12 +41,44 @@ namespace Tests
         private readonly Card c14 = 14.AsClub();
 
 
+        private readonly Card h2 = 2.AsHeart();
         private readonly Card h5 = 5.AsHeart();
         private readonly Card h7 = 7.AsHeart();
         private readonly Card h8 = 8.AsHeart();
+        private readonly Card h9 = 9.AsHeart();
         private readonly Card h11 = 11.AsHeart();
         private readonly Card h14 = 14.AsHeart();
+        
+        [Test]
+        public void Drop_cards_when_battle_players_can_no_more_put_FaceUp_cards_on_the_table()
+        {
+            var game = BuildGame(new List<List<Card>>
+            {
+                new List<Card>{h8, s14, d7},
+                new List<Card>{h9, h14, c10},
+                new List<Card>{d2, d3, d11}
+            });
 
+            var players = game.Players;
+            var player1 = players[0];
+            var player2 = players[1];
+            var player3 = players[2];
+
+            var gameOver = game.Play(NullShuffle.Instance);
+            Check.That(game.TableViewsHistory).HasSize(3);
+
+            Check.That(gameOver).IsInstanceOf<HasWinner>();
+            var winner = ((HasWinner) gameOver).Winner;
+            Check.That(winner).IsEqualTo(player3);
+            Check.That(winner.CardStack).IsEquivalentTo(d7, c10, d11, d2);
+
+            Check.That(game.TableViewsHistory[0]).IsEquivalentTo(d7.FaceUp(player1), c10.FaceUp(player2), d11.FaceUp(player3));
+            Check.That(game.TableViewsHistory[1]).IsEquivalentTo(s14.FaceUp(player1), h14.FaceUp(player2), d3.FaceUp(player3));
+            Check.That(game.TableViewsHistory[2]).IsEquivalentTo(h8.FaceDown(player1), h9.FaceDown(player2));
+
+            Check.That(game.DroppedCards).HasSize(5);
+            Check.That(game.DroppedCards).IsEquivalentTo(h8, h9, s14, h14, d3);
+        }
 
         [Test]
         public void Can_play_the_very_first_take()
@@ -142,7 +175,7 @@ namespace Tests
             var player1 = players[0];
             var player2 = players[1];
 
-            var gameOver= game.Play(NullShuffle.Instance);
+            var gameOver = game.Play(NullShuffle.Instance);
 
             Check.That(game.TableViewsHistory).HasSize(6);
             Check.That(game.TableViewsHistory[0]).IsEquivalentTo(c6.FaceUp(player1), c5.FaceUp(player2));
@@ -175,12 +208,12 @@ namespace Tests
             var player2 = players[1];
             var player3 = players[2];
 
-            var gameOver= game.Play(NullShuffle.Instance);
+            var gameOver = game.Play(NullShuffle.Instance);
 
             Check.That(game.TableViewsHistory).HasSize(8);
             Check.That(game.TableViewsHistory[0]).IsEquivalentTo(d4.FaceUp(player1), c5.FaceUp(player2), c2.FaceUp(player3));
             Check.That(game.TableViewsHistory[1]).IsEquivalentTo(d3.FaceUp(player1), d2.FaceUp(player2), s14.FaceUp(player3));
-            Check.That(game.TableViewsHistory[2]).IsEquivalentTo(s2.FaceUp(player1), s3.FaceUp(player2),  s13.FaceUp(player3));
+            Check.That(game.TableViewsHistory[2]).IsEquivalentTo(s2.FaceUp(player1), s3.FaceUp(player2), s13.FaceUp(player3));
             Check.That(game.TableViewsHistory[3]).IsEquivalentTo(c5.FaceUp(player2), s14.FaceUp(player3));
             Check.That(game.TableViewsHistory[4]).IsEquivalentTo(d4.FaceUp(player2), d3.FaceUp(player3));
             Check.That(game.TableViewsHistory[5]).IsEquivalentTo(c2.FaceUp(player2), d2.FaceUp(player3));
@@ -222,7 +255,7 @@ namespace Tests
             Check.That(game.TableViewsHistory[1]).IsEquivalentTo(d8.FaceDown(player1), s8.FaceDown(player2), c8.FaceDown(player3), h8.FaceDown(player4));
             Check.That(game.TableViewsHistory[2]).IsEquivalentTo(d14.FaceUp(player1), s14.FaceUp(player2), c14.FaceUp(player3), h14.FaceUp(player4));
 
-
+            Check.That(game.DroppedCards).HasSize(12);
             Check.That(gameOver).IsInstanceOf<Draw>();
         }
 
@@ -252,7 +285,7 @@ namespace Tests
             Check.That(game.TableViewsHistory[2]).IsEquivalentTo(d14.FaceUp(player1), s14.FaceUp(player2), c14.FaceUp(player3), h14.FaceUp(player4));
             Check.That(game.TableViewsHistory[3]).IsEquivalentTo(d11.FaceDown(player1), s11.FaceDown(player2), c11.FaceDown(player3), h11.FaceDown(player4));
 
-
+            Check.That(game.DroppedCards).HasSize(16);
             Check.That(gameOver).IsInstanceOf<Draw>();
         }
 
@@ -262,14 +295,15 @@ namespace Tests
         {
             var game = BuildGame(new List<List<Card>>
             {
-                new List<Card> {2.AsHeart(), 5.AsHeart(), 7.AsHeart(), 3.AsSpade()},
+                new List<Card> {h2, 5.AsHeart(), 7.AsHeart(), 3.AsSpade()},
                 new List<Card> {3.AsHeart(), 10.AsClub(), 7.AsSpade(), 4.AsHeart()},
                 new List<Card> {14.AsDiamond(), 11.AsDiamond(), 2.AsSpade(), 5.AsClub()}
             });
             var gameOver = game.Play(NullShuffle.Instance);
 
-            Check.That(((HasWinner) gameOver).Winner).IsEqualTo(game.Players[2]);
+            Check.That(((HasWinner)gameOver).Winner).IsEqualTo(game.Players[2]);
         }
+
 
         /// <summary>
         /// Build a battle's initial state.
