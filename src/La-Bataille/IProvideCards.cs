@@ -10,6 +10,8 @@ namespace La_Bataille
 
     public class CardsProvider : IProvideCards
     {
+        public static  CardsProvider Instance = new CardsProvider();
+
         public IEnumerable<Card> Provide()
         {
             return Card.ValidValuesRange

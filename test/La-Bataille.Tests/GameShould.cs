@@ -3,46 +3,11 @@ using System.Collections;
 using System.Collections.Generic;
 using La_Bataille;
 using NFluent;
+using NSubstitute;
 using NUnit.Framework;
 
 namespace Tests
 {
-
-    [TestFixture]
-    public class CompetitionShould : GameShould
-    {
-        [Test]
-        public void Can_play_n_rounds_and_rank_players()
-        {
-            var competition = new Competition(new[]
-            {
-                //#1 - winner player 0
-                GameBuilder.BuildGame(new List<List<Card>>
-                {
-                    new List<Card> {s14, d8, s5, s3, d2, c6},
-                    new List<Card> {s11, c9, h5, d4, s2, c5} 
-                }),
-                GameBuilder.BuildGame(distribution: new List<List<Card>>
-                {
-                    //#3 -winner player 1
-                    new List<Card> {s2, d3, c4},
-                    new List<Card> {s3, d2, c5}
-                }),
-                GameBuilder.BuildGame(new List<List<Card>>
-                {
-                    //#4 -winner player 0
-                    new List<Card> {d8, s3, d2, c6},
-                    new List<Card> {c7, d4, s2, c5}
-                })
-            });
-
-            Ranking ranking = competition.Play();
-            Check.That(ranking).HasSize(3);
-        }
-    }
-
-    
-
     [TestFixture]
     public class GameShould
     {
@@ -85,8 +50,9 @@ namespace Tests
         protected readonly Card h11 = 11.AsHeart();
         protected readonly Card h14 = 14.AsHeart();
 
-            #endregion
-        
+        #endregion
+
+
         [Test]
         public void Drop_cards_when_battle_players_can_no_more_put_FaceUp_cards_on_the_table()
         {
@@ -95,7 +61,7 @@ namespace Tests
                 new List<Card>{h8, s14, d7},
                 new List<Card>{h9, h14, c10},
                 new List<Card>{d2, d3, d11}
-            });
+            }, PlayersBuilder.BuildPlayers(3));
 
             var players = game.Players;
             var player1 = players[0];
@@ -106,7 +72,7 @@ namespace Tests
             Check.That(game.TableViewsHistory).HasSize(3);
 
             Check.That(gameOver).IsInstanceOf<HasWinner>();
-            var winner = ((HasWinner) gameOver).Winner;
+            var winner = ((HasWinner)gameOver).Winner;
             Check.That(winner).IsEqualTo(player3);
             Check.That(winner.CardStack).IsEquivalentTo(d7, c10, d11, d2);
 
@@ -126,7 +92,7 @@ namespace Tests
             { //#2
                 new List<Card> {c10},
                 new List<Card> {s11}
-            });
+            }, PlayersBuilder.BuildPlayers(2));
 
             var gameOver = game.Play(NullShuffle.Instance);
 
@@ -146,12 +112,12 @@ namespace Tests
         [Test]
         public void Can_play_n_takes_to_the_end_of_game()
         {
-            var game = GameBuilder.BuildGame(distribution: new List<List<Card>>
+            var game = GameBuilder.BuildGame(new List<List<Card>>
             {
                 //#3
                 new List<Card> {s2, d3, c4},
                 new List<Card> {s3, d2, c5}
-            });
+            }, PlayersBuilder.BuildPlayers(2));
 
             var players = game.Players;
             var player1 = players[0];
@@ -182,7 +148,7 @@ namespace Tests
                 //#4
                 new List<Card> {d8, s3, d2, c6},
                 new List<Card> {c7, d4, s2, c5}
-            });
+            }, PlayersBuilder.BuildPlayers(2));
 
             var players = game.Players;
             var player1 = players[0];
@@ -212,7 +178,7 @@ namespace Tests
             {
                 new List<Card> {s14, d8, s5, s3, d2, c6},
                 new List<Card> {s11, c9, h5, d4, s2, c5}
-            }); 
+            }, PlayersBuilder.BuildPlayers(2));
             var players = game.Players;
             var player1 = players[0];
             var player2 = players[1];
@@ -238,12 +204,12 @@ namespace Tests
         [Test]
         public void Can_find_winner_When_battle_happened_recursively_and_in_the_end_all_players_have_no_more_cards_except_for_the_winner()
         {
-            var game = GameBuilder.BuildGame(distribution: new List<List<Card>>
+            var game = GameBuilder.BuildGame(new List<List<Card>>
             {
                 new List<Card> {s2, d3, d4},
                 new List<Card> {s3, d2, c5},
                 new List<Card> {s13, s14, c2}
-            });
+            }, PlayersBuilder.BuildPlayers(3));
 
             var players = game.Players;
             var player1 = players[0];
@@ -276,13 +242,13 @@ namespace Tests
         [Test]
         public void End_the_game_by_a_Draw_When_the_last_survivors_have_no_more_cards_at_the_same_time()
         {
-            var game = GameBuilder.BuildGame(distribution: new List<List<Card>>
+            var game = GameBuilder.BuildGame(new List<List<Card>>
             {
                 new List<Card>{d14, d8, d7},
                 new List<Card>{s14, s8, s7},
                 new List<Card>{c14, c8, c7},
                 new List<Card>{h14, h8, h7}
-            });
+            }, PlayersBuilder.BuildPlayers(4));
 
             var players = game.Players;
             var player1 = players[0];
@@ -305,13 +271,13 @@ namespace Tests
         [Test]
         public void End_the_game_by_a_Draw_When_the_last_survivors_have_no_more_enough_cards_to_battle()
         {
-            var game = GameBuilder.BuildGame(distribution: new List<List<Card>>
+            var game = GameBuilder.BuildGame(new List<List<Card>>
             {
                 new List<Card>{d11, d14, d8, d7},
                 new List<Card>{s11, s14, s8, s7},
                 new List<Card>{c11, c14, c8, c7},
                 new List<Card>{h11, h14, h8, h7}
-            });
+            }, PlayersBuilder.BuildPlayers(4));
 
             var players = game.Players;
             var player1 = players[0];
@@ -340,7 +306,7 @@ namespace Tests
                 new List<Card> {h2, 5.AsHeart(), 7.AsHeart(), 3.AsSpade()},
                 new List<Card> {3.AsHeart(), 10.AsClub(), 7.AsSpade(), 4.AsHeart()},
                 new List<Card> {14.AsDiamond(), 11.AsDiamond(), 2.AsSpade(), 5.AsClub()}
-            });
+            }, PlayersBuilder.BuildPlayers(3));
             var gameOver = game.Play(NullShuffle.Instance);
 
             Check.That(((HasWinner)gameOver).Winner).IsEqualTo(game.Players[2]);

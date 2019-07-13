@@ -18,7 +18,9 @@
             Console.WriteLine("Number of players? ");
             var numberOfPlayers = int.Parse( Console.ReadLine());
 
-            var game = new Game(new CardsDistributor(new CardsProvider(), numberOfPlayers));
+            var players = PlayersBuilder.BuildPlayers(numberOfPlayers);
+
+            var game = new Game(new CardsDistributor(new CardsProvider(), players));
             var gameOver = game.Play(NullShuffle.Instance);
 
 

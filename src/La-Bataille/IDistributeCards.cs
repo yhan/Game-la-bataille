@@ -23,19 +23,19 @@ namespace La_Bataille
         private readonly Player[] _players;
         private readonly int _stackSize;
 
-        public CardsDistributor(CardsProvider cardsProvider, int numberOfPlayers)
+        public CardsDistributor(CardsProvider cardsProvider, IEnumerable<Player> players)
         {
-            if (numberOfPlayers > 17)
+            _players = players.ToArray();
+            if (_players.Length > 17)
             {
                 throw new ArgumentException("Each player should have at least 3 cards. Number of players can not exceed 17. ");
             }
 
-            _numberOfPlayers = numberOfPlayers;
+            _numberOfPlayers = _players.Length;
             _cards = cardsProvider.Provide();
-            _players = Enumerable.Range(0, numberOfPlayers).Select(id => new Player(id)).ToArray();
 
             _stackSize = _cards.Count() / _numberOfPlayers;
-            DistributedCardsSize = numberOfPlayers * _stackSize;
+            DistributedCardsSize = _players.Length * _stackSize;
         }
 
         public List<Player> Distribute()

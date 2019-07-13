@@ -16,6 +16,7 @@ namespace La_Bataille
         }
 
         public CardStack CardStack { get; set; }
+        public Score Score { get; } = new Score(0);
 
         public Take Lever(Visibility visibility)
         {
@@ -46,9 +47,6 @@ namespace La_Bataille
                                                                           to introduce some determinism for the following levee*/);
         }
 
-        
-        
-
         protected override IEnumerable<object> GetAllAttributesToBeUsedForEquality()
         {
             return new object[] { Id };
@@ -61,60 +59,136 @@ namespace La_Bataille
 
         public void Scores(int score)
         {
-            throw new System.NotImplementedException();
+            Score.Increment(score);
         }
+    }
+
+
+    public class ProdGameFactory: IMakeGames
+    {
+        private readonly IEnumerable<Player> _players;
+        private readonly int _numberOfGames;
+
+        public ProdGameFactory(IEnumerable<Player> players, int numberOfGames)
+        {
+            _players = players;
+            _numberOfGames = numberOfGames;
+        }
+
+        public IEnumerable<Game> Build()
+        {
+            for (int i = 0; i < _numberOfGames; i++)
+            {
+                 yield return new Game(new CardsDistributor(CardsProvider.Instance, _players));    
+            }
+        }
+
+        public IEnumerable<Player> Players => _players;
+    }
+
+   
+    public interface IMakeGames
+    {
+        IEnumerable<Game> Build();
+
+        IEnumerable<Player> Players { get; }
     }
 
 
     public class Competition
     {
-        private readonly Game[] _games;
+        private readonly IMakeGames _factory;
+        private readonly IEnumerable<Game> _games;
 
-        public Competition(Game[] games)
+        public Competition(IMakeGames factory)
         {
-            _games = games;
+            _factory = factory;
+            _games = factory.Build();
         }
-
-        Dictionary<Player, Score> _rankingTable = new Dictionary<Player, Score>();
-
+        
         public Ranking Play()
         {
-            //foreach (var game in _games)
-            //{
-            //    var gameOver = game.Play(NullShuffle.Instance);
-            //    switch (gameOver)
-            //    {
-            //        case Draw _:
-            //            foreach (var player in game.Players)
-            //            {
-            //                player.Scores(1);
-            //            }
+            foreach (var game in _games)
+            {
+                var gameOver = game.Play(NullShuffle.Instance);
+                switch (gameOver)
+                {
+                    case Draw _:
+                        foreach (var player in game.Players)
+                        {
+                            player.Scores(1);
+                        }
 
-            //        break;
+                        break;
 
-            //        case HasWinner hasWinner:
-            //            var winner = hasWinner.Winner;
-            //            winner.Scores(3);
+                    case HasWinner hasWinner:
+                        var winner = hasWinner.Winner;
+                        winner.Scores(3);
 
-            //        break;
-            //    }
-            //}
-
-            throw new NotImplementedException();
+                        break;
+                }
+            }
+            
+            return new Ranking(_factory.Players);
         }
     }
 
-    public class Score
+    public class Score : IComparable<Score>, IEquatable<Score>
     {
+        private int _value;
+
+        public Score(int value)
+        {
+            _value = value;
+        }
+
+        public void Increment(int points)
+        {
+            _value += points;
+        }
+
+        public static Score OfValue(int value)
+        {
+            return new Score(value);
+        }
+
+        public int CompareTo(Score other)
+        {
+            return _value.CompareTo(other._value);
+        }
+
+
+        public bool Equals(Score other)
+        {
+            return _value == other._value;
+        }
+
+        public override bool Equals(object obj)
+        {
+            if (ReferenceEquals(null, obj)) return false;
+            return obj is Score other && Equals(other);
+        }
+
+        public override int GetHashCode()
+        {
+            return _value;
+        }
     }
 
     public class Ranking : IEnumerable<Rank>
     {
-        private readonly List<Rank> _ranks = new List<Rank>();
+
+        public Ranking(IEnumerable<Player> playersOrderedByScore)
+        {
+            Ranks = playersOrderedByScore.OrderByDescending(p => p.Score).Select((p, i) => new Rank(i + 1, p));
+        }
+
+        public IEnumerable<Rank> Ranks;
+
 
         public IEnumerator<Rank> GetEnumerator()
         {
-            return _ranks.GetEnumerator();
+            return Ranks.GetEnumerator();
         }
 
         IEnumerator IEnumerable.GetEnumerator()
@@ -127,13 +201,11 @@ namespace La_Bataille
     {
         public int Number { get; }
         public Player Player { get; }
-        public int NumberOfWonGames { get; }
 
-        public Rank(int number, Player player, int numberOfWonGames)
+        public Rank(int number, Player player)
         {
             Number = number;
             Player = player;
-            NumberOfWonGames = numberOfWonGames;
         }
     }
 }

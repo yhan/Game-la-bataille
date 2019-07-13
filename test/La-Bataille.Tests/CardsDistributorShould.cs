@@ -16,7 +16,9 @@ namespace Tests
             var numberOfPlayers = 4;
             var expectedCardsStackSize = 13;
 
-            var distributor = new CardsDistributor(new CardsProvider(), numberOfPlayers);
+            
+
+            var distributor = new CardsDistributor(new CardsProvider(), PlayersBuilder.BuildPlayers(numberOfPlayers));
             var players = distributor.Distribute();
 
             for (int id = 0; id < numberOfPlayers; id++)
@@ -36,7 +38,7 @@ namespace Tests
         {
             var numberOfPlayers = 4;
             
-            var distributor = new CardsDistributor(new CardsProvider(), numberOfPlayers);
+            var distributor = new CardsDistributor(new CardsProvider(), PlayersBuilder.BuildPlayers(numberOfPlayers));
             var players = distributor.Distribute();
 
             var allCards = players.Select(p => p.CardStack).SelectMany(c => c).ToArray();
@@ -64,7 +66,7 @@ namespace Tests
             var numberOfPlayers = 3;
             var expectedCardsStackSize = 17;
 
-            var distributor = new CardsDistributor(new CardsProvider(), numberOfPlayers);
+            var distributor = new CardsDistributor(new CardsProvider(), PlayersBuilder.BuildPlayers(numberOfPlayers));
             var players = distributor.Distribute();
 
             for (int id = 0; id < numberOfPlayers; id++)
@@ -91,7 +93,7 @@ namespace Tests
         {
             Check.ThatCode(() =>
             {
-                var distributor = new CardsDistributor(new CardsProvider(), numberOfPlayers);
+                var distributor = new CardsDistributor(new CardsProvider(), PlayersBuilder.BuildPlayers(numberOfPlayers));
             }).Throws<ArgumentException>()
                 .WithMessage("Each player should have at least 3 cards. Number of players can not exceed 17. ");
         }
