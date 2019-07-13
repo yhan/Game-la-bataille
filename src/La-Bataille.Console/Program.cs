@@ -39,9 +39,10 @@
                     break;
                 case HasWinner hasWinner:
                     var winner = hasWinner.Winner;
-                    System.Diagnostics.Debug.Assert(winner.CardStack.Size == 52);
+                    System.Diagnostics.Debug.Assert(winner.CardStack.Size + game.DroppedCards.Count == 52);
 
-                    Console.WriteLine($"GAME OVER. THE WINNER IS {hasWinner.Winner}");
+                    Console.WriteLine($"GAME OVER.");
+                    Console.WriteLine($"THE WINNER IS 'Player {hasWinner.Winner.Id}'");
                     break;
             }
             

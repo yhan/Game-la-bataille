@@ -1,3 +1,5 @@
+using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using Value;
@@ -44,6 +46,9 @@ namespace La_Bataille
                                                                           to introduce some determinism for the following levee*/);
         }
 
+        
+        
+
         protected override IEnumerable<object> GetAllAttributesToBeUsedForEquality()
         {
             return new object[] { Id };
@@ -53,47 +58,82 @@ namespace La_Bataille
         {
             return $"{Id}: {CardStack}";
         }
+
+        public void Scores(int score)
+        {
+            throw new System.NotImplementedException();
+        }
     }
 
-    public static class PlayerExtensions
+
+    public class Competition
     {
-        public static List<Take> TakeOneCardEach(this IEnumerable<Player> players,  Visibility visibility)
-        {
-            var takesWhenPossible = players.Select(j => j.Lever(visibility))
-                .Where(l => l != null)
-                .ToList();
+        private readonly Game[] _games;
 
-            return takesWhenPossible;
+        public Competition(Game[] games)
+        {
+            _games = games;
         }
 
-        public static bool OnlyOneStillHasCards(this IEnumerable<Player> players, out Player winner)
+        Dictionary<Player, Score> _rankingTable = new Dictionary<Player, Score>();
+
+        public Ranking Play()
         {
-            var survivors = players.Where(x => x.CardStack.Size > 0);
-            
-            var survivorsArray = survivors as Player[] ?? survivors.ToArray();
+            //foreach (var game in _games)
+            //{
+            //    var gameOver = game.Play(NullShuffle.Instance);
+            //    switch (gameOver)
+            //    {
+            //        case Draw _:
+            //            foreach (var player in game.Players)
+            //            {
+            //                player.Scores(1);
+            //            }
 
-            if (survivorsArray.Length == 1)
-            {
-                winner = survivorsArray.Single();
-                return true;
-            }
+            //        break;
 
-            if (survivorsArray.Length == 0)
-            {
-                winner = null;
-                return false;
-            }
-            
+            //        case HasWinner hasWinner:
+            //            var winner = hasWinner.Winner;
+            //            winner.Scores(3);
 
-            winner = null;
-            return false;
+            //        break;
+            //    }
+            //}
 
+            throw new NotImplementedException();
+        }
+    }
+
+    public class Score
+    {
+    }
+
+    public class Ranking : IEnumerable<Rank>
+    {
+        private readonly List<Rank> _ranks = new List<Rank>();
+
+        public IEnumerator<Rank> GetEnumerator()
+        {
+            return _ranks.GetEnumerator();
         }
 
-        public static bool NobodyHasCards(this IEnumerable<Player> players)
+        IEnumerator IEnumerable.GetEnumerator()
         {
-            return players.All(p => p.CardStack.Size == 0);
+            return GetEnumerator();
         }
+    }
 
+    public class Rank
+    {
+        public int Number { get; }
+        public Player Player { get; }
+        public int NumberOfWonGames { get; }
+
+        public Rank(int number, Player player, int numberOfWonGames)
+        {
+            Number = number;
+            Player = player;
+            NumberOfWonGames = numberOfWonGames;
+        }
     }
 }

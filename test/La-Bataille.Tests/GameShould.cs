@@ -1,58 +1,96 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
-
 using La_Bataille;
 using NFluent;
-using NSubstitute;
 using NUnit.Framework;
 
 namespace Tests
 {
+
     [TestFixture]
-    public class BattleShould
+    public class CompetitionShould : GameShould
     {
-        private readonly Card d2 = 2.AsDiamond();
-        private readonly Card d3 = 3.AsDiamond();
-        private readonly Card d4 = 4.AsDiamond();
-        private readonly Card d7 = 7.AsDiamond();
-        private readonly Card d8 = 8.AsDiamond();
-        private readonly Card d11 = 11.AsDiamond();
-        private readonly Card d14 = 14.AsDiamond();
+        [Test]
+        public void Can_play_n_rounds_and_rank_players()
+        {
+            var competition = new Competition(new[]
+            {
+                //#1 - winner player 0
+                GameBuilder.BuildGame(new List<List<Card>>
+                {
+                    new List<Card> {s14, d8, s5, s3, d2, c6},
+                    new List<Card> {s11, c9, h5, d4, s2, c5} 
+                }),
+                GameBuilder.BuildGame(distribution: new List<List<Card>>
+                {
+                    //#3 -winner player 1
+                    new List<Card> {s2, d3, c4},
+                    new List<Card> {s3, d2, c5}
+                }),
+                GameBuilder.BuildGame(new List<List<Card>>
+                {
+                    //#4 -winner player 0
+                    new List<Card> {d8, s3, d2, c6},
+                    new List<Card> {c7, d4, s2, c5}
+                })
+            });
 
-        private readonly Card s2 = 2.AsSpade();
-        private readonly Card s3 = 3.AsSpade();
-        private readonly Card s5 = 5.AsSpade();
-        private readonly Card s7 = 7.AsSpade();
-        private readonly Card s8 = 8.AsSpade();
-        private readonly Card s11 = 11.AsSpade();
-        private readonly Card s13 = 13.AsSpade();
-        private readonly Card s14 = 14.AsSpade();
+            Ranking ranking = competition.Play();
+            Check.That(ranking).HasSize(3);
+        }
+    }
 
-        private readonly Card c2 = 2.AsClub();
-        private readonly Card c4 = 4.AsClub();
-        private readonly Card c5 = 5.AsClub();
-        private readonly Card c6 = 6.AsClub();
-        private readonly Card c7 = 7.AsClub();
-        private readonly Card c8 = 8.AsClub();
-        private readonly Card c9 = 9.AsClub();
-        private readonly Card c10 = 10.AsClub();
-        private readonly Card c11 = 11.AsClub();
-        private readonly Card c14 = 14.AsClub();
+    
+
+    [TestFixture]
+    public class GameShould
+    {
+        #region cards
+
+        protected readonly Card d2 = 2.AsDiamond();
+        protected readonly Card d3 = 3.AsDiamond();
+        protected readonly Card d4 = 4.AsDiamond();
+        protected readonly Card d7 = 7.AsDiamond();
+        protected readonly Card d8 = 8.AsDiamond();
+        protected readonly Card d11 = 11.AsDiamond();
+        protected readonly Card d14 = 14.AsDiamond();
+
+        protected readonly Card s2 = 2.AsSpade();
+        protected readonly Card s3 = 3.AsSpade();
+        protected readonly Card s5 = 5.AsSpade();
+        protected readonly Card s7 = 7.AsSpade();
+        protected readonly Card s8 = 8.AsSpade();
+        protected readonly Card s11 = 11.AsSpade();
+        protected readonly Card s13 = 13.AsSpade();
+        protected readonly Card s14 = 14.AsSpade();
+
+        protected readonly Card c2 = 2.AsClub();
+        protected readonly Card c4 = 4.AsClub();
+        protected readonly Card c5 = 5.AsClub();
+        protected readonly Card c6 = 6.AsClub();
+        protected readonly Card c7 = 7.AsClub();
+        protected readonly Card c8 = 8.AsClub();
+        protected readonly Card c9 = 9.AsClub();
+        protected readonly Card c10 = 10.AsClub();
+        protected readonly Card c11 = 11.AsClub();
+        protected readonly Card c14 = 14.AsClub();
 
 
-        private readonly Card h2 = 2.AsHeart();
-        private readonly Card h5 = 5.AsHeart();
-        private readonly Card h7 = 7.AsHeart();
-        private readonly Card h8 = 8.AsHeart();
-        private readonly Card h9 = 9.AsHeart();
-        private readonly Card h11 = 11.AsHeart();
-        private readonly Card h14 = 14.AsHeart();
+        protected readonly Card h2 = 2.AsHeart();
+        protected readonly Card h5 = 5.AsHeart();
+        protected readonly Card h7 = 7.AsHeart();
+        protected readonly Card h8 = 8.AsHeart();
+        protected readonly Card h9 = 9.AsHeart();
+        protected readonly Card h11 = 11.AsHeart();
+        protected readonly Card h14 = 14.AsHeart();
+
+            #endregion
         
         [Test]
         public void Drop_cards_when_battle_players_can_no_more_put_FaceUp_cards_on_the_table()
         {
-            var game = BuildGame(new List<List<Card>>
+            var game = GameBuilder.BuildGame(new List<List<Card>>
             {
                 new List<Card>{h8, s14, d7},
                 new List<Card>{h9, h14, c10},
@@ -83,8 +121,9 @@ namespace Tests
         [Test]
         public void Can_play_the_very_first_take()
         {
-            var game = BuildGame(new List<List<Card>>
-            {
+
+            var game = GameBuilder.BuildGame(new List<List<Card>>
+            { //#2
                 new List<Card> {c10},
                 new List<Card> {s11}
             });
@@ -107,8 +146,9 @@ namespace Tests
         [Test]
         public void Can_play_n_takes_to_the_end_of_game()
         {
-            var game = BuildGame(distribution: new List<List<Card>>
+            var game = GameBuilder.BuildGame(distribution: new List<List<Card>>
             {
+                //#3
                 new List<Card> {s2, d3, c4},
                 new List<Card> {s3, d2, c5}
             });
@@ -137,8 +177,9 @@ namespace Tests
         [Test]
         public void Can_find_a_winner_with_only_one_battle()
         {
-            var game = BuildGame(new List<List<Card>>
+            var game = GameBuilder.BuildGame(new List<List<Card>>
             {
+                //#4
                 new List<Card> {d8, s3, d2, c6},
                 new List<Card> {c7, d4, s2, c5}
             });
@@ -166,11 +207,12 @@ namespace Tests
         [Test]
         public void Can_find_a_winner_with_two_iterations_battles()
         {
-            var game = BuildGame(new List<List<Card>>
+            //#1
+            var game = GameBuilder.BuildGame(new List<List<Card>>
             {
                 new List<Card> {s14, d8, s5, s3, d2, c6},
                 new List<Card> {s11, c9, h5, d4, s2, c5}
-            });
+            }); 
             var players = game.Players;
             var player1 = players[0];
             var player2 = players[1];
@@ -188,15 +230,15 @@ namespace Tests
             Check.That(gameOver).IsInstanceOf<HasWinner>();
             Check.That(((HasWinner)gameOver).Winner).IsEqualTo(game.Players[0]);
 
-            Check.That(game.Players[1].CardStack).HasSize(0);
             Check.That(game.Players[0].CardStack).HasSize(12);
+            Check.That(game.Players[1].CardStack).HasSize(0);
             Check.That(game.Players[0].CardStack).IsEquivalentTo(s14, d8, s5, s3, d2, c6, s11, c9, h5, d4, s2, c5);
         }
 
         [Test]
         public void Can_find_winner_When_battle_happened_recursively_and_in_the_end_all_players_have_no_more_cards_except_for_the_winner()
         {
-            var game = BuildGame(distribution: new List<List<Card>>
+            var game = GameBuilder.BuildGame(distribution: new List<List<Card>>
             {
                 new List<Card> {s2, d3, d4},
                 new List<Card> {s3, d2, c5},
@@ -234,7 +276,7 @@ namespace Tests
         [Test]
         public void End_the_game_by_a_Draw_When_the_last_survivors_have_no_more_cards_at_the_same_time()
         {
-            var game = BuildGame(distribution: new List<List<Card>>
+            var game = GameBuilder.BuildGame(distribution: new List<List<Card>>
             {
                 new List<Card>{d14, d8, d7},
                 new List<Card>{s14, s8, s7},
@@ -263,7 +305,7 @@ namespace Tests
         [Test]
         public void End_the_game_by_a_Draw_When_the_last_survivors_have_no_more_enough_cards_to_battle()
         {
-            var game = BuildGame(distribution: new List<List<Card>>
+            var game = GameBuilder.BuildGame(distribution: new List<List<Card>>
             {
                 new List<Card>{d11, d14, d8, d7},
                 new List<Card>{s11, s14, s8, s7},
@@ -293,7 +335,7 @@ namespace Tests
         [Test]
         public void Should_continue_When_a_player_has_no_more_card_after_a_battle_but_not_all_players()
         {
-            var game = BuildGame(new List<List<Card>>
+            var game = GameBuilder.BuildGame(new List<List<Card>>
             {
                 new List<Card> {h2, 5.AsHeart(), 7.AsHeart(), 3.AsSpade()},
                 new List<Card> {3.AsHeart(), 10.AsClub(), 7.AsSpade(), 4.AsHeart()},
@@ -302,34 +344,6 @@ namespace Tests
             var gameOver = game.Play(NullShuffle.Instance);
 
             Check.That(((HasWinner)gameOver).Winner).IsEqualTo(game.Players[2]);
-        }
-
-
-        /// <summary>
-        /// Build a battle's initial state.
-        /// </summary>
-        /// <param name="distribution">Represent a stubbed distribution of cartes.
-        ///     By Player, we have a list of CardStack. Hence a list of cartes list
-        /// </param>
-        /// <returns></returns>
-        private static Game BuildGame(IList<List<Card>> distribution)
-        {
-            var numberOfJoueurs = distribution.Count;
-
-            var players = Enumerable.Range(0, count: numberOfJoueurs).Select(x => new Player(x)).ToList();
-
-            for (int i = 0; i < numberOfJoueurs; i++)
-            {
-                players[i].CardStack = new CardStack(distribution[i]);
-            }
-
-            IDistributeCards cardsDistributor = Substitute.For<IDistributeCards>();
-            cardsDistributor.DistributedCardsSize.Returns(distribution.SelectMany(x => x).Count());
-            cardsDistributor.Distribute().Returns(players);
-
-            var game = new Game(cardsDistributor);
-
-            return game;
         }
     }
 }

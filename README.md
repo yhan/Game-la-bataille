@@ -1,16 +1,50 @@
 
-1. **Egalité**  
-en cas d’égalité sur bataille, on répète la procédure de bataille. Le premier qui n’a plus de carte perd. Si les deux n’ont plus de carte en même temps, il y a match nul.
+# Summary
+**Goal**
+Your program must create and play n virtual players in the "Battle" card game.
 
-1. **Fin de jeu**  
-Pour la fin de jeu, effectivement, il y a des cas ou ça peut ne jamais se terminer. Ce que je peux te conseiller est de mélanger les cartes gagnées (dans la vraie vie, en ramassant les cartes, on les ramasse rarement toujours dans le même ordre). A cela peut être ajouté une règle : « après 1000 tours dans une partie, les joueurs s’arrêtent et il y a match nul. »
+**Input**:
+ - either a number of players and a number of games to play
+ - or a list of players who have already had a distributed card package
 
-1. **Deux joueurs qui reste dans le jeu n'a plus qu'une carte chacun, et qu'il y bataille**
-Ce qui a la plus grande carte gagne (on met plus deux carte sur le plateau. Une face caché une autre face découverte)
+**Output**:
+ - The history of the cards having been seen on the board 
+ - and the ranking of the players at the end of the games
+
+# Assumption
+
+1. **Tie on battle**  
+In case of a tie on battle, the battle procedure is repeated. The first one who does not have a card loses. If both have no card at the same time, there is a draw.
+
+
+1. **End of game**  
+For the end of the game, there are cases where it can never end. What I can advise you is to mix the cards earned (in real life, by picking up the cards, we rarely pick them up in the same order). To this can be added a rule: "After 1000 rounds in a game, the players stop and there is a draw. "
+
+1. **D  ne autre face découverte)
 
 1. **Console**  
 Pour la console, pas besoin de pauses.
 
+1. **Deal with situation of battle**
+
+    1. **Deal with the players who are not in the battle**
+
+        player A:       2, 1,  7  
+        player B:       3, 10, 7  
+        player C: 3, 4, 5, 11, 2  
+
+        obviously we have battle between A and B, and the winner of battle is B.
+        __The question is how to deal with player C's `card 2`__.
+        In my solution, player B can gather also that card. So finally, battle allows B to take 2, 1, 7 (A's cards), 3, 10, 7 (B keeps his own cards) and 2 (C's card)
+
+    1. **Battle competitors have not enough cards to pull a face-up card**
+       
+       player A:            8, 14  
+       player B:            9, 14  
+       player C: 7, 10, 11, 2,  3  
+
+       A and B battle at 14, but they can no more pull face-up cards.  
+       Difficult decision to make! If I give all involved cards to C, not fair play because at this round both A and B have higher cards than C. My arbitrage is to  `drop` all involved cards: 8, 9, 14, 14, 3.
 
 # Run my program in your Unit tests
 
@@ -28,3 +62,5 @@ As the text is in French, the wording for domain is in French as well. On the te
 # Reference
 
 [This](https://www.fetedujeu.org/jeux-societe/cartes/bataille/) gave me some clarification of some implicit points.
+
+
