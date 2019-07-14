@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace La_Bataille
+namespace LaBataille
 {
     public static class CardExtensions
     {

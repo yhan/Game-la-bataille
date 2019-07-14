@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Value;
 
-namespace La_Bataille
+namespace LaBataille
 {
     public class Player : ValueType<Player>
     {
@@ -64,22 +64,24 @@ namespace La_Bataille
     }
 
 
-    public class ProdGameFactory: IMakeGames
+    public class GameFactory: IMakeGames
     {
         private readonly IEnumerable<Player> _players;
         private readonly int _numberOfGames;
+        private readonly IDistributeCards _cardsDistributor;
 
-        public ProdGameFactory(IEnumerable<Player> players, int numberOfGames)
+        public GameFactory(IEnumerable<Player> players, int numberOfGames, IDistributeCards cardsDistributor)
         {
             _players = players;
             _numberOfGames = numberOfGames;
+            _cardsDistributor = cardsDistributor;
         }
 
         public IEnumerable<Game> Build()
         {
             for (int i = 0; i < _numberOfGames; i++)
             {
-                 yield return new Game(new CardsDistributor(CardsProvider.Instance, _players));    
+                 yield return new Game(_cardsDistributor);    // new CardsDistributor(CardsProvider.Instance, _players)
             }
         }
 

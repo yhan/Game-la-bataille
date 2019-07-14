@@ -1,4 +1,4 @@
-﻿namespace La_Bataille
+﻿namespace LaBataille
 {
     public interface IAmCard
     {

@@ -1,7 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 
-namespace La_Bataille
+namespace LaBataille
 {
     public class View : IEnumerable<TwoFaceCard>
     {

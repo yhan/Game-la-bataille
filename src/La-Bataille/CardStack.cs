@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace La_Bataille
+namespace LaBataille
 {
     /// <summary>
     /// Represent the card stack in front of each <see cref="Player"/>

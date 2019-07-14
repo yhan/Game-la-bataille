@@ -1,9 +1,8 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Microsoft.VisualBasic.CompilerServices;
 
-namespace La_Bataille
+namespace LaBataille
 {
     /// <summary>
     /// Play take a card makes it a `Take`

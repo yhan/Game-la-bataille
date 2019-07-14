@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace La_Bataille
+namespace LaBataille
 {
     public struct Card : IEquatable<Card>, IComparable<Card>, IAmCard
     {

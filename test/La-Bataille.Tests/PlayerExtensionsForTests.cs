@@ -1,7 +1,6 @@
 using System.Collections.Generic;
-using La_Bataille;
 
-namespace Tests
+namespace LaBataille.Tests
 {
     public static class PlayerExtensionsForTests
     {

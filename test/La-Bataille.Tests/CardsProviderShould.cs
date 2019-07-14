@@ -1,10 +1,9 @@
 using System;
 using System.Linq;
-using La_Bataille;
 using NFluent;
 using NUnit.Framework;
 
-namespace Tests
+namespace LaBataille.Tests
 {
     [TestFixture]
     public class CardsProviderShould

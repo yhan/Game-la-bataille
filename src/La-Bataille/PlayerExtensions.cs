@@ -1,8 +1,7 @@
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace La_Bataille
+namespace LaBataille
 {
     public static class PlayerExtensions
     {

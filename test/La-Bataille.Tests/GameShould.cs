@@ -1,12 +1,8 @@
-using System;
-using System.Collections;
 using System.Collections.Generic;
-using La_Bataille;
 using NFluent;
-using NSubstitute;
 using NUnit.Framework;
 
-namespace Tests
+namespace LaBataille.Tests
 {
     [TestFixture]
     public class GameShould
@@ -246,24 +242,22 @@ namespace Tests
             {
                 new List<Card>{d14, d8, d7},
                 new List<Card>{s14, s8, s7},
-                new List<Card>{c14, c8, c7},
-                new List<Card>{h14, h8, h7}
-            }, PlayersBuilder.BuildPlayers(4));
+                new List<Card>{c14, c8, c7}
+            }, PlayersBuilder.BuildPlayers(3));
 
             var players = game.Players;
             var player1 = players[0];
             var player2 = players[1];
             var player3 = players[2];
-            var player4 = players[3];
 
 
             var gameOver = game.Play(NullShuffle.Instance);
             Check.That(game.TableViewsHistory).HasSize(3);
-            Check.That(game.TableViewsHistory[0]).IsEquivalentTo(d7.FaceUp(player1), s7.FaceUp(player2), c7.FaceUp(player3), h7.FaceUp(player4));
-            Check.That(game.TableViewsHistory[1]).IsEquivalentTo(d8.FaceDown(player1), s8.FaceDown(player2), c8.FaceDown(player3), h8.FaceDown(player4));
-            Check.That(game.TableViewsHistory[2]).IsEquivalentTo(d14.FaceUp(player1), s14.FaceUp(player2), c14.FaceUp(player3), h14.FaceUp(player4));
+            Check.That(game.TableViewsHistory[0]).IsEquivalentTo(d7.FaceUp(player1), s7.FaceUp(player2), c7.FaceUp(player3));
+            Check.That(game.TableViewsHistory[1]).IsEquivalentTo(d8.FaceDown(player1), s8.FaceDown(player2), c8.FaceDown(player3));
+            Check.That(game.TableViewsHistory[2]).IsEquivalentTo(d14.FaceUp(player1), s14.FaceUp(player2), c14.FaceUp(player3));
 
-            Check.That(game.DroppedCards).HasSize(12);
+            Check.That(game.DroppedCards).HasSize(9);
             Check.That(gameOver).IsInstanceOf<Draw>();
         }
 

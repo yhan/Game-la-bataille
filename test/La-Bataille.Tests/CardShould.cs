@@ -1,11 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using La_Bataille;
 using NFluent;
 using NUnit.Framework;
 
-namespace Tests
+namespace LaBataille.Tests
 {
     public class CardShould
     {

@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace La_Bataille
+namespace LaBataille
 {
     /// <summary>
     ///  Routine which randomizes a collection of cartes

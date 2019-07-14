@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace La_Bataille
+namespace LaBataille
 {
     public static class Shuffler
     {
