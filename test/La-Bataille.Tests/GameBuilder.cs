@@ -4,7 +4,7 @@ using NSubstitute;
 
 namespace LaBataille.Tests
 {
-    public class GameBuilder
+    public static class GameBuilder
     {
         /// <summary>
         /// Build a battle's initial state.

@@ -16,6 +16,12 @@ namespace LaBataille
 
     public class Draw : IAmTheGameOver
     {
-        public static IAmTheGameOver Instance = new Draw();
+        public string Reason { get; }
+        public static IAmTheGameOver Instance = new Draw(string.Empty);
+
+        public Draw(string reason)
+        {
+            Reason = reason;
+        }
     }
 }

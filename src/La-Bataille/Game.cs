@@ -13,7 +13,11 @@ namespace LaBataille
         {
             _distributor = distributor;
 
+            DistributedCardsSize = _distributor.DistributedCardsSize;
+
         }
+
+        public int DistributedCardsSize { get; private set; }
 
         public List<Player> Players { get; private set; }
 
@@ -48,9 +52,11 @@ namespace LaBataille
             Players = _distributor.Distribute();
 
             Player winner = null;
-
+            int iteration = 0;
             while (!GameOver(ref winner))
             {
+                iteration++;
+                
                 var takes = Players.TakeOneCardEach(Visibility.FaceUp);
 
                 TableViewsHistory.Add(takes.BuildView());
@@ -65,10 +71,20 @@ namespace LaBataille
                 {
                     playerOfStrongestTake?.Gather(takes);
                 }
+
+
+                if (iteration == 1000)
+                {
+                    break;
+                }
             }
 
             if (winner == null)
             {
+                if (iteration == 1000)
+                {
+                    return new Draw($"After {iteration} iterations, still no winner. Declare this game as a DRAW");
+                }
                 return Draw.Instance;
             }
 
@@ -107,20 +123,24 @@ namespace LaBataille
 
                 // face up cards
                 var faceUpTakes = competitors.TakeOneCardEach(Visibility.FaceUp);
-                if (!faceUpTakes.Any())
+                if (!faceUpTakes.Any() || faceUpTakes.Count == 1)
                 {
                     takes.Drop();
                     break;
                 }
                 TableViewsHistory.Add(faceUpTakes.BuildView());
                 takes.AddRange(faceUpTakes);
+                if (faceUpTakes.AllEqual())
+                {
+                    continue;
+                }
 
                 // Find the competitor having the strongest card, and only he has that card
                 var strongestPlayer = faceUpTakes.StrongestPlayerIfExit();
 
                 if (strongestPlayer != null)
                 {
-                    strongestPlayer.Gather(takes);
+                    strongestPlayer.Gather(takes.Where(x => !x.Dropped));
 
                     highestTakeIsFromBattle = true;
                     break;

@@ -8,7 +8,27 @@ namespace LaBataille.Tests
     [TestFixture]
     public class GameShould
     {
-     
+        [Test]
+        public void Should_continue_battle_if_faceUp_cards_are_all_identical()
+        {
+            var game = GameBuilder.BuildGame(new List<List<Card>>
+            {
+                new List<Card>{s7, d2, h8, s11, s2},
+                new List<Card>{s6, d3, s8, s13, d2}
+
+            }, PlayersBuilder.BuildPlayers(2));
+
+            var gameOver = game.Play(NullShuffle.Instance);
+
+            Check.That(gameOver).IsInstanceOf<HasWinner>();
+            var hasWinner = (HasWinner) gameOver;
+
+            var player0 = game.Players[0];
+            Check.That(hasWinner.Winner).IsEqualTo(player0);
+
+            Check.That(player0.CardStack.Size).IsEqualTo(10);
+            Check.That(game.DroppedCards.Count).IsEqualTo(0);
+        }
 
 
         [Test]
@@ -128,14 +148,6 @@ namespace LaBataille.Tests
             Check.That(game.Players[0].CardStack).IsEquivalentTo(d8, s3, d2, c6, c7, d4, s2, c5);
         }
 
-
-        [Test]
-        public void dsfqsdfs()
-        {
-            var max = new []{7, 7}.Max();
-            Check.That(max).IsEqualTo(7);
-        }
-
         [Test]
         public void Find_a_winner_with_only_two_battle_and_2nd_battle_failed_to_play()
         {
@@ -225,8 +237,9 @@ namespace LaBataille.Tests
             Check.That(game.TableViewsHistory[7]).IsEquivalentTo(s3.FaceUp(player2), d3.FaceUp(player3));
 
             Check.That(gameOver).IsInstanceOf<HasWinner>();
-            Check.That(((HasWinner)gameOver).Winner).IsEqualTo(game.Players[2]);
-
+            var winner = ((HasWinner)gameOver).Winner;
+            Check.That(winner).IsEqualTo(game.Players[2]);
+            Check.That(winner.CardStack.Size).IsEqualTo(3);
 
             Check.That(game.Players[0].CardStack).HasSize(0);
             Check.That(game.Players[1].CardStack).HasSize(0);
@@ -306,7 +319,10 @@ namespace LaBataille.Tests
 
             var history = game.TableViewsHistory;
             Check.That(history).HasSize(15);
-            Check.That(((HasWinner)gameOver).Winner).IsEqualTo(game.Players[2]);
+            var winner = ((HasWinner)gameOver).Winner;
+            Check.That(winner).IsEqualTo(game.Players[2]);
+
+            Check.That(winner.CardStack.Size).IsEqualTo(12);
             Check.That(game.DroppedCards).HasSize(0);
         }
 
@@ -333,7 +349,10 @@ namespace LaBataille.Tests
             Check.That(history[3]).IsEquivalentTo(s8.FaceUp(player1), s3.FaceUp(player2));
             Check.That(history[4]).IsEquivalentTo(s7.FaceUp(player1), h4.FaceUp(player2));
 
-            Check.That(((HasWinner) gameOver).Winner).IsEqualTo(game.Players[1]);
+            var winner = ((HasWinner) gameOver).Winner;
+            Check.That(winner).IsEqualTo(game.Players[1]);
+
+            Check.That(winner.CardStack.Size).IsEqualTo(9);
             Check.That(game.DroppedCards).HasSize(0);
         }
 

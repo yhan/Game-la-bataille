@@ -1,4 +1,5 @@
 using System;
+using System.Runtime.InteropServices.ComTypes;
 
 namespace LaBataille.Console
 {
@@ -18,12 +19,18 @@ namespace LaBataille.Console
 
             switch (gameOver)
             {
-                case Draw _:
-                    System.Console.WriteLine("GAME ENDED WITH A DRAW");
+                case Draw draw:
+                    System.Console.WriteLine($"GAME ENDED WITH A DRAW. Reason: {draw.Reason}");
+
+                    System.Console.WriteLine($"Number of dropped cards: {game.DroppedCards.Count}");
+                    foreach (var player in game.Players)
+                    {
+                        System.Console.WriteLine($"player {player.Id} having {player.CardStack.Size} cards");
+                    }
                     break;
                 case HasWinner hasWinner:
                     var winner = hasWinner.Winner;
-                    System.Diagnostics.Debug.Assert(winner.CardStack.Size + game.DroppedCards.Count == 52);
+                    System.Diagnostics.Debug.Assert(winner.CardStack.Size + game.DroppedCards.Count == game.DistributedCardsSize);
 
                     System.Console.WriteLine($"GAME OVER.");
                     System.Console.WriteLine($"THE WINNER IS 'Player {hasWinner.Winner.Id}'");
