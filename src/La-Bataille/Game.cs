@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
+using NFluent;
 
 namespace LaBataille
 {
@@ -77,7 +78,7 @@ namespace LaBataille
                     if (this.Players.OnlyOneStillHasCards(out var iAmTheOnlySurvivor))
                     {
                         playerOfHighestTake.Gather(takes);
-
+                        Check.That(iAmTheOnlySurvivor.CardStack.Size + DroppedCards.Count == _distributor.DistributedCardsSize).IsTrue();
                         return new HasWinner(iAmTheOnlySurvivor);
                     }
 
@@ -91,6 +92,7 @@ namespace LaBataille
                 playerOfHighestTake?.Gather(takes);
             }
 
+            Check.That(winner.CardStack.Size + DroppedCards.Count == _distributor.DistributedCardsSize).IsTrue();
             return new HasWinner(winner);
         }
 

@@ -16,7 +16,7 @@ namespace LaBataille.Tests
 
             var competition = new Competition(numberOfRounds: 3, factory: new GameFactory(distributor), players: players);
 
-            Ranking ranking = competition.Play();
+            Ranking ranking = competition.Play(NullGameOverVisitor.Instance);
             Check.That(ranking).HasSize(2);
 
             var player1 = players[0];
@@ -36,7 +36,7 @@ namespace LaBataille.Tests
 
             var competition = new Competition(2, new GameFactory(cardsDistributor: distributor), players);
 
-            Ranking ranking = competition.Play();
+            Ranking ranking = competition.Play(NullGameOverVisitor.Instance);
             Check.That(ranking).HasSize(3);
 
             var player1 = players[0];
@@ -49,4 +49,15 @@ namespace LaBataille.Tests
         }
     }
 
+
+    internal class  NullGameOverVisitor : IVisitGameOver
+    {
+        public static IVisitGameOver Instance = new NullGameOverVisitor();
+
+        private NullGameOverVisitor(){ }
+        
+        public void Visit(Game game, IAmTheGameOver gameOver)
+        {
+        }
+    }
 }

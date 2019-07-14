@@ -11,6 +11,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="nfluent" Version="2.5.0" />
     <PackageReference Include="Value" Version="1.1.0.1" />
   </ItemGroup>
 

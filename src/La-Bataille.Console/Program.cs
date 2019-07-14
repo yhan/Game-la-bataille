@@ -27,37 +27,17 @@ namespace LaBataille.Console
             var competition = new Competition(numberOfRounds, gameFactory, players);
 
 
-
-
-
-            var game = new Game(new CardsDistributor(new CardsProvider(), players));
-            var gameOver = game.Play(NullShuffle.Instance);
-
+            var gameOverVisitor = new ConsoleVisitGameOver();
+            var ranking = competition.Play(gameOverVisitor);
 
             System.Console.ForegroundColor = ConsoleColor.Green;
-            System.Console.WriteLine("###########   HISTORY OF TABLE VIEWS   #####################");
-            System.Console.ResetColor(); 
-            foreach (var view in game.TableViewsHistory)
-            {
-                System.Console.WriteLine(view);
-            }
+            System.Console.WriteLine("###########   RANKING   #####################");
+            System.Console.ResetColor();
             
-            System.Console.ForegroundColor = ConsoleColor.Green;
-
-            switch (gameOver)
+            foreach (var rank in ranking)
             {
-                case Draw _:
-                    System.Console.WriteLine("GAME ENDED WITH A DRAW");
-                    break;
-                case HasWinner hasWinner:
-                    var winner = hasWinner.Winner;
-                    System.Diagnostics.Debug.Assert(winner.CardStack.Size + game.DroppedCards.Count == 52);
-
-                    System.Console.WriteLine($"GAME OVER.");
-                    System.Console.WriteLine($"THE WINNER IS 'Player {hasWinner.Winner.Id}'");
-                    break;
+                System.Console.WriteLine($"RANK: {rank.Number} | Player: '{rank.Player.Id}' | Score: {rank.Score}");
             }
-            
 
             System.Console.ReadLine();
         }
