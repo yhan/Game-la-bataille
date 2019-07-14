@@ -10,10 +10,10 @@ namespace LaBataille
         public Game(IDistributeCards distributor)
         {
             _distributor = distributor;
-            Players = _distributor.Distribute();
+            
         }
 
-        public List<Player> Players { get; }
+        public List<Player> Players { get; private set; }
 
         public List<View> TableViewsHistory { get; } = new List<View>();
 
@@ -36,6 +36,8 @@ namespace LaBataille
 
         public IAmTheGameOver Play(IShuffle shuffle)
         {
+            Players = _distributor.Distribute();
+
             Player winner = null;
             
             while (!FoundWinner(ref winner))

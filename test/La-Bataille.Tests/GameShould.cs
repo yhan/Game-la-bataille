@@ -59,12 +59,12 @@ namespace LaBataille.Tests
                 new List<Card>{d2, d3, d11}
             }, PlayersBuilder.BuildPlayers(3));
 
+            var gameOver = game.Play(NullShuffle.Instance);
             var players = game.Players;
             var player1 = players[0];
             var player2 = players[1];
             var player3 = players[2];
 
-            var gameOver = game.Play(NullShuffle.Instance);
             Check.That(game.TableViewsHistory).HasSize(3);
 
             Check.That(gameOver).IsInstanceOf<HasWinner>();
@@ -115,12 +115,12 @@ namespace LaBataille.Tests
                 new List<Card> {s3, d2, c5}
             }, PlayersBuilder.BuildPlayers(2));
 
+
+            var gameOver = game.Play(NullShuffle.Instance);
             var players = game.Players;
             var player1 = players[0];
             var player2 = players[1];
-
-            var gameOver = game.Play(NullShuffle.Instance);
-
+            
             Check.That(game.TableViewsHistory).HasSize(5);
             Check.That(game.TableViewsHistory[0]).IsEquivalentTo(c4.FaceUp(player1), c5.FaceUp(player2));
             Check.That(game.TableViewsHistory[1]).IsEquivalentTo(d3.FaceUp(player1), d2.FaceUp(player2));
@@ -146,11 +146,11 @@ namespace LaBataille.Tests
                 new List<Card> {c7, d4, s2, c5}
             }, PlayersBuilder.BuildPlayers(2));
 
+
+            var gameOver = game.Play(NullShuffle.Instance);
             var players = game.Players;
             var player1 = players[0];
             var player2 = players[1];
-
-            var gameOver = game.Play(NullShuffle.Instance);
 
             Check.That(game.TableViewsHistory).HasSize(4);
             Check.That(game.TableViewsHistory[0]).IsEquivalentTo(c6.FaceUp(player1), c5.FaceUp(player2));
@@ -175,11 +175,11 @@ namespace LaBataille.Tests
                 new List<Card> {s14, d8, s5, s3, d2, c6},
                 new List<Card> {s11, c9, h5, d4, s2, c5}
             }, PlayersBuilder.BuildPlayers(2));
+
+            var gameOver = game.Play(NullShuffle.Instance);
             var players = game.Players;
             var player1 = players[0];
             var player2 = players[1];
-
-            var gameOver = game.Play(NullShuffle.Instance);
 
             Check.That(game.TableViewsHistory).HasSize(6);
             Check.That(game.TableViewsHistory[0]).IsEquivalentTo(c6.FaceUp(player1), c5.FaceUp(player2));
@@ -207,12 +207,12 @@ namespace LaBataille.Tests
                 new List<Card> {s13, s14, c2}
             }, PlayersBuilder.BuildPlayers(3));
 
+
+            var gameOver = game.Play(NullShuffle.Instance);
             var players = game.Players;
             var player1 = players[0];
             var player2 = players[1];
             var player3 = players[2];
-
-            var gameOver = game.Play(NullShuffle.Instance);
 
             Check.That(game.TableViewsHistory).HasSize(8);
             Check.That(game.TableViewsHistory[0]).IsEquivalentTo(d4.FaceUp(player1), c5.FaceUp(player2), c2.FaceUp(player3));
@@ -245,13 +245,12 @@ namespace LaBataille.Tests
                 new List<Card>{c14, c8, c7}
             }, PlayersBuilder.BuildPlayers(3));
 
+            var gameOver = game.Play(NullShuffle.Instance);
             var players = game.Players;
             var player1 = players[0];
             var player2 = players[1];
             var player3 = players[2];
 
-
-            var gameOver = game.Play(NullShuffle.Instance);
             Check.That(game.TableViewsHistory).HasSize(3);
             Check.That(game.TableViewsHistory[0]).IsEquivalentTo(d7.FaceUp(player1), s7.FaceUp(player2), c7.FaceUp(player3));
             Check.That(game.TableViewsHistory[1]).IsEquivalentTo(d8.FaceDown(player1), s8.FaceDown(player2), c8.FaceDown(player3));
@@ -273,14 +272,14 @@ namespace LaBataille.Tests
                 new List<Card>{h11, h14, h8, h7}
             }, PlayersBuilder.BuildPlayers(4));
 
+
+            var gameOver = game.Play(NullShuffle.Instance);
             var players = game.Players;
             var player1 = players[0];
             var player2 = players[1];
             var player3 = players[2];
             var player4 = players[3];
 
-
-            var gameOver = game.Play(NullShuffle.Instance);
             Check.That(game.TableViewsHistory).HasSize(4);
             Check.That(game.TableViewsHistory[0]).IsEquivalentTo(d7.FaceUp(player1), s7.FaceUp(player2), c7.FaceUp(player3), h7.FaceUp(player4));
             Check.That(game.TableViewsHistory[1]).IsEquivalentTo(d8.FaceDown(player1), s8.FaceDown(player2), c8.FaceDown(player3), h8.FaceDown(player4));

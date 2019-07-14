@@ -14,7 +14,7 @@ namespace LaBataille.Tests
 
             var distributor = new DistributorForTest(players);
 
-            var competition = new Competition(new GameFactory(players, 3, distributor));
+            var competition = new Competition(numberOfRounds: 3, factory: new GameFactory(distributor), players: players);
 
             Ranking ranking = competition.Play();
             Check.That(ranking).HasSize(2);
@@ -34,7 +34,7 @@ namespace LaBataille.Tests
 
             var distributor = new DistributorWithDrawForTest(players);
 
-            var competition = new Competition(new GameFactory(players, numberOfGames: 2, cardsDistributor: distributor));
+            var competition = new Competition(2, new GameFactory(cardsDistributor: distributor), players);
 
             Ranking ranking = competition.Play();
             Check.That(ranking).HasSize(3);

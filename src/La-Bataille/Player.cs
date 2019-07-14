@@ -66,46 +66,39 @@ namespace LaBataille
 
     public class GameFactory: IMakeGames
     {
-        private readonly IEnumerable<Player> _players;
-        private readonly int _numberOfGames;
         private readonly IDistributeCards _cardsDistributor;
 
-        public GameFactory(IEnumerable<Player> players, int numberOfGames, IDistributeCards cardsDistributor)
+        public GameFactory( IDistributeCards cardsDistributor)
         {
-            _players = players;
-            _numberOfGames = numberOfGames;
             _cardsDistributor = cardsDistributor;
         }
 
-        public IEnumerable<Game> Build()
+        public Game Build()
         {
-            for (int i = 0; i < _numberOfGames; i++)
-            {
-                 yield return new Game(_cardsDistributor);    // new CardsDistributor(CardsProvider.Instance, _players)
-            }
+            return new Game(_cardsDistributor);
         }
-
-        public IEnumerable<Player> Players => _players;
     }
 
    
     public interface IMakeGames
     {
-        IEnumerable<Game> Build();
-
-        IEnumerable<Player> Players { get; }
+        Game Build();
     }
 
 
     public class Competition
     {
-        private readonly IMakeGames _factory;
-        private readonly IEnumerable<Game> _games;
+        private readonly List<Player> _players;
+        private readonly List<Game> _games = new List<Game>();
 
-        public Competition(IMakeGames factory)
+        public Competition(int numberOfRounds, IMakeGames factory, List<Player> players)
         {
-            _factory = factory;
-            _games = factory.Build();
+            _players = players;
+            
+            for (int round = 0; round < numberOfRounds; round++)
+            {
+                _games.Add(factory.Build());
+            }
         }
         
         public Ranking Play()
@@ -131,7 +124,7 @@ namespace LaBataille
                 }
             }
             
-            return new Ranking(_factory.Players);
+            return new Ranking(_players);
         }
     }
 

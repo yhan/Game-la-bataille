@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 
 namespace LaBataille.Console
 {
@@ -18,7 +19,16 @@ namespace LaBataille.Console
             System.Console.WriteLine("Number of players? ");
             var numberOfPlayers = int.Parse( System.Console.ReadLine());
 
-            var players = PlayersBuilder.BuildPlayers(numberOfPlayers);
+            System.Console.WriteLine("Number of rounds? ");
+            var numberOfRounds = int.Parse( System.Console.ReadLine());
+
+            var players = PlayersBuilder.BuildPlayers(numberOfPlayers).ToList();
+            var gameFactory = new GameFactory(new CardsDistributor(CardsProvider.Instance, players));
+            var competition = new Competition(numberOfRounds, gameFactory, players);
+
+
+
+
 
             var game = new Game(new CardsDistributor(new CardsProvider(), players));
             var gameOver = game.Play(NullShuffle.Instance);
