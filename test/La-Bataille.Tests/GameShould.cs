@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using NFluent;
 using NUnit.Framework;
 
@@ -7,46 +8,7 @@ namespace LaBataille.Tests
     [TestFixture]
     public class GameShould
     {
-        #region cards
-
-        protected readonly Card d2 = 2.AsDiamond();
-        protected readonly Card d3 = 3.AsDiamond();
-        protected readonly Card d4 = 4.AsDiamond();
-        protected readonly Card d7 = 7.AsDiamond();
-        protected readonly Card d8 = 8.AsDiamond();
-        protected readonly Card d11 = 11.AsDiamond();
-        protected readonly Card d14 = 14.AsDiamond();
-
-        protected readonly Card s2 = 2.AsSpade();
-        protected readonly Card s3 = 3.AsSpade();
-        protected readonly Card s5 = 5.AsSpade();
-        protected readonly Card s7 = 7.AsSpade();
-        protected readonly Card s8 = 8.AsSpade();
-        protected readonly Card s11 = 11.AsSpade();
-        protected readonly Card s13 = 13.AsSpade();
-        protected readonly Card s14 = 14.AsSpade();
-
-        protected readonly Card c2 = 2.AsClub();
-        protected readonly Card c4 = 4.AsClub();
-        protected readonly Card c5 = 5.AsClub();
-        protected readonly Card c6 = 6.AsClub();
-        protected readonly Card c7 = 7.AsClub();
-        protected readonly Card c8 = 8.AsClub();
-        protected readonly Card c9 = 9.AsClub();
-        protected readonly Card c10 = 10.AsClub();
-        protected readonly Card c11 = 11.AsClub();
-        protected readonly Card c14 = 14.AsClub();
-
-
-        protected readonly Card h2 = 2.AsHeart();
-        protected readonly Card h5 = 5.AsHeart();
-        protected readonly Card h7 = 7.AsHeart();
-        protected readonly Card h8 = 8.AsHeart();
-        protected readonly Card h9 = 9.AsHeart();
-        protected readonly Card h11 = 11.AsHeart();
-        protected readonly Card h14 = 14.AsHeart();
-
-        #endregion
+     
 
 
         [Test]
@@ -166,6 +128,44 @@ namespace LaBataille.Tests
             Check.That(game.Players[0].CardStack).IsEquivalentTo(d8, s3, d2, c6, c7, d4, s2, c5);
         }
 
+
+        [Test]
+        public void dsfqsdfs()
+        {
+            var max = new []{7, 7}.Max();
+            Check.That(max).IsEqualTo(7);
+        }
+
+        [Test]
+        public void Find_a_winner_with_only_two_battle_and_2nd_battle_failed_to_play()
+        {
+            var game = GameBuilder.BuildGame(new List<List<Card>>
+            {
+                //#4
+                new List<Card> {d7, s3, d2, c6},
+                new List<Card> {c7, d4, s2, c5}
+            }, PlayersBuilder.BuildPlayers(2));
+
+
+            var gameOver = game.Play(NullShuffle.Instance);
+            var players = game.Players;
+            var player1 = players[0];
+            var player2 = players[1];
+
+            Check.That(game.TableViewsHistory).HasSize(4);
+            Check.That(game.TableViewsHistory[0]).IsEquivalentTo(c6.FaceUp(player1), c5.FaceUp(player2));
+            Check.That(game.TableViewsHistory[1]).IsEquivalentTo(d2.FaceUp(player1), s2.FaceUp(player2));
+            Check.That(game.TableViewsHistory[2]).IsEquivalentTo(s3.FaceDown(player1), d4.FaceDown(player2));
+            Check.That(game.TableViewsHistory[3]).IsEquivalentTo(d7.FaceUp(player1), c7.FaceUp(player2));
+
+            Check.That(gameOver).IsInstanceOf<HasWinner>();
+
+            Check.That(game.Players[0].CardStack).HasSize(2);
+            Check.That(game.Players[1].CardStack).HasSize(0);
+            Check.That(game.DroppedCards).HasSize(6);
+        }
+
+
         [Test]
         public void Can_find_a_winner_with_two_iterations_battles()
         {
@@ -230,8 +230,10 @@ namespace LaBataille.Tests
 
             Check.That(game.Players[0].CardStack).HasSize(0);
             Check.That(game.Players[1].CardStack).HasSize(0);
-            Check.That(game.Players[2].CardStack).HasSize(9);
-            Check.That(game.Players[2].CardStack).IsEquivalentTo(s2, d3, d4, s3, d2, c5, s13, s14, c2);
+            Check.That(game.Players[2].CardStack).HasSize(3);
+            Check.That(game.Players[2].CardStack).IsEquivalentTo(c5, s14, s2);
+
+            Check.That(game.DroppedCards.Count).IsEqualTo(6);
         }
 
 
@@ -296,13 +298,88 @@ namespace LaBataille.Tests
         {
             var game = GameBuilder.BuildGame(new List<List<Card>>
             {
-                new List<Card> {h2, 5.AsHeart(), 7.AsHeart(), 3.AsSpade()},
-                new List<Card> {3.AsHeart(), 10.AsClub(), 7.AsSpade(), 4.AsHeart()},
-                new List<Card> {14.AsDiamond(), 11.AsDiamond(), 2.AsSpade(), 5.AsClub()}
+                new List<Card> {h2, h5, h7, s3},
+                new List<Card> {h3, c10, s7, h4},
+                new List<Card> {d14, d11, s2, c5}
             }, PlayersBuilder.BuildPlayers(3));
             var gameOver = game.Play(NullShuffle.Instance);
 
+            var history = game.TableViewsHistory;
+            Check.That(history).HasSize(15);
             Check.That(((HasWinner)gameOver).Winner).IsEqualTo(game.Players[2]);
+            Check.That(game.DroppedCards).HasSize(0);
         }
+
+        [Test]
+        public void Should_continue_When_a_player_has_no_more_card_after_a_battle_but_not_all_players2()
+        {
+            var game = GameBuilder.BuildGame(new List<List<Card>>
+            {
+                new List<Card> {h5, d6, s7},
+                new List<Card> {s6, s8, h7},
+                new List<Card> { h4, s3, d2}
+            }, PlayersBuilder.BuildPlayers(3));
+            var gameOver = game.Play(NullShuffle.Instance);
+
+            var player0 = game.Players[0];
+            var player1 = game.Players[1];
+            var player2 = game.Players[2];
+
+            var history = game.TableViewsHistory;
+            Check.That(history).HasSize(5);
+            Check.That(history[0]).IsEquivalentTo(s7.FaceUp(player0), h7.FaceUp(player1), d2.FaceUp(player2));
+            Check.That(history[1]).IsEquivalentTo(d6.FaceDown(player0), s8.FaceDown(player1));
+            Check.That(history[2]).IsEquivalentTo(h5.FaceUp(player0), s6.FaceUp(player1));
+            Check.That(history[3]).IsEquivalentTo(s8.FaceUp(player1), s3.FaceUp(player2));
+            Check.That(history[4]).IsEquivalentTo(s7.FaceUp(player1), h4.FaceUp(player2));
+
+            Check.That(((HasWinner) gameOver).Winner).IsEqualTo(game.Players[1]);
+            Check.That(game.DroppedCards).HasSize(0);
+        }
+
+        #region cards
+
+        protected readonly Card d2 = 2.AsDiamond();
+        protected readonly Card d3 = 3.AsDiamond();
+        protected readonly Card d4 = 4.AsDiamond();
+        protected readonly Card d6 = 6.AsDiamond();
+        protected readonly Card d7 = 7.AsDiamond();
+        protected readonly Card d8 = 8.AsDiamond();
+        protected readonly Card d11 = 11.AsDiamond();
+        protected readonly Card d14 = 14.AsDiamond();
+
+        protected readonly Card s2 = 2.AsSpade();
+        protected readonly Card s3 = 3.AsSpade();
+        protected readonly Card s5 = 5.AsSpade();
+        protected readonly Card s6 = 6.AsSpade();
+        protected readonly Card s7 = 7.AsSpade();
+        protected readonly Card s8 = 8.AsSpade();
+        protected readonly Card s11 = 11.AsSpade();
+        protected readonly Card s13 = 13.AsSpade();
+        protected readonly Card s14 = 14.AsSpade();
+
+        protected readonly Card c2 = 2.AsClub();
+        protected readonly Card c4 = 4.AsClub();
+        protected readonly Card c5 = 5.AsClub();
+        protected readonly Card c6 = 6.AsClub();
+        protected readonly Card c7 = 7.AsClub();
+        protected readonly Card c8 = 8.AsClub();
+        protected readonly Card c9 = 9.AsClub();
+        protected readonly Card c10 = 10.AsClub();
+        protected readonly Card c11 = 11.AsClub();
+        protected readonly Card c14 = 14.AsClub();
+
+
+        protected readonly Card h2 = 2.AsHeart();
+        protected readonly Card h3 = 3.AsHeart();
+        protected readonly Card h4 = 4.AsHeart();
+        protected readonly Card h5 = 5.AsHeart();
+        protected readonly Card h7 = 7.AsHeart();
+        protected readonly Card h8 = 8.AsHeart();
+        protected readonly Card h9 = 9.AsHeart();
+        protected readonly Card h11 = 11.AsHeart();
+        protected readonly Card h14 = 14.AsHeart();
+
+        #endregion
     }
 }

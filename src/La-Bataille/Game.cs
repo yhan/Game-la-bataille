@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using NFluent;
+using NFluent.Helpers;
 
 namespace LaBataille
 {
@@ -11,7 +12,7 @@ namespace LaBataille
         public Game(IDistributeCards distributor)
         {
             _distributor = distributor;
-            
+
         }
 
         public List<Player> Players { get; private set; }
@@ -21,17 +22,24 @@ namespace LaBataille
         public List<Card> DroppedCards { get; set; } = new List<Card>();
 
 
-        private bool FoundWinner(ref Player player)
+        private bool GameOver(ref Player player)
         {
+            if (DroppedCards.Count == _distributor.DistributedCardsSize)
+            {
+                player = null;
+                return true; // draw
+            }
+
             foreach (var player1 in Players)
             {
                 if (player1.CardStack.Size + DroppedCards.Count == _distributor.DistributedCardsSize)
                 {
                     player = player1;
-                    return true;
+                    return true; // has a winner
                 }
             }
 
+            player = null;
             return false;
         }
 
@@ -40,84 +48,127 @@ namespace LaBataille
             Players = _distributor.Distribute();
 
             Player winner = null;
-            
-            while (!FoundWinner(ref winner))
+
+            while (!GameOver(ref winner))
             {
                 List<Take> takes = Players.TakeOneCardEach(Visibility.FaceUp);
 
-                var numberOfPlaysStillInTheGame = takes.Count;
-
                 TableViewsHistory.Add(takes.BuildView());
 
-                Player playerOfHighestTake = takes.Max().Player;
+                Player playerOfStrongestTake = takes.StrongestPlayerIfExit();
 
-                while (NeedBattle(takes.KeepTheLast(numberOfPlaysStillInTheGame), out var competitors))
+                bool highestTakeIsFromBattle = false;
+
+                RunBattleIfNecessary(takes, ref highestTakeIsFromBattle);
+                
+                BuildDroppedCards(takes);
+
+                if (!highestTakeIsFromBattle)
                 {
-                    var faceDownTakes = competitors.TakeOneCardEach(Visibility.FaceDown);
-                    TableViewsHistory.Add(faceDownTakes.BuildView());
-                    takes.AddRange(faceDownTakes);
-
-                    var faceUpTakes = competitors.TakeOneCardEach(Visibility.FaceUp);
-                    if (!faceUpTakes.Any())
-                    {
-                        playerOfHighestTake = null;
-                        DroppedCards.AddRange(takes.Select(x => x.Card));
-                        if (this.Players.NobodyHasCards())
-                        {
-                            return Draw.Instance;
-                        }
-
-                        break;
-                    }
-                    
-                    TableViewsHistory.Add(faceUpTakes.BuildView());
-                    takes.AddRange(faceUpTakes);
-
-                    playerOfHighestTake = faceUpTakes.Max().Player;
-
-                    if (this.Players.OnlyOneStillHasCards(out var iAmTheOnlySurvivor))
-                    {
-                        playerOfHighestTake.Gather(takes);
-                        Check.That(iAmTheOnlySurvivor.CardStack.Size + DroppedCards.Count == _distributor.DistributedCardsSize).IsTrue();
-                        return new HasWinner(iAmTheOnlySurvivor);
-                    }
-
-                    if (this.Players.NobodyHasCards())
-                    {
-                        DroppedCards.AddRange(takes.Select(x => x.Card));
-                        return Draw.Instance;
-                    }
+                    playerOfStrongestTake?.Gather(takes);
                 }
+            }
 
-                playerOfHighestTake?.Gather(takes);
+            if (winner == null)
+            {
+                return Draw.Instance;
             }
 
             Check.That(winner.CardStack.Size + DroppedCards.Count == _distributor.DistributedCardsSize).IsTrue();
+
             return new HasWinner(winner);
         }
 
-        private static bool NeedBattle(IReadOnlyList<Take> levees, out List<Player> batailleCompetitors)
+        private void BuildDroppedCards(List<Take> takes)
         {
-            Take max = levees[0];
-            batailleCompetitors = new List<Player>();
+            DroppedCards.AddRange(takes.Where(x => x.Dropped).Select(t => t.Card));
+        }
 
-            foreach (var levee in levees)
+        private void RunBattleIfNecessary(List<Take> takes, ref bool highestTakeIsFromBattle)
+        {
+            var numberOfPlayersInTheGame = takes.Count;
+            var competitors = new List<Player>();
+
+            while (NeedBattle(takes.KeepTheLast(numberOfPlayersInTheGame), ref competitors))
             {
-                var compareTo = levee.CompareTo(max);
-                if (compareTo > 0)
+                var competitorsStillHavingCards = competitors.Where(c => c.HasCards()).ToArray();
+                if (competitorsStillHavingCards.Length <= 1)
                 {
-                    batailleCompetitors.Clear();
+                    takes.Drop();
 
-                    max = levee;
-                    batailleCompetitors.Add(levee.Player);
+                    if (competitorsStillHavingCards.Length == 1)
+                    {
+                        break;
+                    }
                 }
-                else if (compareTo == 0)
+
+                // face down cards
+                var faceDownTakes = competitors.TakeOneCardEach(Visibility.FaceDown);
+                if (!faceDownTakes.Any())
                 {
-                    batailleCompetitors.Add(levee.Player);
+                    break;
+                }
+
+                TableViewsHistory.Add(faceDownTakes.BuildView());
+                takes.AddRange(faceDownTakes);
+
+                // face up cards
+                var faceUpTakes = competitors.TakeOneCardEach(Visibility.FaceUp);
+                if (!faceUpTakes.Any())
+                {
+                    takes.Drop();
+                    break;
+                }
+
+                TableViewsHistory.Add(faceUpTakes.BuildView());
+                takes.AddRange(faceUpTakes);
+
+                // F
+                var playerIf = faceUpTakes.StrongestPlayerIfExit();
+
+                if (playerIf != null)
+                {
+                    playerIf.Gather(takes);
+
+                    highestTakeIsFromBattle = true;
+                    break;
                 }
             }
 
-            return batailleCompetitors.Count > 1;
+            //return winner;
+        }
+
+        private static bool NeedBattle(IReadOnlyList<Take> takes, ref List<Player> competitors)
+        {
+            var competitors2 = new List<Player>();
+
+
+            if (!takes.Any())
+            {
+                competitors = null;
+                return false;
+            }
+
+            Take max = takes[0];
+            competitors = new List<Player>();
+
+            foreach (var take in takes)
+            {
+                var compareTo = take.CompareTo(max);
+                if (compareTo > 0)
+                {
+                    competitors.Clear();
+
+                    max = take;
+                    competitors.Add(take.Player);
+                }
+                else if (compareTo == 0)
+                {
+                    competitors.Add(take.Player);
+                }
+            }
+
+            return competitors.Count > 1;
         }
     }
 }

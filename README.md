@@ -25,6 +25,28 @@ For the end of the game, there are cases where it can never end. What I can advi
 1. **Console**  
 Pour la console, pas besoin de pauses.
 
+> In the following document, let's following this:  We start from right (top of the card stack), in a configuration: Player A: 3,  9,  10, 8. The first card to play is 8.
+
+1. **Triggering condition of Battle**
+When we have more than 2 players, battle will be triggered only when 2 or more than 2 players have the **strongest card**.
+i.e if we have the following situation:  
+Player A: 3,  **9**,  10, 8  
+Player B: 4,  **7**,  11, 8  
+Player C: 5,  **7**,  12, 8  
+
+The battle starts from 8. 10, 11, 12 face down; 9, 7, 7 face up. Here the battle won't be triggered, as the strongest card is 9, even B and C have the same card 7. 
+> I find the rule [here](https://www.jeux-cartes.biz/jeux-daccumulation/bataille/) : __Si deux ou plusieurs joueurs sont à égalité pour le plus haut il y a une bataille.__
+
+On the contrarily, if we have:
+_Player A_: 3,  **6**,  10, 8  
+_Player B_: 4,  **7**,  11, 8  
+_Player C_: 5,  **7**,  12, 8  
+
+Then yes, we have a battle with 6, 7 and 7, as 7 is the strongest card in this round.
+
+
+https://www.jeux-cartes.biz/jeux-daccumulation/bataille/
+
 1. **Deal with situation of battle**
 
     1. **Deal with the players who are not in the battle**
@@ -35,7 +57,7 @@ Pour la console, pas besoin de pauses.
 
         obviously we have battle between A and B, and the winner of battle is B.
         __The question is how to deal with player C's `card 2`__.
-        In my solution, player B can gather also that card. So finally, battle allows B to take 2, 1, 7 (A's cards), 3, 10, 7 (B keeps his own cards) and 2 (C's card)
+        In my solution, player B can gather also that `card 2 `. So finally, battle allows B to take 2, 1, 7 (A's cards), 3, 10, 7 (B keeps his own cards) and 2 (C's card)
 
     1. **Battle competitors have not enough cards to pull a face-up card**
        

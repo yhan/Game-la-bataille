@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace LaBataille
 {
@@ -13,8 +14,11 @@ namespace LaBataille
         public Card Card { get; }
         public Visibility Visibility { get; }
 
-        public Take(Player player, Card card, Visibility visibility)
+        public bool Dropped { get; private set; }
+
+        public Take(Player player, Card card, Visibility visibility, bool dropped)
         {
+            Dropped = dropped;
             Player = player;
             Card = card;
             Visibility = visibility;
@@ -32,6 +36,16 @@ namespace LaBataille
         {
             return $"{Player.Id}: {Card}";
         }
+
+        public void Drop()
+        {
+            //if (Dropped)
+            //{
+            //    throw new InvalidOperationException($"{this} is already dropped");
+            //}
+
+            Dropped = true;
+        }
     }
 
 
@@ -46,5 +60,37 @@ namespace LaBataille
         {
             return takes.Reverse().Take(numberOfPlayersInTheGame).ToList();
         }
+        
+        public static Player StrongestPlayerIfExit(this IEnumerable<Take> takes)
+        {
+            var array = takes as Take[] ?? takes.ToArray();
+            var take = array.Max();
+            if (array.Count(t => t.CompareTo(take) == 0) == 1)
+            {
+                return take.Player;
+            }
+
+            return null;
+        }
+
+        public static bool AllEqual(this IEnumerable<Take> takes)
+        {
+            var first = takes.First();
+            foreach (var take in takes)
+            {
+                if (take.CompareTo(first) != 0) return false;
+            }
+
+            return true;
+        }
+
+        public static void Drop(this IEnumerable<Take> takes)
+        {
+            foreach (var take in takes)
+            {
+                take.Drop();
+            }
+        }
+
     }
 }

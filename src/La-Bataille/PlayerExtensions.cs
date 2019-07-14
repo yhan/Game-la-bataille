@@ -7,7 +7,7 @@ namespace LaBataille
     {
         public static List<Take> TakeOneCardEach(this IEnumerable<Player> players,  Visibility visibility)
         {
-            var takesWhenPossible = players.Select(j => j.Lever(visibility))
+            var takesWhenPossible = players.Select(j => j.Take(visibility))
                 .Where(l => l != null)
                 .ToList();
 

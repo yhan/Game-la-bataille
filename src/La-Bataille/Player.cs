@@ -17,14 +17,16 @@ namespace LaBataille
         public CardStack CardStack { get; set; }
         public Score Score { get; } = new Score(0);
 
-        public Take Lever(Visibility visibility)
+        
+
+        public Take Take(Visibility visibility)
         {
             var popped = CardStack.Pull();
             if (popped is NullCard)
             {
                 return null;
             }
-            return new Take(this, (Card)popped, visibility);
+            return new Take(this, (Card)popped, visibility, false);
         }
 
         /// <summary>
@@ -59,6 +61,11 @@ namespace LaBataille
         public void Scores(int score)
         {
             Score.Increment(score);
+        }
+
+        public bool HasCards()
+        {
+            return CardStack.Any();
         }
     }
 }
