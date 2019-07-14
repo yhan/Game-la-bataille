@@ -51,15 +51,13 @@ namespace LaBataille
 
             while (!GameOver(ref winner))
             {
-                List<Take> takes = Players.TakeOneCardEach(Visibility.FaceUp);
+                var takes = Players.TakeOneCardEach(Visibility.FaceUp);
 
                 TableViewsHistory.Add(takes.BuildView());
 
-                Player playerOfStrongestTake = takes.StrongestPlayerIfExit();
+                var playerOfStrongestTake = takes.StrongestPlayerIfExit();
 
-                bool highestTakeIsFromBattle = false;
-
-                RunBattleIfNecessary(takes, ref highestTakeIsFromBattle);
+                var highestTakeIsFromBattle = RunBattleIfNecessary(takes);
                 
                 BuildDroppedCards(takes);
 
@@ -79,36 +77,31 @@ namespace LaBataille
             return new HasWinner(winner);
         }
 
-        private void BuildDroppedCards(List<Take> takes)
+        private bool RunBattleIfNecessary(List<Take> takes)
         {
-            DroppedCards.AddRange(takes.Where(x => x.Dropped).Select(t => t.Card));
-        }
-
-        private void RunBattleIfNecessary(List<Take> takes, ref bool highestTakeIsFromBattle)
-        {
+            var highestTakeIsFromBattle = false;
             var numberOfPlayersInTheGame = takes.Count;
             var competitors = new List<Player>();
 
             while (NeedBattle(takes.KeepTheLast(numberOfPlayersInTheGame), ref competitors))
             {
-                var competitorsStillHavingCards = competitors.Where(c => c.HasCards()).ToArray();
+                var competitorsStillHavingCards = competitors.WhoHaveCards();
                 if (competitorsStillHavingCards.Length <= 1)
                 {
                     takes.Drop();
-
-                    if (competitorsStillHavingCards.Length == 1)
-                    {
-                        break;
-                    }
                 }
 
+                if (competitorsStillHavingCards.Length == 1)
+                {
+                    break;
+                }
+                
                 // face down cards
                 var faceDownTakes = competitors.TakeOneCardEach(Visibility.FaceDown);
                 if (!faceDownTakes.Any())
                 {
                     break;
                 }
-
                 TableViewsHistory.Add(faceDownTakes.BuildView());
                 takes.AddRange(faceDownTakes);
 
@@ -119,30 +112,31 @@ namespace LaBataille
                     takes.Drop();
                     break;
                 }
-
                 TableViewsHistory.Add(faceUpTakes.BuildView());
                 takes.AddRange(faceUpTakes);
 
-                // F
-                var playerIf = faceUpTakes.StrongestPlayerIfExit();
+                // Find the competitor having the strongest card, and only he has that card
+                var strongestPlayer = faceUpTakes.StrongestPlayerIfExit();
 
-                if (playerIf != null)
+                if (strongestPlayer != null)
                 {
-                    playerIf.Gather(takes);
+                    strongestPlayer.Gather(takes);
 
                     highestTakeIsFromBattle = true;
                     break;
                 }
             }
 
-            //return winner;
+            return highestTakeIsFromBattle;
+        }
+
+        private void BuildDroppedCards(IEnumerable<Take> takes)
+        {
+            DroppedCards.AddRange(takes.Where(x => x.Dropped).Select(t => t.Card));
         }
 
         private static bool NeedBattle(IReadOnlyList<Take> takes, ref List<Player> competitors)
         {
-            var competitors2 = new List<Player>();
-
-
             if (!takes.Any())
             {
                 competitors = null;

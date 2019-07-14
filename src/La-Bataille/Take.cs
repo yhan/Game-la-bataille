@@ -39,10 +39,10 @@ namespace LaBataille
 
         public void Drop()
         {
-            //if (Dropped)
-            //{
-            //    throw new InvalidOperationException($"{this} is already dropped");
-            //}
+            if (Dropped)
+            {
+                throw new InvalidOperationException($"{this} is already dropped");
+            }
 
             Dropped = true;
         }

@@ -14,6 +14,12 @@ namespace LaBataille
             return takesWhenPossible;
         }
 
+
+        public static Player[] WhoHaveCards(this IEnumerable<Player> players)
+        {
+            return players.Where(c => c.HasCards()).ToArray();
+        }
+
         public static bool OnlyOneStillHasCards(this IEnumerable<Player> players, out Player winner)
         {
             var survivors = players.Where(x => x.CardStack.Size > 0);
