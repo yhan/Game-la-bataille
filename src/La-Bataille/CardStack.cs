@@ -30,7 +30,7 @@ namespace LaBataille
 
         public CardStack Shuffle()
         {
-            _inner =  _inner.ShuffleList();
+            _inner =  _inner.ShuffleList().ToList();
             return this;
         }
 

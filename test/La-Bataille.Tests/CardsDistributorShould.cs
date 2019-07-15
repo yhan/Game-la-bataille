@@ -15,7 +15,7 @@ namespace LaBataille.Tests
             var numberOfPlayers = 4;
             var expectedCardsStackSize = 13;
 
-            var distributor = new CardsDistributor(new CardsProvider(), PlayersBuilder.BuildPlayers(numberOfPlayers));
+            var distributor = new CardsDistributor(new CardsProvider(), PlayersBuilder.BuildPlayers(numberOfPlayers, new CardsShufflerForTest()));
             var players = distributor.Distribute();
 
             for (int id = 0; id < numberOfPlayers; id++)
@@ -35,7 +35,7 @@ namespace LaBataille.Tests
         {
             var numberOfPlayers = 4;
             
-            var distributor = new CardsDistributor(new CardsProvider(), PlayersBuilder.BuildPlayers(numberOfPlayers));
+            var distributor = new CardsDistributor(new CardsProvider(), PlayersBuilder.BuildPlayers(numberOfPlayers, new CardsShufflerForTest()));
             var players = distributor.Distribute();
 
             var allCards = players.Select(p => p.CardStack).SelectMany(c => c).ToArray();
@@ -63,7 +63,7 @@ namespace LaBataille.Tests
             var numberOfPlayers = 3;
             var expectedCardsStackSize = 17;
 
-            var distributor = new CardsDistributor(new CardsProvider(), PlayersBuilder.BuildPlayers(numberOfPlayers));
+            var distributor = new CardsDistributor(new CardsProvider(), PlayersBuilder.BuildPlayers(numberOfPlayers, new CardsShufflerForTest()));
             var players = distributor.Distribute();
 
             for (int id = 0; id < numberOfPlayers; id++)
@@ -82,15 +82,13 @@ namespace LaBataille.Tests
                 Console.WriteLine("#########################################################");
             }
         }
-
-
-        [Test]
         
+        [Test]
         public void Have_at_least_3_cards_each_for_all_players([Range(18, 52/*Here should be int.Max, but this hangs my computer*/)]int numberOfPlayers)
         {
             Check.ThatCode(() =>
             {
-                var distributor = new CardsDistributor(new CardsProvider(), PlayersBuilder.BuildPlayers(numberOfPlayers));
+                var distributor = new CardsDistributor(new CardsProvider(), PlayersBuilder.BuildPlayers(numberOfPlayers, new CardsShufflerForTest()));
             }).Throws<ArgumentException>()
                 .WithMessage("Each player should have at least 3 cards. Number of players can not exceed 17. ");
         }
@@ -99,7 +97,7 @@ namespace LaBataille.Tests
         [Test]
         public void Should_have_at_least_2_players_in_a_game()
         {
-            Check.ThatCode(() => new CardsDistributor(CardsProvider.Instance, new List<Player>() {new Player(0)}))
+            Check.ThatCode(() => new CardsDistributor(CardsProvider.Instance, new List<Player> {new Player(0, new CardsShufflerForTest())}))
                 .Throws<ArgumentException>()
                 .WithMessage("Should have at least 2 players in a game");
         }
@@ -110,7 +108,7 @@ namespace LaBataille.Tests
             var cardsProvider = new CardsProvider();
             var cards = cardsProvider.Provide().ToList();
 
-            var shuffled = cards.ShuffleList();
+            var shuffled = cards.ShuffleList().ToList();
 
             Check.That(shuffled.Count).IsEqualTo(cards.Count);
             Check.That(shuffled).IsEquivalentTo(cards);
@@ -131,6 +129,18 @@ namespace LaBataille.Tests
             Check.That(shuffled.Count).IsEqualTo(cards.Count);
             Check.That(shuffled).IsEquivalentTo(cards);
             Check.ThatCode(() => { Check.That(shuffled).ContainsExactly(original); }).Throws<NUnit.Framework.AssertionException>();
+        }
+    }
+
+    /// <summary>
+    /// Put the smaller one on the bottom of CardStack, 
+    /// to introduce some determinism for testing.
+    /// </summary>
+    public class CardsShufflerForTest : IShuffleCards
+    {
+        public IEnumerable<Card> Shuffle(IEnumerable<Card> cards)
+        {
+            return cards.OrderByDescending(card => card);
         }
     }
 }

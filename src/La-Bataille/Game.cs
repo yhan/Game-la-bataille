@@ -35,7 +35,7 @@ namespace LaBataille
             bool reShuffled = false;
             while (!GameOver(ref winner))
             {
-                if (ShouldContinue(ref iterations, ref reShuffled, ref iterationsAfterReShuffle, out IAmTheGameOver draw))
+                if (ShouldContinue(ref iterations, ref iterationsAfterReShuffle, ref reShuffled, out IAmTheGameOver draw))
                 {
                     continue;
                 }
@@ -70,7 +70,7 @@ namespace LaBataille
             return new HasWinner(winner);
         }
 
-        private bool ShouldContinue(ref int iterations, ref bool reShuffled, ref int iterationsAfterReShuffle, out IAmTheGameOver draw)
+        private bool ShouldContinue(ref int iterations, ref int iterationsAfterReShuffle, ref bool reShuffled, out IAmTheGameOver draw)
         {
             if (iterations == 1000 && !reShuffled)
             {

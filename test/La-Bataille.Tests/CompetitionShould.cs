@@ -10,7 +10,7 @@ namespace LaBataille.Tests
         [Test]
         public void Can_play_n_rounds_and_rank_players()
         {
-            var players = Enumerable.Range(0, count: 2).Select(x => new Player(x)).ToList();
+            var players = Enumerable.Range(0, count: 2).Select(id => new Player(id, new CardsShufflerForTest())).ToList();
 
             var distributor = new DistributorForTest(players);
 
@@ -30,7 +30,7 @@ namespace LaBataille.Tests
         [Test]
         public void Can_play_n_rounds_and_rank_players_with_draw_game()
         {
-            var players = Enumerable.Range(0, count: 3).Select(x => new Player(x)).ToList();
+            var players = Enumerable.Range(0, count: 3).Select(id => new Player(id, new CardsShufflerForTest())).ToList();
 
             var distributor = new DistributorWithDrawForTest(players);
 

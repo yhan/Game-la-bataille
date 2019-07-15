@@ -29,7 +29,7 @@ namespace LaBataille.Console
                     System.Console.WriteLine("Number of rounds? ");
                     var numberOfRounds = int.Parse( System.Console.ReadLine());
 
-                    var players = PlayersBuilder.BuildPlayers(numberOfPlayers).ToList();
+                    var players = PlayersBuilder.BuildPlayers(numberOfPlayers, new RealCardsShuffler()).ToList();
                     var gameFactory = new GameFactory(new CardsDistributor(CardsProvider.Instance, players));
                     var competition = new Competition(numberOfRounds, gameFactory, players);
                     var gameOverVisitor = new ConsoleVisitGameOver();

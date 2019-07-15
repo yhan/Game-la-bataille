@@ -27,10 +27,10 @@ namespace LaBataille
             return list;
         }
 
-        public static List<T> ShuffleList<T>(this List<T> inputList)
+        public static IEnumerable<T> ShuffleList<T>(this IEnumerable<T> inputList)
         {
             var rnd = new Random();
-            var shuffledList = inputList.OrderBy( p => rnd.Next()).ToList();
+            var shuffledList = inputList.OrderBy( p => rnd.Next());
 
             return shuffledList;
         }

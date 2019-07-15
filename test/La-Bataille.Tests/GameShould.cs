@@ -77,7 +77,7 @@ namespace LaBataille.Tests
                 new List<Card>{d12, d14, d10, s12, d11},
                 new List<Card>{d3,  h3,  d14, s8,  d4}
 
-            }, PlayersBuilder.BuildPlayers(4));
+            }, PlayersBuilder.BuildPlayers(4, new CardsShufflerForTest()));
 
             var gameOver = game.Play();
 
@@ -108,7 +108,7 @@ namespace LaBataille.Tests
                 new List<Card>{s3, d7, s11},
                 new List<Card>{d4, h12, d11}
 
-            }, PlayersBuilder.BuildPlayers(3));
+            }, PlayersBuilder.BuildPlayers(3, new CardsShufflerForTest()));
 
             var gameOver = game.Play();
 
@@ -129,7 +129,7 @@ namespace LaBataille.Tests
                 new List<Card>{s7,  d5,  d14, d4,  s12, d3},
                 new List<Card>{s2,  d8,  h7,  s11, s8,  c3}
 
-            }, PlayersBuilder.BuildPlayers(4));
+            }, PlayersBuilder.BuildPlayers(4, new CardsShufflerForTest()));
 
             var gameOver = game.Play();
             var hasWinner = (HasWinner)gameOver;
@@ -145,7 +145,7 @@ namespace LaBataille.Tests
                 new List<Card>{s7, d2, h8, s11, s2},
                 new List<Card>{s6, d3, s8, s13, d2}
 
-            }, PlayersBuilder.BuildPlayers(2));
+            }, PlayersBuilder.BuildPlayers(2, new CardsShufflerForTest()));
 
             var gameOver = game.Play();
 
@@ -168,7 +168,7 @@ namespace LaBataille.Tests
                 new List<Card>{h8, s14, d7},
                 new List<Card>{h9, h14, c10},
                 new List<Card>{d2, d3, d11}
-            }, PlayersBuilder.BuildPlayers(3));
+            }, PlayersBuilder.BuildPlayers(3, new CardsShufflerForTest()));
 
             var gameOver = game.Play();
             var players = game.Players;
@@ -198,7 +198,7 @@ namespace LaBataille.Tests
             { 
                 new List<Card> {c10},
                 new List<Card> {s11}
-            }, PlayersBuilder.BuildPlayers(2));
+            }, PlayersBuilder.BuildPlayers(2, new CardsShufflerForTest()));
 
             var gameOver = game.Play();
             var player0 = game.Players[0];
@@ -223,7 +223,7 @@ namespace LaBataille.Tests
             {
                 new List<Card> {s2, d3, c4},
                 new List<Card> {s3, d2, c5}
-            }, PlayersBuilder.BuildPlayers(2));
+            }, PlayersBuilder.BuildPlayers(2, new CardsShufflerForTest()));
 
 
             var gameOver = game.Play();
@@ -253,7 +253,7 @@ namespace LaBataille.Tests
             {
                 new List<Card> {d8, s3, d2, c6},
                 new List<Card> {c7, d4, s2, c5}
-            }, PlayersBuilder.BuildPlayers(2));
+            }, PlayersBuilder.BuildPlayers(2, new CardsShufflerForTest()));
 
 
             var gameOver = game.Play();
@@ -282,7 +282,7 @@ namespace LaBataille.Tests
             {
                 new List<Card> {d7, s3, d2, c6},
                 new List<Card> {c7, d4, s2, c5}
-            }, PlayersBuilder.BuildPlayers(2));
+            }, PlayersBuilder.BuildPlayers(2, new CardsShufflerForTest()));
 
 
             var gameOver = game.Play();
@@ -313,7 +313,7 @@ namespace LaBataille.Tests
             {
                 new List<Card> {s14, d8, s5, s3, d2, c6},
                 new List<Card> {s11, c9, h5, d4, s2, c5}
-            }, PlayersBuilder.BuildPlayers(2));
+            }, PlayersBuilder.BuildPlayers(2, new CardsShufflerForTest()));
 
             var gameOver = game.Play();
             var players = game.Players;
@@ -344,7 +344,7 @@ namespace LaBataille.Tests
                 new List<Card> {s2, d3, d4},
                 new List<Card> {s3, d2, c5},
                 new List<Card> {s13, s14, c2}
-            }, PlayersBuilder.BuildPlayers(3));
+            }, PlayersBuilder.BuildPlayers(3, new CardsShufflerForTest()));
 
 
             var gameOver = game.Play();
@@ -384,7 +384,7 @@ namespace LaBataille.Tests
                 new List<Card>{d14, d8, d7},
                 new List<Card>{s14, s8, s7},
                 new List<Card>{c14, c8, c7}
-            }, PlayersBuilder.BuildPlayers(3));
+            }, PlayersBuilder.BuildPlayers(3, new CardsShufflerForTest()));
 
             var gameOver = game.Play();
             var players = game.Players;
@@ -410,7 +410,7 @@ namespace LaBataille.Tests
                 new List<Card>{s11, s14, s8, s7},
                 new List<Card>{c11, c14, c8, c7},
                 new List<Card>{h11, h14, h8, h7}
-            }, PlayersBuilder.BuildPlayers(4));
+            }, PlayersBuilder.BuildPlayers(4, new CardsShufflerForTest()));
 
             var gameOver = game.Play();
             var players = game.Players;
@@ -437,7 +437,7 @@ namespace LaBataille.Tests
                 new List<Card> {h2, h5, h7, s3},
                 new List<Card> {h3, c10, s7, h4},
                 new List<Card> {d14, d11, s2, c5}
-            }, PlayersBuilder.BuildPlayers(3));
+            }, PlayersBuilder.BuildPlayers(3, new CardsShufflerForTest()));
             var gameOver = game.Play();
 
             var history = game.TableViewsHistory;
@@ -457,7 +457,7 @@ namespace LaBataille.Tests
                 new List<Card> {h5, d6, s7},
                 new List<Card> {s6, s8, h7},
                 new List<Card> { h4, s3, d2}
-            }, PlayersBuilder.BuildPlayers(3));
+            }, PlayersBuilder.BuildPlayers(3, new CardsShufflerForTest()));
             var gameOver = game.Play();
 
             var player0 = game.Players[0];

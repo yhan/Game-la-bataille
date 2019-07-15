@@ -36,39 +36,39 @@ cf. c# code documentation
 
 > __In the following document, let's following this:  We start from right (top of the card stack), in a configuration: Player A: 3,  9,  10, 8. The first card to play is 8.__
 
+> __In the following document, Cards is numerated from 2 to 14. 11 is Jack, 12 Queen, 13 is King and 14 is As.__
+
 1. **Drop cards**
-In some circumstances, I have no choice but drop cards. 
+In some circumstances of battle, I have no choice but drop cards, because we can't execute a battle for the following reasons:
    1. _**In a battle, one or no more player still has card.**_  
-     Player A: (... no more card here) Jack (♣)  
-     Player B: (... no more card here) Jack (♥)    
+     Player A: (... no more card here) 11 (♣)  
+     Player B: (... no more card here) 11 (♥)    
      The two jacks meet battle condition, but both players have no more card, hence can't put face-down cards. I drop the 2 jacks.   
      OR  
-     Player A:            10(♣), 2(♣), Jack (♣)  
-     Player B: (... no more card here) Jack (♥)    
+     Player A:            10(♣), 2(♣), 11 (♣)  
+     Player B: (... no more card here) 11 (♥)    
      The two players can't make a battle, I drop th 2 jacks
 
    1. _**In a battle, battle competitors can no more take out face-up cards**_  
-     Player A:            2(♣),  Jack (♣)  
-     Player B:            10(♣), Jack (♥)    
-     => I drop all 4 cards.
+       player A:            8, 14  
+       player B:            9, 14  
+       player C: 7, 10, 11, 2,  3  
+
+       A and B battle at 14, but they can no more cards to put face-up.  
+       Difficult decision to make! If I give all involved cards to C, not fair play because at this round both A and B have higher cards than C. My arbitrage is to  `drop` all involved cards: 8, 9, 14, 14, 3.
    
     1. _**In a battle, only on battle competitor can take out face-up card**_  
      Player A:    Q(♣),  2(♣),  Jack (♣)  
      Player B:           10(♣), Jack (♥)    
+     =>  I drop all 5 cards.
 
-1. **Tie on battle**  
-In case of a tie on battle, the battle procedure is repeated. The first one who does not have a card loses. If both have no card at the same time, there is a draw.
 
+1. **Draw on battle**  
+In case of a draw on battle, the battle procedure is repeated. The first one who does not have a card loses. If both have no card at the same time, there is a draw. (_indicated by Marc-Antoine_)
 
 1. **End of game**  
-For the end of the game, there are cases where it can never end. What I can advise you is to mix the cards earned (in real life, by picking up the cards, we rarely pick them up in the same order). To this can be added a rule: "After 1000 rounds in a game, the players stop and there is a draw. "
-
-1. **D  ne autre face découverte)
-
-1. **Console**  
-Pour la console, pas besoin de pauses.
-
-
+For the end of the game, there are cases where it can never end.  
+What is implemented is do 1000 iterations, if no winner, then all survivors shuffle their earned cards. After the shuffling, after 1000 iterations still got no winner, then the players stop and there is a draw." (_suggested by Marc-Antoine_)
 
 1. **Triggering condition of Battle**
 When we have more than 2 players, battle will be triggered only when 2 or more than 2 players have the **strongest card**.
@@ -77,7 +77,8 @@ Player A: 3,  **9**,  10, 8
 Player B: 4,  **7**,  11, 8  
 Player C: 5,  **7**,  12, 8  
 
-The battle starts from 8. 10, 11, 12 face down; 9, 7, 7 face up. Here the battle won't be triggered, as the strongest card is 9, even B and C have the same card 7. 
+The battle starts from the identical eights.   
+10, 11, 12 face down; 9, 7, 7 face up. Here the battle won't be triggered, as the strongest card is 9, even that B and C have the same card 7. 
 > I find the rule [here](https://www.jeux-cartes.biz/jeux-daccumulation/bataille/) : __Si deux ou plusieurs joueurs sont à égalité pour le plus haut il y a une bataille.__
 
 On the contrarily, if we have:
@@ -87,9 +88,6 @@ _Player C_: 5,  **7**,  12, 8
 
 Then yes, we have a battle with 6, 7 and 7, as 7 is the strongest card in this round.
 
-
-https://www.jeux-cartes.biz/jeux-daccumulation/bataille/
-
 1. **Deal with situation of battle**
 
     1. **Deal with the players who are not in the battle**
@@ -98,31 +96,20 @@ https://www.jeux-cartes.biz/jeux-daccumulation/bataille/
         player B:       3, 10, 7  
         player C: 3, 4, 5, 11, 2  
 
-        obviously we have battle between A and B, and the winner of battle is B.
-        __The question is how to deal with player C's `card 2`__.
+        Obviously we have battle between A and B, and the winner of battle is B.
+        __The question is how to deal with player C's `card 2`, which is uncovered (face up)?__.
         In my solution, player B can gather also that `card 2 `. So finally, battle allows B to take 2, 1, 7 (A's cards), 3, 10, 7 (B keeps his own cards) and 2 (C's card)
 
-    1. **Battle competitors have not enough cards to pull a face-up card**
-       
-       player A:            8, 14  
-       player B:            9, 14  
-       player C: 7, 10, 11, 2,  3  
+1. **In what order should put the earned cards back to stack?**
+   If my initial stack is: 4, 2 (t4 on the bottom of `CardStack`) and the guy wins two cards 5 and 13. To introduce some determinism, I decide the way I put the won cards in descendent sorted order.  
 
-       A and B battle at 14, but they can no more pull face-up cards.  
-       Difficult decision to make! If I give all involved cards to C, not fair play because at this round both A and B have higher cards than C. My arbitrage is to  `drop` all involved cards: 8, 9, 14, 14, 3.
+   So after have gathered the won cards, stack looks like: 5, 13, 4, 2
+   If the values of cards are identical, refer to `figure`, the order of `figure` follows the value of `enum Figure` in the code base.
+
 
 # Run my program in your Unit tests
 
-Some decision on my side can impact the test result:  
 
-t4 for _trefle de quatre_; c2 for _coeur de deux_
-
-1.  If my initial stack is: t4, c2 (t4 on the bottom of `paquet`) and the guy wins two cards c5 and p13. To introduce some determinism to the game, I decide the way I put the won cards on the bottom of my `Paquet` is: put the smaller on the bottom and bigger one on bottom + 1 level.
-If the values of cards are identical, refer to `figure`, the order of `figure` follows the value of `enum Figure` in the code base.
-
-
-# Domain specific language
-As the text is in French, the wording for domain is in French as well. On the technical words remain English.
 
 # Reference
 
