@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using NFluent;
@@ -8,6 +9,125 @@ namespace LaBataille.Tests
     [TestFixture]
     public class GameShould
     {
+        #region cards
+
+        protected readonly Card d2 = 2.AsDiamond();
+        protected readonly Card d3 = 3.AsDiamond();
+        protected readonly Card d4 = 4.AsDiamond();
+        protected readonly Card d5 = 5.AsDiamond();
+        protected readonly Card d6 = 6.AsDiamond();
+        protected readonly Card d7 = 7.AsDiamond();
+        protected readonly Card d8 = 8.AsDiamond();
+        protected readonly Card d10 = 10.AsDiamond();
+        protected readonly Card d11 = 11.AsDiamond();
+        protected readonly Card d12 = 12.AsDiamond();
+        protected readonly Card d14 = 14.AsDiamond();
+
+        protected readonly Card s2 = 2.AsSpade();
+        protected readonly Card s3 = 3.AsSpade();
+        protected readonly Card s5 = 5.AsSpade();
+        protected readonly Card s6 = 6.AsSpade();
+        protected readonly Card s7 = 7.AsSpade();
+        protected readonly Card s8 = 8.AsSpade();
+        protected readonly Card s11 = 11.AsSpade();
+        protected readonly Card s12 = 12.AsSpade();
+        protected readonly Card s13 = 13.AsSpade();
+        protected readonly Card s14 = 14.AsSpade();
+
+        protected readonly Card c2 = 2.AsClub();
+        protected readonly Card c3 = 3.AsClub();
+        protected readonly Card c4 = 4.AsClub();
+        protected readonly Card c5 = 5.AsClub();
+        protected readonly Card c6 = 6.AsClub();
+        protected readonly Card c7 = 7.AsClub();
+        protected readonly Card c8 = 8.AsClub();
+        protected readonly Card c9 = 9.AsClub();
+        protected readonly Card c10 = 10.AsClub();
+        protected readonly Card c11 = 11.AsClub();
+        protected readonly Card c14 = 14.AsClub();
+
+
+        protected readonly Card h2 = 2.AsHeart();
+        protected readonly Card h3 = 3.AsHeart();
+        protected readonly Card h4 = 4.AsHeart();
+        protected readonly Card h5 = 5.AsHeart();
+        protected readonly Card h6 = 6.AsHeart();
+        protected readonly Card h7 = 7.AsHeart();
+        protected readonly Card h8 = 8.AsHeart();
+        protected readonly Card h9 = 9.AsHeart();
+        protected readonly Card h10 = 10.AsHeart();
+        protected readonly Card h11 = 11.AsHeart();
+        protected readonly Card h12 = 12.AsHeart();
+        protected readonly Card h14 = 14.AsHeart();
+
+        #endregion
+
+        [Test]
+        public void Should_take_other_cards_in_the_same_range_When_face_up_cards_get_a_stronger_one2()
+        {
+            var game = GameBuilder.BuildGame(new List<List<Card>>
+            {
+                new List<Card>{s13, d2,  s2,  d5,  h6},
+                new List<Card>{s8,  h9,  h10, d7,  s11},
+                new List<Card>{d12, d14, d10, s12, d11},
+                new List<Card>{d3,  h3,  d14, s8,  d4}
+
+            }, PlayersBuilder.BuildPlayers(4));
+
+            var gameOver = game.Play(NullShuffle.Instance);
+
+            var hasWinner = (HasWinner)gameOver;
+            var player2 = game.Players[2];
+            Check.That(hasWinner.Winner).IsEqualTo(player2);
+
+            foreach (var view in game.TableViewsHistory)
+            {
+                Console.WriteLine(view);
+            }
+
+            Check.That(player2.CardStack.Size).IsEqualTo(4*5); // wrong 18
+            Check.That(game.DroppedCards).HasSize(0); // wrong 0
+        }
+
+
+        [Test]
+        public void Should_have_correct_number_of_won_cards_and_dropped_cards()
+        {
+            var game = GameBuilder.BuildGame(new List<List<Card>>
+            {
+                new List<Card>{s13, s13, d2,  c4,  d6,    s3},
+                new List<Card>{s6,  s5,  h9,  h4,  d7,    h3},
+                new List<Card>{s7,  d5,   d14,   d4,  s12,   d3},
+                new List<Card>{s2,  d8,  h7,  s11, s8,  c3}
+
+            }, PlayersBuilder.BuildPlayers(4));
+
+            var gameOver = game.Play(NullShuffle.Instance);
+            var hasWinner = (HasWinner)gameOver;
+            Check.That(game.DroppedCards.Count + hasWinner.Winner.CardStack.Size).IsEqualTo(6 * 4);
+        }
+
+        [Test]
+        public void Should_take_other_cards_in_the_same_range_When_face_up_cards_get_a_stronger_one()
+        {
+            var game = GameBuilder.BuildGame(new List<List<Card>>
+            {
+                new List<Card>{s2, d5, h6},
+                new List<Card>{s3, d7, s11},
+                new List<Card>{d4, h12, d11}
+
+            }, PlayersBuilder.BuildPlayers(3));
+
+            var gameOver = game.Play(NullShuffle.Instance);
+
+            var hasWinner = (HasWinner)gameOver;
+            var player2 = game.Players[2];
+            Check.That(hasWinner.Winner).IsEqualTo(player2);
+
+            Check.That(player2.CardStack.Size).IsEqualTo(9);
+        }
+
+
         [Test]
         public void Should_continue_battle_if_faceUp_cards_are_all_identical()
         {
@@ -356,49 +476,5 @@ namespace LaBataille.Tests
             Check.That(game.DroppedCards).HasSize(0);
         }
 
-        #region cards
-
-        protected readonly Card d2 = 2.AsDiamond();
-        protected readonly Card d3 = 3.AsDiamond();
-        protected readonly Card d4 = 4.AsDiamond();
-        protected readonly Card d6 = 6.AsDiamond();
-        protected readonly Card d7 = 7.AsDiamond();
-        protected readonly Card d8 = 8.AsDiamond();
-        protected readonly Card d11 = 11.AsDiamond();
-        protected readonly Card d14 = 14.AsDiamond();
-
-        protected readonly Card s2 = 2.AsSpade();
-        protected readonly Card s3 = 3.AsSpade();
-        protected readonly Card s5 = 5.AsSpade();
-        protected readonly Card s6 = 6.AsSpade();
-        protected readonly Card s7 = 7.AsSpade();
-        protected readonly Card s8 = 8.AsSpade();
-        protected readonly Card s11 = 11.AsSpade();
-        protected readonly Card s13 = 13.AsSpade();
-        protected readonly Card s14 = 14.AsSpade();
-
-        protected readonly Card c2 = 2.AsClub();
-        protected readonly Card c4 = 4.AsClub();
-        protected readonly Card c5 = 5.AsClub();
-        protected readonly Card c6 = 6.AsClub();
-        protected readonly Card c7 = 7.AsClub();
-        protected readonly Card c8 = 8.AsClub();
-        protected readonly Card c9 = 9.AsClub();
-        protected readonly Card c10 = 10.AsClub();
-        protected readonly Card c11 = 11.AsClub();
-        protected readonly Card c14 = 14.AsClub();
-
-
-        protected readonly Card h2 = 2.AsHeart();
-        protected readonly Card h3 = 3.AsHeart();
-        protected readonly Card h4 = 4.AsHeart();
-        protected readonly Card h5 = 5.AsHeart();
-        protected readonly Card h7 = 7.AsHeart();
-        protected readonly Card h8 = 8.AsHeart();
-        protected readonly Card h9 = 9.AsHeart();
-        protected readonly Card h11 = 11.AsHeart();
-        protected readonly Card h14 = 14.AsHeart();
-
-        #endregion
     }
 }

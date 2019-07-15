@@ -49,6 +49,19 @@ namespace LaBataille
             return players.All(p => p.CardStack.Size == 0);
         }
 
+
+        public static bool AllButOneAreEmpty(this IEnumerable<Player> players, out Player survivor)
+        {
+            var survivors = players.Where(p=> p.HasCards()).ToArray();
+            if (survivors.Length > 1)
+            {
+                survivor = null;
+                return false;
+            }
+
+            survivor = survivors.Single();
+            return true;
+        }
     }
 
     

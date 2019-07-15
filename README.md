@@ -86,3 +86,10 @@ As the text is in French, the wording for domain is in French as well. On the te
 [This](https://www.fetedujeu.org/jeux-societe/cartes/bataille/) gave me some clarification of some implicit points.
 
 
+BUG fix
+
+ while (NeedBattle(takes.KeepTheLast(numberOfPlayersInTheGame), ref competitors))
+
+Check if numberOfPlayersInTheGame is correct
+
+2) numberOfPlayersInTheGame is correct?

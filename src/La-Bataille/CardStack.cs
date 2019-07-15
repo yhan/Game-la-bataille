@@ -24,6 +24,13 @@ namespace LaBataille
             _inner = cartes.ToList();
         }
 
+
+        public CardStack Sort()
+        {
+            _inner.Sort();
+            return this;
+        }
+
         /// <summary>
         /// Take on card from the top.
         /// </summary>

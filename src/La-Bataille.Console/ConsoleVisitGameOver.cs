@@ -26,7 +26,12 @@ namespace LaBataille.Console
                     foreach (var player in game.Players)
                     {
                         System.Console.WriteLine($"player {player.Id} having {player.CardStack.Size} cards");
+
+                        System.Console.WriteLine($"Player {player.Id} cards: {player.CardStack.Sort()}");
                     }
+
+                    System.Console.WriteLine(string.Join(", ", game.DroppedCards));
+
                     break;
                 case HasWinner hasWinner:
                     var winner = hasWinner.Winner;
@@ -34,6 +39,18 @@ namespace LaBataille.Console
 
                     System.Console.WriteLine($"GAME OVER.");
                     System.Console.WriteLine($"THE WINNER IS 'Player {hasWinner.Winner.Id}'");
+
+
+                    System.Console.WriteLine($"Number of dropped cards: {game.DroppedCards.Count}");
+                    foreach (var player in game.Players)
+                    {
+                        System.Console.WriteLine($"player {player.Id} having {player.CardStack.Size} cards");
+
+                        System.Console.WriteLine($"Player {player.Id} cards: {player.CardStack.Sort()}");
+                    }
+
+                    System.Console.WriteLine(string.Join(", ", game.DroppedCards));
+
                     break;
             }
         }
