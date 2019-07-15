@@ -12,6 +12,11 @@ namespace LaBataille
         private readonly IShuffleCards _cardsShuffler;
         public int Id { get; }
 
+        /// <summary>
+        /// Ctor
+        /// </summary>
+        /// <param name="id">Player's id</param>
+        /// <param name="cardsShuffler">Used for shuffling earned cards</param>
         public Player(int id, IShuffleCards cardsShuffler)
         {
             _cardsShuffler = cardsShuffler;

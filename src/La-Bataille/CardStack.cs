@@ -22,12 +22,19 @@ namespace LaBataille
             _inner = cartes.ToList();
         }
 
+        /// <summary>
+        /// Only for Console displaying convenience
+        /// </summary>
+        /// <returns></returns>
         public CardStack Sort()
         {
             _inner.Sort();
             return this;
         }
 
+        /// <summary>
+        /// Shuffle the <see cref="CardStack"/>.
+        /// </summary>
         public CardStack Shuffle()
         {
             _inner =  _inner.ShuffleList().ToList();

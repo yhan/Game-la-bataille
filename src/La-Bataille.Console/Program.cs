@@ -43,7 +43,7 @@ namespace LaBataille.Console
                 
 
                 System.Console.ForegroundColor = ConsoleColor.Green;
-                System.Console.WriteLine("###########   RANKING   #####################");
+                System.Console.WriteLine("\r\n\r\n###########   RANKING   #####################");
                 System.Console.ResetColor();
             
                 foreach (var rank in ranking)
