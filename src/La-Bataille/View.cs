@@ -4,7 +4,7 @@ using System.Collections.Generic;
 namespace LaBataille
 {
     /// <summary>
-    /// Represent what we see on the table for a given time.
+    /// Represent what we see on the table after all players have put their cards on the table.
     /// </summary>
     public class View : IEnumerable<TwoFaceCard>
     {
