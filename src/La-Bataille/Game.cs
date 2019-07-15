@@ -130,15 +130,19 @@ namespace LaBataille
 
                 // face up cards
                 var faceUpTakes = competitors.TakeOneCardEach(Visibility.FaceUp);
-                if (!faceUpTakes.Any() || faceUpTakes.Count == 1)
+                if (!faceUpTakes.Any())
                 {
                     takes.Drop();
-                    if(faceUpTakes.Count == 1)
-                    {
-                        faceUpTakes[0].Player.Gather(faceUpTakes);
-                    }
                     break;
                 }
+
+                if (faceUpTakes.Count == 1)
+                {
+                    takes.Drop();
+                    faceUpTakes[0].Player.Gather(faceUpTakes);
+                    break;
+                }
+
                 TableViewsHistory.Add(faceUpTakes.BuildView());
                 takes.AddRange(faceUpTakes);
                 if (faceUpTakes.AllEqual())
