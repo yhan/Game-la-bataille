@@ -1,17 +1,60 @@
 
-# Summary
-**Goal**
-Your program must create and play n virtual players in the "Battle" card game.
 
-**Input**:
- - either a number of players and a number of games to play
- - or a list of players who have already had a distributed card package
+# Solution structure
+Provided solution uses c# on .net core platform.
 
-**Output**:
- - The history of the cards having been seen on the board 
- - and the ranking of the players at the end of the games
+1. Solution structure:
+    - Algorithm in La-Bataille project
+    - Console app in La-Bataille.Console
+    - Tests project in La-Bataille.Tests
+
+1. Dependencies:  
+Algorithm does not use any third party libraries.
+Third party libraries are used in test project. (cf. [Tests section](#tests))
+
+# Domain language
+After have hesitated a long time, I decided to use English. As mixing French noun and English verbs (technical or non technical)  is really weird.
+For instance, "la bataille" is called `Battle` is the solution.
+
+# Entities and Aggregate root used in solution
+cf. c# code documentation
+
+**Aggregate root**: 
+- `Competition`: A competition is composed of N `Game`(N >= 1), also called `Rounds`  
+
+**Entity**: 
+- `Game`: In the game 2 or more players do the "la bataille" game. (The core logic is here)
+- `Player`: The participant of Game.
+- `Take`: Player takes a card, is called a Take.
+- `Card`
+- `TwoFaceCard`: Represent a card is played by a Player wih Face-Up or Face-down property.
+- `CardStack`: Represent the card stack in front of each Player. Take from the top of stack;  Put back to the bottom of stack.
+- `View`: Represent what we see on the table for a given time.
+
 
 # Assumption
+
+> __In the following document, let's following this:  We start from right (top of the card stack), in a configuration: Player A: 3,  9,  10, 8. The first card to play is 8.__
+
+1. **Drop cards**
+In some circumstances, I have no choice but drop cards. 
+   1. _**In a battle, one or no more player still has card.**_  
+     Player A: (... no more card here) Jack (♣)  
+     Player B: (... no more card here) Jack (♥)    
+     The two jacks meet battle condition, but both players have no more card, hence can't put face-down cards. I drop the 2 jacks.   
+     OR  
+     Player A:            10(♣), 2(♣), Jack (♣)  
+     Player B: (... no more card here) Jack (♥)    
+     The two players can't make a battle, I drop th 2 jacks
+
+   1. _**In a battle, battle competitors can no more take out face-up cards**_  
+     Player A:            2(♣),  Jack (♣)  
+     Player B:            10(♣), Jack (♥)    
+     => I drop all 4 cards.
+   
+    1. _**In a battle, only on battle competitor can take out face-up card**_  
+     Player A:    Q(♣),  2(♣),  Jack (♣)  
+     Player B:           10(♣), Jack (♥)    
 
 1. **Tie on battle**  
 In case of a tie on battle, the battle procedure is repeated. The first one who does not have a card loses. If both have no card at the same time, there is a draw.
@@ -25,7 +68,7 @@ For the end of the game, there are cases where it can never end. What I can advi
 1. **Console**  
 Pour la console, pas besoin de pauses.
 
-> In the following document, let's following this:  We start from right (top of the card stack), in a configuration: Player A: 3,  9,  10, 8. The first card to play is 8.
+
 
 1. **Triggering condition of Battle**
 When we have more than 2 players, battle will be triggered only when 2 or more than 2 players have the **strongest card**.
@@ -93,3 +136,17 @@ BUG fix
 Check if numberOfPlayersInTheGame is correct
 
 2) numberOfPlayersInTheGame is correct?
+
+
+
+# Original development requirement
+**Goal**
+Your program must create and play n virtual players in the "Battle" card game.
+
+**Input**:
+ - either a number of players and a number of games to play
+ - or a list of players who have already had a distributed card package
+
+**Output**:
+ - The history of the cards having been seen on the board 
+ - and the ranking of the players at the end of the games

@@ -1,7 +1,5 @@
 using System.Collections.Generic;
 using System.Linq;
-using NFluent;
-using NFluent.Helpers;
 
 namespace LaBataille
 {
@@ -67,7 +65,7 @@ namespace LaBataille
                 return Draw.Instance;
             }
 
-            Check.That(winner.CardStack.Size + DroppedCards.Count == _distributor.DistributedCardsSize).IsTrue();
+            System.Diagnostics.Debug.Assert(winner.CardStack.Size + DroppedCards.Count == _distributor.DistributedCardsSize, "We have leaking cards here");
 
             return new HasWinner(winner);
         }

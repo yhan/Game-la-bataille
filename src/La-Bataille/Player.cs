@@ -1,14 +1,13 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Value;
 
 namespace LaBataille
 {
     /// <summary>
     /// The participant of <see cref="Game"/>
     /// </summary>
-    public class Player : ValueType<Player>
+    public class Player
     {
         public int Id { get; }
 
@@ -59,11 +58,6 @@ namespace LaBataille
             this.Gather(takes.Select(x => x.Card)
                 .OrderByDescending(x => x) /*Put the smaller one on the bottom of CardStack, 
                                                                           to introduce some determinism for the following levee*/);
-        }
-
-        protected override IEnumerable<object> GetAllAttributesToBeUsedForEquality()
-        {
-            return new object[] { Id };
         }
 
         public override string ToString()
