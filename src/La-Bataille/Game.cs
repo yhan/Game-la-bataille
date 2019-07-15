@@ -140,8 +140,6 @@ namespace LaBataille
 
                 if (competitorsStillHavingCards.Length == 1)
                 {
-                    //competitorsStillHavingCards[0].Gather(takes);
-
                     break;
                 }
                 
