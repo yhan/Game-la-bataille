@@ -1,10 +1,10 @@
 using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
 
 namespace LaBataille
 {
+    /// <summary>
+    /// Score of a <see cref="T:LaBataille.Player" />
+    /// </summary>
     public class Score : IComparable<Score>, IEquatable<Score>
     {
         private int _value;
@@ -16,6 +16,10 @@ namespace LaBataille
 
         public void Increment(int points)
         {
+            if (points <= 0)
+            {
+                throw new ArgumentException("Score can only increment");
+            }
             _value += points;
         }
 
@@ -28,7 +32,6 @@ namespace LaBataille
         {
             return _value.CompareTo(other._value);
         }
-
 
         public bool Equals(Score other)
         {
@@ -43,47 +46,13 @@ namespace LaBataille
 
         public override int GetHashCode()
         {
+            // ReSharper disable once NonReadonlyMemberInGetHashCode
             return _value;
         }
         
         public override string ToString()
         {
             return this._value.ToString();
-        }
-    }
-
-    public class Ranking : IEnumerable<Rank>
-    {
-        private readonly IEnumerable<Rank> _ranks;
-
-        public Ranking(IEnumerable<Player> playersOrderedByScore)
-        {
-            _ranks = playersOrderedByScore.OrderByDescending(p => p.Score).Select((p, i) => new Rank(i + 1, p));
-        }
-
-
-        public IEnumerator<Rank> GetEnumerator()
-        {
-            return _ranks.GetEnumerator();
-        }
-
-        IEnumerator IEnumerable.GetEnumerator()
-        {
-            return GetEnumerator();
-        }
-    }
-    
-    public class Rank
-    {
-        public int Number { get; }
-        public Player Player { get; }
-
-        public Score Score => Player.Score;
-
-        public Rank(int number, Player player)
-        {
-            Number = number;
-            Player = player;
         }
     }
 }

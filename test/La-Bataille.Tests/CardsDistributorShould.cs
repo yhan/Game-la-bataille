@@ -103,5 +103,34 @@ namespace LaBataille.Tests
                 .Throws<ArgumentException>()
                 .WithMessage("Should have at least 2 players in a game");
         }
+
+        [Test]
+        public void Can_shuffle_cards()
+        {
+            var cardsProvider = new CardsProvider();
+            var cards = cardsProvider.Provide().ToList();
+
+            var shuffled = cards.ShuffleList();
+
+            Check.That(shuffled.Count).IsEqualTo(cards.Count);
+            Check.That(shuffled).IsEquivalentTo(cards);
+            Check.ThatCode(() => { Check.That(shuffled).ContainsExactly(cards); }).Throws<NUnit.Framework.AssertionException>();
+        }
+
+
+        [Test]
+        public void Can_shuffle_cards2()
+        {
+            var cardsProvider = new CardsProvider();
+            var cards = cardsProvider.Provide().ToList();
+
+            var original = new List<Card>(cards);
+            
+            var shuffled = cards.Shuffle();
+
+            Check.That(shuffled.Count).IsEqualTo(cards.Count);
+            Check.That(shuffled).IsEquivalentTo(cards);
+            Check.ThatCode(() => { Check.That(shuffled).ContainsExactly(original); }).Throws<NUnit.Framework.AssertionException>();
+        }
     }
 }

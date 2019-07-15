@@ -50,7 +50,7 @@ namespace LaBataille
 
                 TableViewsHistory.Add(takes.BuildView());
 
-                var playerOfStrongestTake = takes.StrongestPlayerIfExit();
+                var playerOfStrongestTake = takes.UniqueStrongestPlayerIfExit();
                 if (playerOfStrongestTake != null)
                 {
                     playerOfStrongestTake.Gather(takes);
@@ -88,7 +88,7 @@ namespace LaBataille
 
             if (iterationsAfterReShuffle == 1000)
             {
-                draw = new Draw($"After {iterations} iterations and After ReShuffled {iterationsAfterReShuffle} iterations, still no winner. Declare this game as a DRAW");
+                draw = new Draw($"After {iterations - iterationsAfterReShuffle} iterations and After ReShuffled {iterationsAfterReShuffle} iterations, still no winner. Declare this game as a DRAW");
                 return false;
             }
 
@@ -175,7 +175,7 @@ namespace LaBataille
                 }
 
                 // Find the competitor having the strongest card, and only he has that card
-                var strongestPlayer = faceUpTakes.StrongestPlayerIfExit();
+                var strongestPlayer = faceUpTakes.UniqueStrongestPlayerIfExit();
 
                 if (strongestPlayer != null)
                 {

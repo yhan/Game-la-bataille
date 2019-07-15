@@ -1,11 +1,12 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace LaBataille
 {
 
     /// <summary>
-    /// Shuffle N elements of whatever type 
+    /// Two ways of shuffle N elements of whatever type 
     /// </summary>
     public static class Shuffler
     {
@@ -24,6 +25,14 @@ namespace LaBataille
             }
 
             return list;
+        }
+
+        public static List<T> ShuffleList<T>(this List<T> inputList)
+        {
+            var rnd = new Random();
+            var shuffledList = inputList.OrderBy( p => rnd.Next()).ToList();
+
+            return shuffledList;
         }
     }
 }

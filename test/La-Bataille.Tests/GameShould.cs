@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using NFluent;
 using NUnit.Framework;
 
@@ -202,9 +201,10 @@ namespace LaBataille.Tests
             }, PlayersBuilder.BuildPlayers(2));
 
             var gameOver = game.Play();
-
+            var player0 = game.Players[0];
+            var player1 = game.Players[1];
             Check.That(game.TableViewsHistory).HasSize(1);
-            Check.That(game.TableViewsHistory[0].AsPureCartes()).IsEquivalentTo(c10, s11);
+            Check.That(game.TableViewsHistory[0]).IsEquivalentTo(c10.FaceUp(player0), s11.FaceUp(player1));
 
             Check.That(game.Players[0].CardStack).HasSize(0);
 

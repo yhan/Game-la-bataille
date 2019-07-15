@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 
 namespace LaBataille.Console
 {
@@ -22,15 +23,14 @@ namespace LaBataille.Console
                 case Draw draw:
                     System.Console.WriteLine($"GAME ENDED WITH A DRAW. Reason: {draw.Reason}");
 
-                    System.Console.WriteLine($"Number of dropped cards: {game.DroppedCards.Count}");
-                    foreach (var player in game.Players)
+                    PrintDroppedCards(game);
+
+                    System.Console.WriteLine("Players still have cards: ");
+                    foreach (var player in game.Players.Where(p => p.HasCards()))
                     {
-                        System.Console.WriteLine($"player {player.Id} having {player.CardStack.Size} cards");
-
-                        System.Console.WriteLine($"Player {player.Id} cards: {player.CardStack.Sort()}");
+                        System.Console.WriteLine($"Player {player.Id} having {player.CardStack.Size} cards");
+                        System.Console.WriteLine($"    ===> They are: {player.CardStack.Sort()}");
                     }
-
-                    System.Console.WriteLine(string.Join(", ", game.DroppedCards));
 
                     break;
                 case HasWinner hasWinner:
@@ -38,21 +38,20 @@ namespace LaBataille.Console
                     System.Diagnostics.Debug.Assert(winner.CardStack.Size + game.DroppedCards.Count == game.DistributedCardsSize);
 
                     System.Console.WriteLine($"GAME OVER.");
-                    System.Console.WriteLine($"THE WINNER IS 'Player {hasWinner.Winner.Id}'");
+                    
+                    System.Console.WriteLine($"THE WINNER IS 'Player {winner.Id}'");
+                    System.Console.WriteLine($"    ===> He has {winner.CardStack.Size} cards: {winner.CardStack.Sort()}");
 
-
-                    System.Console.WriteLine($"Number of dropped cards: {game.DroppedCards.Count}");
-                    foreach (var player in game.Players)
-                    {
-                        System.Console.WriteLine($"player {player.Id} having {player.CardStack.Size} cards");
-
-                        System.Console.WriteLine($"Player {player.Id} cards: {player.CardStack.Sort()}");
-                    }
-
-                    System.Console.WriteLine(string.Join(", ", game.DroppedCards));
+                    PrintDroppedCards(game);
 
                     break;
             }
+        }
+
+        private static void PrintDroppedCards(Game game)
+        {
+            System.Console.WriteLine($"Number of dropped cards: {game.DroppedCards.Count}");
+            System.Console.WriteLine($"They are: {string.Join(", ", game.DroppedCards)}");
         }
     }
 }

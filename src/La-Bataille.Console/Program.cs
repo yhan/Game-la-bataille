@@ -4,13 +4,13 @@ using System.Linq;
 namespace LaBataille.Console
 {
     /// <summary>
-    /// input:
-    ///  - un nombre de joueurs et un nombre de parties à jouer
-    /// 
-    /// En output:
-    /// - L'historique des cartes ayant été vues sur le plateau
-    /// - et le classement des joueurs à l'issue des parties
-    /// 
+    /// [INPUT]:
+    /// - a number of players and a number of games to play
+    ///
+    /// [OUTPUT]:
+    /// - The history of the cards having been seen on the board
+    /// - and the ranking of the players after the games
+    ///
     /// </summary>
     class Program
     {
@@ -18,19 +18,29 @@ namespace LaBataille.Console
         {
             while (true)
             {
-                System.Console.WriteLine("Number of players? ");
-                var numberOfPlayers = int.Parse( System.Console.ReadLine());
+                Ranking ranking;
+                try
+                {
+                    System.Console.WriteLine();
 
-                System.Console.WriteLine("Number of rounds? ");
-                var numberOfRounds = int.Parse( System.Console.ReadLine());
+                    System.Console.WriteLine("Number of players? ");
+                    var numberOfPlayers = int.Parse( System.Console.ReadLine());
 
-                var players = PlayersBuilder.BuildPlayers(numberOfPlayers).ToList();
-                var gameFactory = new GameFactory(new CardsDistributor(CardsProvider.Instance, players));
-                var competition = new Competition(numberOfRounds, gameFactory, players);
+                    System.Console.WriteLine("Number of rounds? ");
+                    var numberOfRounds = int.Parse( System.Console.ReadLine());
 
-
-                var gameOverVisitor = new ConsoleVisitGameOver();
-                var ranking = competition.Play(gameOverVisitor);
+                    var players = PlayersBuilder.BuildPlayers(numberOfPlayers).ToList();
+                    var gameFactory = new GameFactory(new CardsDistributor(CardsProvider.Instance, players));
+                    var competition = new Competition(numberOfRounds, gameFactory, players);
+                    var gameOverVisitor = new ConsoleVisitGameOver();
+                    ranking = competition.Play(gameOverVisitor);
+                }
+                catch (Exception e)
+                {
+                    System.Console.WriteLine(e.Message);
+                    continue;
+                }
+                
 
                 System.Console.ForegroundColor = ConsoleColor.Green;
                 System.Console.WriteLine("###########   RANKING   #####################");

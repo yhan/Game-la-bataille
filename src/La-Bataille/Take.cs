@@ -5,7 +5,7 @@ using System.Linq;
 namespace LaBataille
 {
     /// <summary>
-    /// Play take a card makes it a `Take`
+    /// Player takes a card, is called a `Take`
     /// </summary>
     public class Take : IComparable<Take>
     {
@@ -53,6 +53,9 @@ namespace LaBataille
 
     public static class TakeExtensions
     {
+        /// <summary>
+        /// After all players have took a card, build a <see cref="View"/> of table.
+        /// </summary>
         public static View BuildView(this IEnumerable<Take> takes)
         {
             return new View(takes.Select(take => new TwoFaceCard(take.Player, take.Card, take.Visibility)).ToArray());
@@ -66,7 +69,10 @@ namespace LaBataille
             return takes.Reverse().Take(numberOfPlayersInTheGame).ToList();
         }
         
-        public static Player StrongestPlayerIfExit(this IEnumerable<Take> takes)
+        /// <summary>
+        /// Try to find the <see cref="Player"/> who has the strongest card, and only he has that card
+        /// </summary>
+        public static Player UniqueStrongestPlayerIfExit(this IEnumerable<Take> takes)
         {
             var array = takes as Take[] ?? takes.ToArray();
             var take = array.Max();
@@ -78,6 +84,11 @@ namespace LaBataille
             return null;
         }
 
+        /// <summary>
+        /// Check if all takes have exactly the same value of <see cref="Card"/>
+        /// </summary>
+        /// <param name="takes"></param>
+        /// <returns></returns>
         public static bool AllEqual(this IEnumerable<Take> takes)
         {
             var takesArray = takes as Take[] ?? takes.ToArray();
@@ -90,6 +101,10 @@ namespace LaBataille
             return true;
         }
 
+        /// <summary>
+        /// Drop all <param name="takes"></param>
+        /// </summary>
+        /// <param name="takes"></param>
         public static void Drop(this IEnumerable<Take> takes)
         {
             foreach (var take in takes)

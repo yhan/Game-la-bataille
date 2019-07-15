@@ -15,7 +15,7 @@ namespace LaBataille
         /// <summary>
         /// Top is at the end of list; bottom is at the beginning of list.
         /// </summary>
-        private readonly List<Card> _inner;
+        private List<Card> _inner;
 
         public CardStack(IEnumerable<Card> cartes)
         {
@@ -30,7 +30,7 @@ namespace LaBataille
 
         public CardStack Shuffle()
         {
-            _inner.Shuffle();
+            _inner =  _inner.ShuffleList();
             return this;
         }
 
