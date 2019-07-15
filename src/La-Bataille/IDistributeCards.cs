@@ -5,9 +5,7 @@ using System.Linq;
 namespace LaBataille
 {
     /// <summary>
-    ///  Routine which randomizes a collection of cartes
-    /// 
-    /// Implementation should have numberOfJoueurs (and maybe all the cards to play with) as input
+    /// Routine which randomizes a collection of cartes
     /// </summary>
     public interface IDistributeCards
     {
@@ -29,6 +27,11 @@ namespace LaBataille
             if (_players.Length > 17)
             {
                 throw new ArgumentException("Each player should have at least 3 cards. Number of players can not exceed 17. ");
+            }
+
+            if (_players.Length < 2)
+            {
+                throw new ArgumentException("Should have at least 2 players in a game");
             }
 
             _numberOfPlayers = _players.Length;

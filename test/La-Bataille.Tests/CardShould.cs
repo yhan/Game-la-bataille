@@ -33,7 +33,6 @@ namespace LaBataille.Tests
             Check.That(pique11 > trefles10).IsTrue();
         }
 
-
         [Test]
         public void Have_correct_values_range()
         {

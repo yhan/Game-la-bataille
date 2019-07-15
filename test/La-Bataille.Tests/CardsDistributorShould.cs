@@ -15,8 +15,6 @@ namespace LaBataille.Tests
             var numberOfPlayers = 4;
             var expectedCardsStackSize = 13;
 
-            
-
             var distributor = new CardsDistributor(new CardsProvider(), PlayersBuilder.BuildPlayers(numberOfPlayers));
             var players = distributor.Distribute();
 
@@ -33,7 +31,7 @@ namespace LaBataille.Tests
 
 
         [Test]
-        public void Can_distribute_provided_cards_Without_missing_cards_And_no_redundent_cards()
+        public void Can_distribute_provided_cards_Without_missing_cards_And_no_redundant_cards()
         {
             var numberOfPlayers = 4;
             
@@ -95,6 +93,15 @@ namespace LaBataille.Tests
                 var distributor = new CardsDistributor(new CardsProvider(), PlayersBuilder.BuildPlayers(numberOfPlayers));
             }).Throws<ArgumentException>()
                 .WithMessage("Each player should have at least 3 cards. Number of players can not exceed 17. ");
+        }
+
+
+        [Test]
+        public void Should_have_at_least_2_players_in_a_game()
+        {
+            Check.ThatCode(() => new CardsDistributor(CardsProvider.Instance, new List<Player>() {new Player(0)}))
+                .Throws<ArgumentException>()
+                .WithMessage("Should have at least 2 players in a game");
         }
     }
 }

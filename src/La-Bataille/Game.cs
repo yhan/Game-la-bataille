@@ -5,6 +5,9 @@ using NFluent.Helpers;
 
 namespace LaBataille
 {
+    /// <summary>
+    /// In the game 2 or more players do the "la bataille" game
+    /// </summary>
     public class Game
     {
         private readonly IDistributeCards _distributor;
@@ -12,73 +15,19 @@ namespace LaBataille
         public Game(IDistributeCards distributor)
         {
             _distributor = distributor;
-
             DistributedCardsSize = _distributor.DistributedCardsSize;
-
         }
 
-        public int DistributedCardsSize { get; private set; }
+        public int DistributedCardsSize { get; }
 
         public List<Player> Players { get; private set; }
 
         public List<View> TableViewsHistory { get; } = new List<View>();
 
-        public List<Card> DroppedCards { get; set; } = new List<Card>();
+        public List<Card> DroppedCards { get;  } = new List<Card>();
 
 
-        private bool GameOver(ref Player player)
-        {
-            if (DroppedCards.Count == _distributor.DistributedCardsSize)
-            {
-                player = null;
-                return true; // draw
-            }
-
-            foreach (var player1 in Players)
-            {
-                if (player1.CardStack.Size + DroppedCards.Count == _distributor.DistributedCardsSize)
-                {
-                    player = player1;
-                    return true; // has a winner
-                }
-            }
-
-            player = null;
-            return false;
-        }
-
-
-        private bool ShouldContinue(ref int iterations, ref bool reShuffled, ref int iterationsAfterReShuffle, out IAmTheGameOver draw)
-        {
-            if (iterations == 1000 && !reShuffled)
-            {
-                foreach (var survivor1000Iterations in Players.Where(p => p.HasCards()))
-                {
-                    survivor1000Iterations.CardStack.Shuffle();
-                }
-
-                reShuffled = true;
-                draw = new NullDraw("ReShuffle");
-                return true;
-            }
-
-            if (iterationsAfterReShuffle == 1000)
-            {
-                draw = new Draw($"After {iterations} iterations and After ReShuffled {iterationsAfterReShuffle} iterations, still no winner. Declare this game as a DRAW");
-                return false;
-            }
-
-            iterations++;
-            if (reShuffled)
-            {
-                iterationsAfterReShuffle++;
-            }
-
-            draw = new NullDraw("Continuation when iterations < 1000");
-            return false;
-        }
-
-        public IAmTheGameOver Play(IShuffle shuffle)
+        public IAmTheGameOver Play()
         {
             Players = _distributor.Distribute();
 
@@ -92,19 +41,12 @@ namespace LaBataille
                 {
                     continue;
                 }
-
                 if (draw is Draw)
                 {
                     return draw;
                 }
 
-                if (this.Players.AllButOneAreEmpty(out Player survivor))
-                {
-                    winner = survivor;
-                    break;
-                }
                 var takes = Players.TakeOneCardEach(Visibility.FaceUp);
-                
 
                 TableViewsHistory.Add(takes.BuildView());
 
@@ -128,6 +70,57 @@ namespace LaBataille
             Check.That(winner.CardStack.Size + DroppedCards.Count == _distributor.DistributedCardsSize).IsTrue();
 
             return new HasWinner(winner);
+        }
+
+        private bool ShouldContinue(ref int iterations, ref bool reShuffled, ref int iterationsAfterReShuffle, out IAmTheGameOver draw)
+        {
+            if (iterations == 1000 && !reShuffled)
+            {
+                foreach (var survivor1000Iterations in Players.Where(p => p.HasCards()))
+                {
+                    survivor1000Iterations.CardStack.Shuffle();
+                }
+
+                reShuffled = true;
+                draw = new GameOngoing("ReShuffle");
+                return true;
+            }
+
+            if (iterationsAfterReShuffle == 1000)
+            {
+                draw = new Draw($"After {iterations} iterations and After ReShuffled {iterationsAfterReShuffle} iterations, still no winner. Declare this game as a DRAW");
+                return false;
+            }
+
+            iterations++;
+            if (reShuffled)
+            {
+                iterationsAfterReShuffle++;
+            }
+
+            draw = new GameOngoing("Continuation when iterations < 1000");
+            return false;
+        }
+
+        private bool GameOver(ref Player player)
+        {
+            if (DroppedCards.Count == _distributor.DistributedCardsSize)
+            {
+                player = null;
+                return true; // draw
+            }
+
+            foreach (var player1 in Players)
+            {
+                if (player1.CardStack.Size + DroppedCards.Count == _distributor.DistributedCardsSize)
+                {
+                    player = player1;
+                    return true; // has a winner
+                }
+            }
+
+            player = null;
+            return false;
         }
 
         private void RunBattleIfNecessary(List<Take> takes)

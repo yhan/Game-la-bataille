@@ -3,12 +3,11 @@ using System.Linq;
 
 namespace LaBataille
 {
-    public interface IProvideCards
-    {
-        IEnumerable<Card> Provide();
-    }
 
-    public class CardsProvider : IProvideCards
+    /// <summary>
+    /// Generates all <see cref="Card"/>s
+    /// </summary>
+    public class CardsProvider
     {
         public static  CardsProvider Instance = new CardsProvider();
 

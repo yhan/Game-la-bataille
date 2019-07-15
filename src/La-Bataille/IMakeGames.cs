@@ -1,15 +1,13 @@
 namespace LaBataille
 {
-    public interface IMakeGames
-    {
-        Game Build();
-    }
-
-    public class GameFactory: IMakeGames
+    /// <summary>
+    /// Build a <see cref="Game"/>
+    /// </summary>
+    public class GameFactory
     {
         private readonly IDistributeCards _cardsDistributor;
 
-        public GameFactory( IDistributeCards cardsDistributor)
+        public GameFactory(IDistributeCards cardsDistributor)
         {
             _cardsDistributor = cardsDistributor;
         }

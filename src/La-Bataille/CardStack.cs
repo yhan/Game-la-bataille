@@ -4,16 +4,14 @@ using System.Linq;
 
 namespace LaBataille
 {
-    /// <summary>
-    /// Represent the card stack in front of each <see cref="Player"/>
-    ///
-    /// Take from the top of stack;
-    /// Put back to the bottom of stack.
-    /// 
-    /// </summary>
+    /// <inheritdoc />
+    ///  <summary>
+    ///  Represent the card stack in front of each <see cref="T:LaBataille.Player" />
+    ///  Take from the top of stack;
+    ///  Put back to the bottom of stack.
+    ///  </summary>
     public class CardStack : IEnumerable<Card>
     {
-
         /// <summary>
         /// Top is at the end of list; bottom is at the beginning of list.
         /// </summary>
@@ -23,7 +21,6 @@ namespace LaBataille
         {
             _inner = cartes.ToList();
         }
-
 
         public CardStack Sort()
         {

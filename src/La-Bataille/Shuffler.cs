@@ -3,6 +3,10 @@ using System.Collections.Generic;
 
 namespace LaBataille
 {
+
+    /// <summary>
+    /// Shuffle N elements of whatever type 
+    /// </summary>
     public static class Shuffler
     {
         private static readonly Random Randomizer = new Random();

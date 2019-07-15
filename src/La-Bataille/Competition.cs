@@ -1,15 +1,24 @@
+using System;
 using System.Collections.Generic;
-using System.Runtime.CompilerServices;
 
 namespace LaBataille
 {
+
+    /// <summary>
+    /// A competition is composed of N <see cref="Game"/> (N >= 1), also called `Rounds`
+    /// </summary>
     public class Competition
     {
         private readonly List<Player> _players;
         private readonly List<Game> _games = new List<Game>();
 
-        public Competition(int numberOfRounds, IMakeGames factory, List<Player> players)
+        public Competition(int numberOfRounds, GameFactory factory, List<Player> players)
         {
+            if (numberOfRounds < 1)
+            {
+                throw new ArgumentException("A competition should at least one round.");
+            }
+
             _players = players;
             
             for (int round = 0; round < numberOfRounds; round++)
@@ -22,7 +31,7 @@ namespace LaBataille
         {
             foreach (var game in _games)
             {
-                var gameOver = game.Play(NullShuffle.Instance);
+                var gameOver = game.Play();
 
                 gameOverVisitor.Visit(game, gameOver);
 
@@ -46,10 +55,5 @@ namespace LaBataille
             
             return new Ranking(_players);
         }
-    }
-
-    public interface IVisitGameOver
-    {
-        void Visit(Game game, IAmTheGameOver gameOver);
     }
 }

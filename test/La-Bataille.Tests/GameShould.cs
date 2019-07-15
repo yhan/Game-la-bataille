@@ -62,6 +62,12 @@ namespace LaBataille.Tests
 
         #endregion
 
+
+        /// <summary>
+        ///  When we battle h10 and d10, the very first uncovered cards h6, d4
+        ///  should be gathered by the final winner of battle: the card holder of d12
+        /// 
+        /// </summary>
         [Test]
         public void Should_take_other_cards_in_the_same_range_When_face_up_cards_get_a_stronger_one2()
         {
@@ -74,7 +80,7 @@ namespace LaBataille.Tests
 
             }, PlayersBuilder.BuildPlayers(4));
 
-            var gameOver = game.Play(NullShuffle.Instance);
+            var gameOver = game.Play();
 
             var hasWinner = (HasWinner)gameOver;
             var player2 = game.Players[2];
@@ -85,28 +91,15 @@ namespace LaBataille.Tests
                 Console.WriteLine(view);
             }
 
-            Check.That(player2.CardStack.Size).IsEqualTo(4*5); // wrong 18
-            Check.That(game.DroppedCards).HasSize(0); // wrong 0
+            Check.That(player2.CardStack.Size).IsEqualTo(4 * 5);
+            Check.That(game.DroppedCards).HasSize(0);
         }
 
-
-        [Test]
-        public void Should_have_correct_number_of_won_cards_and_dropped_cards()
-        {
-            var game = GameBuilder.BuildGame(new List<List<Card>>
-            {
-                new List<Card>{s13, s13, d2,  c4,  d6,    s3},
-                new List<Card>{s6,  s5,  h9,  h4,  d7,    h3},
-                new List<Card>{s7,  d5,   d14,   d4,  s12,   d3},
-                new List<Card>{s2,  d8,  h7,  s11, s8,  c3}
-
-            }, PlayersBuilder.BuildPlayers(4));
-
-            var gameOver = game.Play(NullShuffle.Instance);
-            var hasWinner = (HasWinner)gameOver;
-            Check.That(game.DroppedCards.Count + hasWinner.Winner.CardStack.Size).IsEqualTo(6 * 4);
-        }
-
+        /// <summary>
+        ///  When we battle s11 and d11, the very first uncovered cards h6
+        ///  should be gathered by the final winner of battle: the card holder of d4
+        /// 
+        /// </summary>
         [Test]
         public void Should_take_other_cards_in_the_same_range_When_face_up_cards_get_a_stronger_one()
         {
@@ -118,13 +111,30 @@ namespace LaBataille.Tests
 
             }, PlayersBuilder.BuildPlayers(3));
 
-            var gameOver = game.Play(NullShuffle.Instance);
+            var gameOver = game.Play();
 
             var hasWinner = (HasWinner)gameOver;
             var player2 = game.Players[2];
             Check.That(hasWinner.Winner).IsEqualTo(player2);
 
             Check.That(player2.CardStack.Size).IsEqualTo(9);
+        }
+
+        [Test]
+        public void Should_have_correct_number_of_won_cards_and_dropped_cards()
+        {
+            var game = GameBuilder.BuildGame(new List<List<Card>>
+            {
+                new List<Card>{s13, s13, d2,  c4,  d6,  s3},
+                new List<Card>{s6,  s5,  h9,  h4,  d7,  h3},
+                new List<Card>{s7,  d5,  d14, d4,  s12, d3},
+                new List<Card>{s2,  d8,  h7,  s11, s8,  c3}
+
+            }, PlayersBuilder.BuildPlayers(4));
+
+            var gameOver = game.Play();
+            var hasWinner = (HasWinner)gameOver;
+            Check.That(game.DroppedCards.Count + hasWinner.Winner.CardStack.Size).IsEqualTo(6 * 4);
         }
 
 
@@ -138,10 +148,10 @@ namespace LaBataille.Tests
 
             }, PlayersBuilder.BuildPlayers(2));
 
-            var gameOver = game.Play(NullShuffle.Instance);
+            var gameOver = game.Play();
 
             Check.That(gameOver).IsInstanceOf<HasWinner>();
-            var hasWinner = (HasWinner) gameOver;
+            var hasWinner = (HasWinner)gameOver;
 
             var player0 = game.Players[0];
             Check.That(hasWinner.Winner).IsEqualTo(player0);
@@ -161,7 +171,7 @@ namespace LaBataille.Tests
                 new List<Card>{d2, d3, d11}
             }, PlayersBuilder.BuildPlayers(3));
 
-            var gameOver = game.Play(NullShuffle.Instance);
+            var gameOver = game.Play();
             var players = game.Players;
             var player1 = players[0];
             var player2 = players[1];
@@ -185,14 +195,13 @@ namespace LaBataille.Tests
         [Test]
         public void Can_play_the_very_first_take()
         {
-
             var game = GameBuilder.BuildGame(new List<List<Card>>
-            { //#2
+            { 
                 new List<Card> {c10},
                 new List<Card> {s11}
             }, PlayersBuilder.BuildPlayers(2));
 
-            var gameOver = game.Play(NullShuffle.Instance);
+            var gameOver = game.Play();
 
             Check.That(game.TableViewsHistory).HasSize(1);
             Check.That(game.TableViewsHistory[0].AsPureCartes()).IsEquivalentTo(c10, s11);
@@ -212,17 +221,16 @@ namespace LaBataille.Tests
         {
             var game = GameBuilder.BuildGame(new List<List<Card>>
             {
-                //#3
                 new List<Card> {s2, d3, c4},
                 new List<Card> {s3, d2, c5}
             }, PlayersBuilder.BuildPlayers(2));
 
 
-            var gameOver = game.Play(NullShuffle.Instance);
+            var gameOver = game.Play();
             var players = game.Players;
             var player1 = players[0];
             var player2 = players[1];
-            
+
             Check.That(game.TableViewsHistory).HasSize(5);
             Check.That(game.TableViewsHistory[0]).IsEquivalentTo(c4.FaceUp(player1), c5.FaceUp(player2));
             Check.That(game.TableViewsHistory[1]).IsEquivalentTo(d3.FaceUp(player1), d2.FaceUp(player2));
@@ -243,13 +251,12 @@ namespace LaBataille.Tests
         {
             var game = GameBuilder.BuildGame(new List<List<Card>>
             {
-                //#4
                 new List<Card> {d8, s3, d2, c6},
                 new List<Card> {c7, d4, s2, c5}
             }, PlayersBuilder.BuildPlayers(2));
 
 
-            var gameOver = game.Play(NullShuffle.Instance);
+            var gameOver = game.Play();
             var players = game.Players;
             var player1 = players[0];
             var player2 = players[1];
@@ -269,17 +276,16 @@ namespace LaBataille.Tests
         }
 
         [Test]
-        public void Find_a_winner_with_only_two_battle_and_2nd_battle_failed_to_play()
+        public void Find_a_winner_with_only_two_battle_and_2nd_battle_failed_to_play_because_no_more_enough_cards()
         {
             var game = GameBuilder.BuildGame(new List<List<Card>>
             {
-                //#4
                 new List<Card> {d7, s3, d2, c6},
                 new List<Card> {c7, d4, s2, c5}
             }, PlayersBuilder.BuildPlayers(2));
 
 
-            var gameOver = game.Play(NullShuffle.Instance);
+            var gameOver = game.Play();
             var players = game.Players;
             var player1 = players[0];
             var player2 = players[1];
@@ -291,9 +297,11 @@ namespace LaBataille.Tests
             Check.That(game.TableViewsHistory[3]).IsEquivalentTo(d7.FaceUp(player1), c7.FaceUp(player2));
 
             Check.That(gameOver).IsInstanceOf<HasWinner>();
+            var hasWinner = (HasWinner)gameOver;
+            Check.That(hasWinner.Winner).IsEqualTo(player1);
 
-            Check.That(game.Players[0].CardStack).HasSize(2);
-            Check.That(game.Players[1].CardStack).HasSize(0);
+            Check.That(player1.CardStack).HasSize(2);
+            Check.That(player2.CardStack).HasSize(0);
             Check.That(game.DroppedCards).HasSize(6);
         }
 
@@ -301,14 +309,13 @@ namespace LaBataille.Tests
         [Test]
         public void Can_find_a_winner_with_two_iterations_battles()
         {
-            //#1
             var game = GameBuilder.BuildGame(new List<List<Card>>
             {
                 new List<Card> {s14, d8, s5, s3, d2, c6},
                 new List<Card> {s11, c9, h5, d4, s2, c5}
             }, PlayersBuilder.BuildPlayers(2));
 
-            var gameOver = game.Play(NullShuffle.Instance);
+            var gameOver = game.Play();
             var players = game.Players;
             var player1 = players[0];
             var player2 = players[1];
@@ -324,9 +331,9 @@ namespace LaBataille.Tests
             Check.That(gameOver).IsInstanceOf<HasWinner>();
             Check.That(((HasWinner)gameOver).Winner).IsEqualTo(game.Players[0]);
 
-            Check.That(game.Players[0].CardStack).HasSize(12);
-            Check.That(game.Players[1].CardStack).HasSize(0);
-            Check.That(game.Players[0].CardStack).IsEquivalentTo(s14, d8, s5, s3, d2, c6, s11, c9, h5, d4, s2, c5);
+            Check.That(player1.CardStack).HasSize(12);
+            Check.That(player2.CardStack).HasSize(0);
+            Check.That(player1.CardStack).IsEquivalentTo(s14, d8, s5, s3, d2, c6, s11, c9, h5, d4, s2, c5);
         }
 
         [Test]
@@ -340,7 +347,7 @@ namespace LaBataille.Tests
             }, PlayersBuilder.BuildPlayers(3));
 
 
-            var gameOver = game.Play(NullShuffle.Instance);
+            var gameOver = game.Play();
             var players = game.Players;
             var player1 = players[0];
             var player2 = players[1];
@@ -358,17 +365,16 @@ namespace LaBataille.Tests
 
             Check.That(gameOver).IsInstanceOf<HasWinner>();
             var winner = ((HasWinner)gameOver).Winner;
-            Check.That(winner).IsEqualTo(game.Players[2]);
+            Check.That(winner).IsEqualTo(player3);
             Check.That(winner.CardStack.Size).IsEqualTo(3);
 
-            Check.That(game.Players[0].CardStack).HasSize(0);
-            Check.That(game.Players[1].CardStack).HasSize(0);
-            Check.That(game.Players[2].CardStack).HasSize(3);
-            Check.That(game.Players[2].CardStack).IsEquivalentTo(c5, s14, s2);
+            Check.That(player1.CardStack).HasSize(0);
+            Check.That(player2.CardStack).HasSize(0);
+            Check.That(player3.CardStack).HasSize(3);
+            Check.That(player3.CardStack).IsEquivalentTo(c5, s14, s2);
 
             Check.That(game.DroppedCards.Count).IsEqualTo(6);
         }
-
 
         [Test]
         public void End_the_game_by_a_Draw_When_the_last_survivors_have_no_more_cards_at_the_same_time()
@@ -380,7 +386,7 @@ namespace LaBataille.Tests
                 new List<Card>{c14, c8, c7}
             }, PlayersBuilder.BuildPlayers(3));
 
-            var gameOver = game.Play(NullShuffle.Instance);
+            var gameOver = game.Play();
             var players = game.Players;
             var player1 = players[0];
             var player2 = players[1];
@@ -395,7 +401,6 @@ namespace LaBataille.Tests
             Check.That(gameOver).IsInstanceOf<Draw>();
         }
 
-
         [Test]
         public void End_the_game_by_a_Draw_When_the_last_survivors_have_no_more_enough_cards_to_battle()
         {
@@ -407,8 +412,7 @@ namespace LaBataille.Tests
                 new List<Card>{h11, h14, h8, h7}
             }, PlayersBuilder.BuildPlayers(4));
 
-
-            var gameOver = game.Play(NullShuffle.Instance);
+            var gameOver = game.Play();
             var players = game.Players;
             var player1 = players[0];
             var player2 = players[1];
@@ -425,7 +429,6 @@ namespace LaBataille.Tests
             Check.That(gameOver).IsInstanceOf<Draw>();
         }
 
-
         [Test]
         public void Should_continue_When_a_player_has_no_more_card_after_a_battle_but_not_all_players()
         {
@@ -435,7 +438,7 @@ namespace LaBataille.Tests
                 new List<Card> {h3, c10, s7, h4},
                 new List<Card> {d14, d11, s2, c5}
             }, PlayersBuilder.BuildPlayers(3));
-            var gameOver = game.Play(NullShuffle.Instance);
+            var gameOver = game.Play();
 
             var history = game.TableViewsHistory;
             Check.That(history).HasSize(15);
@@ -455,7 +458,7 @@ namespace LaBataille.Tests
                 new List<Card> {s6, s8, h7},
                 new List<Card> { h4, s3, d2}
             }, PlayersBuilder.BuildPlayers(3));
-            var gameOver = game.Play(NullShuffle.Instance);
+            var gameOver = game.Play();
 
             var player0 = game.Players[0];
             var player1 = game.Players[1];
@@ -469,7 +472,7 @@ namespace LaBataille.Tests
             Check.That(history[3]).IsEquivalentTo(s8.FaceUp(player1), s3.FaceUp(player2));
             Check.That(history[4]).IsEquivalentTo(s7.FaceUp(player1), h4.FaceUp(player2));
 
-            var winner = ((HasWinner) gameOver).Winner;
+            var winner = ((HasWinner)gameOver).Winner;
             Check.That(winner).IsEqualTo(game.Players[1]);
 
             Check.That(winner.CardStack.Size).IsEqualTo(9);

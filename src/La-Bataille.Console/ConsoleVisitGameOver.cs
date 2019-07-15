@@ -1,8 +1,8 @@
 using System;
-using System.Runtime.InteropServices.ComTypes;
 
 namespace LaBataille.Console
 {
+ 
     public class ConsoleVisitGameOver : IVisitGameOver
     {
         public void Visit(Game game, IAmTheGameOver gameOver)

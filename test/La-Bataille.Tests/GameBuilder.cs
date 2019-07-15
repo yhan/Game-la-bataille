@@ -9,8 +9,8 @@ namespace LaBataille.Tests
         /// <summary>
         /// Build a battle's initial state.
         /// </summary>
-        /// <param name="distribution">Represent a stubbed distribution of cartes.
-        ///     By Player, we have a list of CardStack. Hence a list of cartes list
+        /// <param name="distribution">Represent a stubbed distribution of cards.
+        ///     By Player, we have a list of CardStack(a list of cards list).
         /// </param>
         /// <param name="source"></param>
         /// <returns></returns>

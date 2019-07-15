@@ -34,7 +34,7 @@ namespace LaBataille.Tests
 
             var distributor = new DistributorWithDrawForTest(players);
 
-            var competition = new Competition(2, new GameFactory(cardsDistributor: distributor), players);
+            var competition = new Competition(numberOfRounds: 2, factory: new GameFactory(cardsDistributor: distributor), players: players);
 
             Ranking ranking = competition.Play(NullGameOverVisitor.Instance);
             Check.That(ranking).HasSize(3);
@@ -48,7 +48,7 @@ namespace LaBataille.Tests
             Check.That(player3.Score).IsEqualTo(Score.OfValue(4));
         }
 
-               #region cards
+        #region cards
 
         protected readonly Card d2 = 2.AsDiamond();
         protected readonly Card d3 = 3.AsDiamond();
@@ -99,17 +99,5 @@ namespace LaBataille.Tests
         protected readonly Card h14 = 14.AsHeart();
 
         #endregion
-    }
-
-
-    internal class  NullGameOverVisitor : IVisitGameOver
-    {
-        public static IVisitGameOver Instance = new NullGameOverVisitor();
-
-        private NullGameOverVisitor(){ }
-        
-        public void Visit(Game game, IAmTheGameOver gameOver)
-        {
-        }
     }
 }

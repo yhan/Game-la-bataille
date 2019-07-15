@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 
 namespace LaBataille
 {
@@ -24,12 +23,11 @@ namespace LaBataille
             Visibility = visibility;
         }
 
-
         public int CompareTo(Take other)
         {
             if (ReferenceEquals(this, other)) return 0;
             if (ReferenceEquals(null, other)) return 1;
-            return (Card.Value).CompareTo(other.Card.Value);
+            return Card.Value.CompareTo(other.Card.Value);
         }
 
         public override string ToString()
@@ -37,6 +35,10 @@ namespace LaBataille
             return $"{Player.Id}: {Card}";
         }
 
+        /// <summary>
+        /// In some situations, as we are unable to determine who should gather the card, we drop it.
+        /// (leave it out of the game, nobody owns it.)
+        /// </summary>
         public void Drop()
         {
             if (Dropped)
@@ -56,6 +58,9 @@ namespace LaBataille
             return new View(takes.Select(take => new TwoFaceCard(take.Player, take.Card, take.Visibility)).ToArray());
         }
 
+        /// <summary>
+        /// Keep the last <param name="numberOfPlayersInTheGame"></param> takes 
+        /// </summary>
         public static List<Take> KeepTheLast(this IEnumerable<Take> takes, int numberOfPlayersInTheGame)
         {
             return takes.Reverse().Take(numberOfPlayersInTheGame).ToList();
@@ -75,8 +80,9 @@ namespace LaBataille
 
         public static bool AllEqual(this IEnumerable<Take> takes)
         {
-            var first = takes.First();
-            foreach (var take in takes)
+            var takesArray = takes as Take[] ?? takes.ToArray();
+            var first = takesArray.First();
+            foreach (var take in takesArray)
             {
                 if (take.CompareTo(first) != 0) return false;
             }
@@ -91,6 +97,5 @@ namespace LaBataille
                 take.Drop();
             }
         }
-
     }
 }

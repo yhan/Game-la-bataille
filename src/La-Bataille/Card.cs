@@ -7,7 +7,7 @@ namespace LaBataille
     public struct Card : IEquatable<Card>, IComparable<Card>, IAmCard
     {
         /// <summary>
-        /// 2, 3, ..., 10, 11(valet,), 12(dame), 13(roi), 14(as)
+        /// 2, 3, ..., 10, 11(valet/jack), 12(dame/queen), 13(roi/king), 14(as)
         /// </summary>
         public int Value { get; }
 
@@ -16,6 +16,10 @@ namespace LaBataille
         /// </summary>
         public Figure Figure { get; }
 
+
+        /// <summary>
+        /// Cards varies from 2 to 10, then 11(valet/jack), 12(dame/queen), 13(roi/king), 14(as)
+        /// </summary>
         public static IEnumerable<int> ValidValuesRange = Enumerable.Range(start: 2, count: 13);
 
         public Card(int value, Figure figure)
@@ -28,8 +32,6 @@ namespace LaBataille
             Value = value;
             Figure = figure;
         }
-
-        
 
         public override string ToString()
         {

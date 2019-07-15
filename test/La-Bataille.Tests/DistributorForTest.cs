@@ -2,6 +2,9 @@ using System.Collections.Generic;
 
 namespace LaBataille.Tests
 {
+    /// <summary>
+    /// Distribute cards for 2 rounds with a draw round
+    /// </summary>
     public class DistributorWithDrawForTest : IDistributeCards
     {
         private readonly List<Player> _players;
@@ -92,7 +95,9 @@ namespace LaBataille.Tests
     }
 
 
-
+    /// <summary>
+    /// Distribute cards for 3 rounds
+    /// </summary>
     public class DistributorForTest : IDistributeCards
     {
         private readonly List<Player> _players;
