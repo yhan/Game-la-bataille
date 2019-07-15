@@ -12,41 +12,62 @@ namespace LaBataille
         public Game(IDistributeCards distributor)
         {
             _distributor = distributor;
-
             DistributedCardsSize = _distributor.DistributedCardsSize;
-
         }
 
-        public int DistributedCardsSize { get; private set; }
+        public int DistributedCardsSize { get; }
 
         public List<Player> Players { get; private set; }
 
         public List<View> TableViewsHistory { get; } = new List<View>();
 
-        public List<Card> DroppedCards { get; set; } = new List<Card>();
+        public List<Card> DroppedCards { get;  } = new List<Card>();
 
 
-        private bool GameOver(ref Player player)
+        public IAmTheGameOver Play(IShuffle shuffle)
         {
-            if (DroppedCards.Count == _distributor.DistributedCardsSize)
-            {
-                player = null;
-                return true; // draw
-            }
+            Players = _distributor.Distribute();
 
-            foreach (var player1 in Players)
+            Player winner = null;
+            int iterations = 0;
+            int iterationsAfterReShuffle = 0;
+            bool reShuffled = false;
+            while (!GameOver(ref winner))
             {
-                if (player1.CardStack.Size + DroppedCards.Count == _distributor.DistributedCardsSize)
+                if (ShouldContinue(ref iterations, ref reShuffled, ref iterationsAfterReShuffle, out IAmTheGameOver draw))
                 {
-                    player = player1;
-                    return true; // has a winner
+                    continue;
                 }
+                if (draw is Draw)
+                {
+                    return draw;
+                }
+
+                var takes = Players.TakeOneCardEach(Visibility.FaceUp);
+
+                TableViewsHistory.Add(takes.BuildView());
+
+                var playerOfStrongestTake = takes.StrongestPlayerIfExit();
+                if (playerOfStrongestTake != null)
+                {
+                    playerOfStrongestTake.Gather(takes);
+                    continue;
+                }
+
+                RunBattleIfNecessary(takes);
+                
+                BuildDroppedCards(takes);
             }
 
-            player = null;
-            return false;
-        }
+            if (winner == null)
+            {
+                return Draw.Instance;
+            }
 
+            Check.That(winner.CardStack.Size + DroppedCards.Count == _distributor.DistributedCardsSize).IsTrue();
+
+            return new HasWinner(winner);
+        }
 
         private bool ShouldContinue(ref int iterations, ref bool reShuffled, ref int iterationsAfterReShuffle, out IAmTheGameOver draw)
         {
@@ -78,56 +99,25 @@ namespace LaBataille
             return false;
         }
 
-        public IAmTheGameOver Play(IShuffle shuffle)
+        private bool GameOver(ref Player player)
         {
-            Players = _distributor.Distribute();
-
-            Player winner = null;
-            int iterations = 0;
-            int iterationsAfterReShuffle = 0;
-            bool reShuffled = false;
-            while (!GameOver(ref winner))
+            if (DroppedCards.Count == _distributor.DistributedCardsSize)
             {
-                if (ShouldContinue(ref iterations, ref reShuffled, ref iterationsAfterReShuffle, out IAmTheGameOver draw))
-                {
-                    continue;
-                }
-
-                if (draw is Draw)
-                {
-                    return draw;
-                }
-
-                if (this.Players.AllButOneAreEmpty(out Player survivor))
-                {
-                    winner = survivor;
-                    break;
-                }
-                var takes = Players.TakeOneCardEach(Visibility.FaceUp);
-                
-
-                TableViewsHistory.Add(takes.BuildView());
-
-                var playerOfStrongestTake = takes.StrongestPlayerIfExit();
-                if (playerOfStrongestTake != null)
-                {
-                    playerOfStrongestTake.Gather(takes);
-                    continue;
-                }
-
-                RunBattleIfNecessary(takes);
-                
-                BuildDroppedCards(takes);
+                player = null;
+                return true; // draw
             }
 
-            if (winner == null)
+            foreach (var player1 in Players)
             {
-                return Draw.Instance;
+                if (player1.CardStack.Size + DroppedCards.Count == _distributor.DistributedCardsSize)
+                {
+                    player = player1;
+                    return true; // has a winner
+                }
             }
 
-            Check.That(winner.CardStack.Size + DroppedCards.Count == _distributor.DistributedCardsSize).IsTrue();
-
-            return new HasWinner(winner);
+            player = null;
+            return false;
         }
 
         private void RunBattleIfNecessary(List<Take> takes)
