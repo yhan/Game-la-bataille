@@ -47,20 +47,57 @@ namespace LaBataille
             return false;
         }
 
+
+        private bool ShouldContinue(ref int iterations, ref bool reShuffled, ref int iterationsAfterReShuffle, out IAmTheGameOver draw)
+        {
+            if (iterations == 1000 && !reShuffled)
+            {
+                foreach (var survivor1000Iterations in Players.Where(p => p.HasCards()))
+                {
+                    survivor1000Iterations.CardStack.Shuffle();
+                }
+
+                reShuffled = true;
+                draw = new NullDraw("ReShuffle");
+                return true;
+            }
+
+            if (iterationsAfterReShuffle == 1000)
+            {
+                draw = new Draw($"After {iterations} iterations and After ReShuffled {iterationsAfterReShuffle} iterations, still no winner. Declare this game as a DRAW");
+                return false;
+            }
+
+            iterations++;
+            if (reShuffled)
+            {
+                iterationsAfterReShuffle++;
+            }
+
+            draw = new NullDraw("Continuation when iterations < 1000");
+            return false;
+        }
+
         public IAmTheGameOver Play(IShuffle shuffle)
         {
             Players = _distributor.Distribute();
 
             Player winner = null;
-            int iteration = 0;
+            int iterations = 0;
+            int iterationsAfterReShuffle = 0;
+            bool reShuffled = false;
             while (!GameOver(ref winner))
             {
-                if (iteration == 1000)
+                if (ShouldContinue(ref iterations, ref reShuffled, ref iterationsAfterReShuffle, out IAmTheGameOver draw))
                 {
-                    return new Draw($"After {iteration} iterations, still no winner. Declare this game as a DRAW");
+                    continue;
                 }
-                iteration++;
-                
+
+                if (draw is Draw)
+                {
+                    return draw;
+                }
+
                 if (this.Players.AllButOneAreEmpty(out Player survivor))
                 {
                     winner = survivor;
@@ -85,10 +122,6 @@ namespace LaBataille
 
             if (winner == null)
             {
-                if (iteration == 1000)
-                {
-                    return new Draw($"After {iteration} iterations, still no winner. Declare this game as a DRAW");
-                }
                 return Draw.Instance;
             }
 

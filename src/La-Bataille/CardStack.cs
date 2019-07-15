@@ -31,6 +31,12 @@ namespace LaBataille
             return this;
         }
 
+        public CardStack Shuffle()
+        {
+            _inner.Shuffle();
+            return this;
+        }
+
         /// <summary>
         /// Take on card from the top.
         /// </summary>

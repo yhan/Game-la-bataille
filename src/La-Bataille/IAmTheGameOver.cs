@@ -24,4 +24,14 @@ namespace LaBataille
             Reason = reason;
         }
     }
+
+    public class NullDraw  : IAmTheGameOver
+    {
+        public string Reason { get; }
+
+        public NullDraw(string reason)
+        {
+            Reason = reason;
+        }
+    }
 }
