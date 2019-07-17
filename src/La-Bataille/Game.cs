@@ -33,6 +33,7 @@ namespace LaBataille
             int iterations = 0;
             int iterationsAfterReShuffle = 0;
             bool reShuffled = false;
+
             while (!GameOver(ref winner))
             {
                 if (ShouldContinue(ref iterations, ref iterationsAfterReShuffle, ref reShuffled, out IAmTheGameOver draw))
@@ -120,7 +121,7 @@ namespace LaBataille
             player = null;
             return false;
         }
-
+        
         private void RunBattleIfNecessary(List<Take> takes)
         {
             var numberOfPlayersInTheGame = takes.Count;
@@ -195,36 +196,6 @@ namespace LaBataille
             var equalAndStrongest = takes.Where(t => t.CompareTo(max2) == 0);
 
             competitors = equalAndStrongest.Select(t => t.Player).ToList();
-
-            return competitors.Count > 1;
-
-
-
-
-            if (!takes.Any())
-            {
-                competitors = null;
-                return false;
-            }
-
-            Take max = takes[0];
-            competitors = new List<Player>();
-
-            foreach (var take in takes)
-            {
-                var compareTo = take.CompareTo(max);
-                if (compareTo > 0)
-                {
-                    competitors.Clear();
-
-                    max = take;
-                    competitors.Add(take.Player);
-                }
-                else if (compareTo == 0)
-                {
-                    competitors.Add(take.Player);
-                }
-            }
 
             return competitors.Count > 1;
         }
